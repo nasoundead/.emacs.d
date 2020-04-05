@@ -112,6 +112,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-ui)
 (require 'init-modeline)
 (require 'init-edit)
+(require 'init-folding)
 (require 'init-highlight)
 (require 'init-lookup)
 (require 'init-keybinds)
@@ -134,6 +135,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-emacs-lisp)
 (require 'init-lsp)
 (require 'init-py)
+(require 'init-rust)
 (require 'init-js)
 (require 'init-web)
 

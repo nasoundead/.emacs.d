@@ -51,13 +51,16 @@
            (dired-diff))
           (t (error "mark exactly 2 files, at least 1 locally")))))
 (with-eval-after-load 'dired
+  (require 'dired-x)
+  (setq dired-dwin-target 1)
+  (setq dired-recursive-deletes 'always)
+  (setq dired-recursive-copies 'always)
   (define-key dired-mode-map (kbd "=") 'sea/dired-diff)
-  ;(define-key dired-mode-map (kbd "RET") 'find-alternate-file)
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
   (define-key dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/"))))
 
 
-;; (evil-define-key 'normal  dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/")))
-;; (evil-define-key 'normal  dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-;; (evil-define-key 'normal  dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/")))
+;(evil-define-key 'normal  dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/")))
+;(evil-define-key 'normal  dired-mode-map (kbd "RET") 'dired-find-alternate-file)
 
 (provide 'init-dired)
