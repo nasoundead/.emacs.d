@@ -150,3 +150,4 @@ Meant to be used with `run-hook-wrapped'."
 
 (setq custom-file (concat sea-cache-dir "custom.el"))
 (load custom-file t t)
+(put 'dired-find-alternate-file 'disabled nil)

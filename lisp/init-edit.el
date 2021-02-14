@@ -329,7 +329,7 @@ extension, try to guess one."
                  :actions '(insert) :post-handlers '(("| " "SPC")))
 
   ;; Disable electric keys in C modes because it interferes with smartparens
-  ;; and custom bindings. We'll do it ourselves (mostly).
+  ;; and c'ustom bindings. We'll do it ourselves (mostly).
   (after! cc-mode
     (c-toggle-electric-state -1)
     (c-toggle-auto-newline -1)
@@ -390,26 +390,26 @@ extension, try to guess one."
 
   (after! smartparens-ml
     (sp-with-modes '(tuareg-mode fsharp-mode)
-      (sp-local-pair "(*" "*)" :actions nil)
-      (sp-local-pair "(*" "*"
-                     :actions '(insert)
-                     :post-handlers '(("| " "SPC") ("|\n[i]*)[d-2]" "RET")))))
+                   (sp-local-pair "(*" "*)" :actions nil)
+                   (sp-local-pair "(*" "*"
+                                  :actions '(insert)
+                                  :post-handlers '(("| " "SPC") ("|\n[i]*)[d-2]" "RET")))))
 
   (after! smartparens-markdown
     (sp-with-modes '(markdown-mode gfm-mode)
-      (sp-local-pair "```" "```" :post-handlers '(:add ("||\n[i]" "RET")))
+                   (sp-local-pair "```" "```" :post-handlers '(:add ("||\n[i]" "RET")))
 
-      ;; The original rules for smartparens had an odd quirk: inserting two
-      ;; asterixex would replace nearby quotes with asterixes. These two rules
-      ;; set out to fix this.
-      (sp-local-pair "**" nil :actions :rem)
-      (sp-local-pair "*" "*"
-                     :actions '(insert skip)
-                     :unless '(:rem sp-point-at-bol-p)
-                     ;; * then SPC will delete the second asterix and assume
-                     ;; you wanted a bullet point. * followed by another *
-                     ;; will produce an extra, assuming you wanted **|**.
-                     :post-handlers '(("[d1]" "SPC") ("|*" "*"))))
+                   ;; The original rules for smartparens had an odd quirk: inserting two
+                   ;; asterixex would replace nearby quotes with asterixes. These two rules
+                   ;; set out to fix this.
+                   (sp-local-pair "**" nil :actions :rem)
+                   (sp-local-pair "*" "*"
+                                  :actions '(insert skip)
+                                  :unless '(:rem sp-point-at-bol-p)
+                                  ;; * then SPC will delete the second asterix and assume
+                                  ;; you wanted a bullet point. * followed by another *
+                                  ;; will produce an extra, assuming you wanted **|**.
+                                  :post-handlers '(("[d1]" "SPC") ("|*" "*"))))
 
     ;; This keybind allows * to skip over **.
     (map! :map markdown-mode-map

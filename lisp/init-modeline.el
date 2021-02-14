@@ -6,7 +6,8 @@
 ;;
 ;; Modeline
 ;;
-
+;; (use-package nyan-mode)
+;; (add-hook 'sea-init-ui-hook #'nyan-mode)
 (setq-default mode-line-format
               (list
                ;; ⚿ for locked buffer. ⛯ for modified buffer. ⛆ is the normal one.
@@ -24,13 +25,15 @@
                                                                 :v-adjust -0.03)))
 
                ;; the buffer name; the file name as a tool tip
-               '(:eval (buffer-file-name-truncate t))
-               ;; '(:eval (propertize " %b "
-               ;;                     'face
-               ;;                     (let ((face (buffer-modified-p)))
-               ;;                       (if face 'font-lock-warning-face
-               ;;                         'font-lock-type-face))
-               ;;                     'help-echo (buffer-file-name)))
+               ;; '(:eval (buffer-file-name-truncate t))
+               '(:eval (propertize " %b "
+                                   'face
+                                   (let ((face (buffer-modified-p)))
+                                     (if face 'font-lock-warning-face
+                                       'font-lock-type-face))
+                                   'help-echo (buffer-file-name)))
+
+               ;; vcs
                " "
                '(:eval (propertize (substring vc-mode 5)
                                    'face 'font-lock-comment-face))
@@ -42,12 +45,21 @@
                (propertize "%02c" 'face 'font-lock-keyword-face)
                ") "
 
+               ;; selected character numbers
+               '(:eval (propertize (number-to-string (abs (- (point) (mark))))))
+
                ;; relative position, size of file
                " ["
                (propertize "%p" 'face 'font-lock-constant-face) ;; % above top
                "/"
                (propertize "%I" 'face 'font-lock-constant-face) ;; size
                "] "
+
+               ;; nyan-mode
+               ;; '(:eval (list (nyan-create)))
+
+               ;; flycheck
+               '(:eval (custom-modeline-flycheck-status))
 
                ;; spaces to align right
                '(:eval (propertize
@@ -58,6 +70,9 @@
                                                                            "UTF-8")
                                                                           (t (upcase (symbol-name (plist-get sys :name))))))))
                                               ,(+ 3 (string-width mode-name)))))))
+
+               ;; misc
+               mode-line-misc-info
 
                ;; "Displays the encoding and eol style of the buffer the same way Atom does."
                '(:eval
@@ -84,6 +99,8 @@
                   'face 'font-lock-string-face))
                ;;minor-mode-alist
                ))
+
+
 
 (defun buffer-file-name-truncate (&optional truncate-tail)
   "Propertized `buffer-file-name' that truncates every dir along path.
@@ -127,71 +144,27 @@ If TRUNCATE-TAIL is t also truncate the parent directory of the file."
                             'mouse-1 (lambda () (interactive) (flycheck-list-errors))))))
 
 
-;; (set-face-attribute 'mode-line           nil :background "light blue")
-;; (set-face-attribute 'mode-line-buffer-id nil :background "blue" :foreground "white")
-;; (defface mode-line-directory
-;;   '((t :background "blue" :foreground "gray"))
-;;   "Face used for buffer identification parts of the mode line."
-;;   :group 'mode-line-faces
-;;   :group 'basic-faces)
-;; (set-face-attribute 'mode-line-highlight nil :box nil :background "deep sky blue")
-;; (set-face-attribute 'mode-line-inactive  nil :inherit 'default)
+;; The mode line segment shows current python executable
+;; hover text is the full path
+;; clicking it opens the customize panel for `python-shell-interpreter'
 
+(defvar moon-python-mode-line-map (let ((map (make-sparse-keymap)))
+                                    (define-key map (vector 'mode-line 'down-mouse-1)
+                                      (lambda ()
+                                        (interactive)
+                                        (customize-apropos "python-shell-interpreter")))
+                                    map))
 
-;; (setq mode-line-position
-;;       '(;; %p print percent of buffer above top of window, o Top, Bot or All
-;;         ;; (-3 "%p")
-;;         ;; %I print the size of the buffer, with kmG etc
-;;         ;; (size-indication-mode ("/" (-4 "%I")))
-;;         ;; " "
-;;         ;; %l print the current line number
-;;         ;; %c print the current column
-;;         (line-number-mode ("%l" (column-number-mode ":%c")))))
+(defun moon-python-exec-mode-line ()
+  "Return a mode line segment for python executable."
+  (propertize (file-name-base python-shell-interpreter)
+              'help-echo (executable-find python-shell-interpreter)
+              'keymap moon-python-mode-line-map))
 
-
-;; (defun shorten-directory (dir max-length)
-;;   "Show up to `max-length' characters of a directory name `dir'."
-;;   (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
-;;         (output ""))
-;;     (when (and path (equal "" (car path)))
-;;       (setq path (cdr path)))
-;;     (while (and path (< (length output) (- max-length 4)))
-;;       (setq output (concat (car path) "/" output))
-;;       (setq path (cdr path)))
-;;     (when path
-;;       (setq output (concat ".../" output)))
-;;     output))
-
-;; (defvar mode-line-directory
-;;   '(:propertize
-;;     (:eval (if (buffer-file-name) (concat " " (shorten-directory default-directory 20)) " "))
-;;     face mode-line-directory)
-;;   "Formats the current directory.")
-;; (put 'mode-line-directory 'risky-local-variable t)
-
-;; (setq-default mode-line-buffer-identification
-;;               (propertized-buffer-identification "%b "))
-
-
-;; (setq-default mode-line-format
-;;               '("%e"
-;;                 mode-line-front-space
-;;                 mode-line-mule-info -- I'm always on utf-8
-;;                 mode-line-client
-;;                 mode-line-modified
-;;                 ;; mode-line-remote -- no need to indicate this specially
-;;                 ;; mode-line-frame-identification -- this is for text-mode emacs only
-;;                 " "
-;;                 mode-line-directory
-;;                 mode-line-buffer-identification
-;;                 " "
-;;                 mode-line-position
-;;                 ;;(vc-mode vc-mode)  -- I use magit, not vc-mode
-;;                 (flycheck-mode flycheck-mode-line)
-;;                 " "
-;;                 ;; mode-line-modes
-;;                 mode-line-misc-info
-;;                 mode-line-end-spaces))
+(add-to-list 'mode-line-misc-info
+             '(:eval (if (eq major-mode 'python-mode)
+                         (list "  " (moon-python-exec-mode-line) "  "))
+                     ""))
 
 (provide 'init-modeline)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
