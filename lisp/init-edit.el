@@ -214,10 +214,6 @@ fundamental-mode) for performance sake."
 (use-package smart-forward
   :commands (smart-up smart-down smart-backward smart-forward))
 
-(use-package wgrep
-  :commands (wgrep-setup wgrep-change-to-wgrep-mode)
-  :config (setq wgrep-auto-save-buffer t))
-
 ;; Treat undo history as a tree
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -278,7 +274,7 @@ extension, try to guess one."
 (use-package smartparens
   :config
   (require 'smartparens-config)
-  ;; (add-hook 'prog-mode-hook #'smartparens-mode)
+  (add-hook 'prog-mode-hook #'smartparens-mode)
   ;; Smartparens is broken in `cc-mode' as of Emacs 27. See
 
   ;; <https://github.com/Fuco1/smartparens/issues/963>.

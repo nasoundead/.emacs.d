@@ -13,9 +13,9 @@
 
 (setq custom-safe-themes t)
 (use-package color-theme-sanityinc-tomorrow)
-(use-package zenburn-theme)
-(use-package srcery-theme)
-(use-package darktooth-theme)
+;; (use-package zenburn-theme)
+;; (use-package srcery-theme)
+;; (use-package darktooth-theme)
 (use-package doom-themes)
 ;; (setq-default custom-enabled-themes '(srcery))
 ;; Ensure that themes will be applied even if they have not been customized
@@ -26,12 +26,7 @@
       (load-theme theme)))
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
-(add-hook 'after-init-hook 'reapply-themes)
-(defun zenburn ()
-  "Activate a light color theme."
-  (interactive)
-  (setq custom-enabled-themes '(zenburn))
-  (reapply-themes))
+;; (add-hook 'after-init-hook 'reapply-themes)
 
 (defun light ()
   "Activate a light color theme."
@@ -79,7 +74,7 @@
   (setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
               ((eq system-type 'gnu/linux)  '("Menlo"     "WenQuanYi Micro Hei Mono"))
-              ((eq system-type 'windows-nt) '("Consolas"  "宋体"))))
+              ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))))
   (set-face-attribute 'default nil :font
                       (format "%s:pixelsize=%d" (car fonts) 14))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
@@ -93,7 +88,7 @@
    )
 
   ;; (require 'font-lock+)
-  (use-package unicode-fonts)
+  ;; (use-package unicode-fonts)
   (reapply-themes)
   (run-hooks 'sea-init-ui-hook))
 
