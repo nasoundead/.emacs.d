@@ -51,7 +51,41 @@
   :init
   (add-hook 'emacs-lisp-mode-hook (lambda()(lispy-mode 1)))
   (add-hook 'minibuffer-setup-hook (lambda()(when (eq this-command 'eval-expression)
-                                          (lispy-mode 1)))))
+                                              (lispy-mode 1)))))
+(use-package lispyville
+  :init
+  (add-hook 'lispy-mode-hook #'lispyville-mode)
+  ;; (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
+  :config
+  (lispyville-set-key-theme '(operators c-w additional))
+  (setq targets-text-objects nil)
+
+  (targets-setup)
+
+  (targets-define-to lispyville-comment 'lispyville-comment nil object
+                     :bind t :keys "c")
+
+  (targets-define-to lispyville-atom 'lispyville-atom nil object
+                     :bind t :keys "a")
+
+  (targets-define-to lispyville-list 'lispyville-list nil object
+                     :bind t :keys "l")
+
+  (targets-define-to lispyville-sexp 'lispyville-sexp nil object
+                     :bind t :keys "x")
+
+  (targets-define-to lispyville-function 'lispyville-function nil object
+                     :bind t :keys "f")
+
+  (targets-define-to lispyville-comment 'lispyville-comment nil object
+                     :bind t :keys "c")
+
+  (targets-define-to lispyville-string 'lispyville-string nil object
+                     :bind t :keys "S"))
+
+;; (use-package evil-lispy
+;;   :init
+;;   (add-hook 'emacs-lisp-mode-hook #'evil-lispy-mode))
 
 (provide 'init-emacs-lisp)
 

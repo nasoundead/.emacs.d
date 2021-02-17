@@ -37,7 +37,8 @@
   :diminish (command-log-mode . "¢")
   :init (setq command-log-mode-auto-show t))
 
-
+;; restart emacs
+(use-package restart-emacs)
 
 (provide 'init-utils)
 

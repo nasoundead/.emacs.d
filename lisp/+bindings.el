@@ -36,10 +36,10 @@
       :n "M-="   #'text-scale-increase
       :n "M--"   #'text-scale-decrease
 
-      :enm "C-h"   #'evil-window-left
-      :enm "C-j"   #'evil-window-down
-      :enm "C-k"   #'evil-window-up
-      :enm "C-l"   #'evil-window-right
+      :enm "C-S-h"   #'evil-window-left
+      :enm "C-S-j"   #'evil-window-down
+      :enm "C-S-k"   #'evil-window-up
+      :enm "C-S-l"   #'evil-window-right
 
       ;; Simple window/frame navigation/manipulation
       :n "M-w"   #'delete-window
@@ -256,6 +256,17 @@
       :v  "S"  #'evil-surround-region
       :o  "s"  #'evil-surround-edit
       :o  "S"  #'evil-Surround-edit
+
+      ;; lispyville
+      (:after lispyville-mode
+        :map lispyville-mode-map
+        :n "gc" #'lispyville-comment-or-uncomment
+        :n "gy" #'lispyville-comment-and-clone-dwim
+        :n ",ci" #'lispyville-comment-or-uncomment-line
+        :n "M-(" #'lispyville-wrap-with-round
+        :n "M-[" #'lispyville-wrap-with-brackets
+        :n "M-{" #'lispyville-wrap-with-braces
+        )
 
       ;; expand-region
       :v  "v"  #'er/expand-region
