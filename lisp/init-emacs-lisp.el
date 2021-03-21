@@ -59,29 +59,7 @@
   :config
   (lispyville-set-key-theme '(operators c-w additional))
   (setq targets-text-objects nil)
-
-  (targets-setup)
-
-  (targets-define-to lispyville-comment 'lispyville-comment nil object
-                     :bind t :keys "c")
-
-  (targets-define-to lispyville-atom 'lispyville-atom nil object
-                     :bind t :keys "a")
-
-  (targets-define-to lispyville-list 'lispyville-list nil object
-                     :bind t :keys "l")
-
-  (targets-define-to lispyville-sexp 'lispyville-sexp nil object
-                     :bind t :keys "x")
-
-  (targets-define-to lispyville-function 'lispyville-function nil object
-                     :bind t :keys "f")
-
-  (targets-define-to lispyville-comment 'lispyville-comment nil object
-                     :bind t :keys "c")
-
-  (targets-define-to lispyville-string 'lispyville-string nil object
-                     :bind t :keys "S"))
+  )
 
 ;; (use-package evil-lispy
 ;;   :init
