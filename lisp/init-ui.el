@@ -73,7 +73,7 @@
   "Set the theme and load the font, in that order."
   (setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
-              ((eq system-type 'gnu/linux)  '("Menlo"     "WenQuanYi Micro Hei Mono"))
+              ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
               ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))))
   (set-face-attribute 'default nil :font
                       (format "%s:pixelsize=%d" (car fonts) 14))

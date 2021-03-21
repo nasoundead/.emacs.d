@@ -35,8 +35,8 @@ corresponding to the mode line clicked."
   "Display flycheck results"
   (pcase flycheck-last-status-change
     (`not-checked nil)
-    (`no-checker (propertize " -" 'face 'warning))
-    (`running (propertize " ✷" 'face 'success))
+    (`no-checker (propertize "-" 'face 'warning))
+    (`running (propertize " *" 'face 'success))
     (`errored (propertize " !" 'face 'error))
     (`finished
      (let* ((error-counts (flycheck-count-errors flycheck-current-errors))
@@ -45,7 +45,7 @@ corresponding to the mode line clicked."
             (face (cond (no-errors 'error)
                         (no-warnings 'warning)
                         (t 'success))))
-       (propertize (format "🚫%s⛔%s" (or no-errors 0) (or no-warnings 0))
+       (propertize (format "E%sW%s" (or no-errors 0) (or no-warnings 0))
                    'face face)))
     (`interrupted " -")
     (`suspicious '(propertize " ?" 'face 'warning))))
