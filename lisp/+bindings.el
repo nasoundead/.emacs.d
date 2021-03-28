@@ -10,8 +10,8 @@
 (map! [remap evil-jump-to-tag] #'projectile-find-tag
       [remap find-tag]         #'projectile-find-tag
 
-      :gi "C-a" #'sea/backward-to-bol-or-indent
-      :gi "C-e" #'sea/forward-to-last-non-comment-or-eol
+      :gni "C-a" #'sea/backward-to-bol-or-indent
+      :gni "C-e" #'sea/forward-to-last-non-comment-or-eol
       :gni [C-return]    #'+default/newline-below
       :gni [C-S-return]  #'+default/newline-above
 
@@ -20,7 +20,7 @@
       :nmvo sea-localleader-key nil
 
       ;; Swap RET/C-j in insert mode
-      :i [remap newline] #'newline-and-indent
+      :i [remap newline]   #'newline-and-indent
       :i "C-S-j"           #'+default/newline
 
       ;; --- Global keybindings ---------------------------
@@ -332,7 +332,12 @@
         "C-j"   #'ivy-next-line
         "M-z"   #'undo
         "M-v"   #'yank
-        "C-v"   #'yank)
+        "C-v"   #'yank
+        :map ivy-switch-buffer-map
+        "C-k"   #'ivy-previous-line
+        "C-j"   #'ivy-next-line
+        "C-M-k" #'ivy-switch-buffer-kill
+        )
 
 
       ;; realgud
