@@ -1,0 +1,4 @@
+* My Emacs Config
+** introduction
+可能一生都学不完吧。
+这个配置是受到Purcell配置的启发，最初是由"Emacs-Bootstrap"项目生成并独立修改而来，可以在githbu上搜索"awesome emacs".

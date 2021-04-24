@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: matplotlib config
+# key: matplotlib
+# --
+%matplotlib inline
+%config InlineBackend.figure_format = 'svg'
+import matplotlib.pyplot as plt
+import numpy as np

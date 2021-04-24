@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: plantuml
+# key: plantuml
+# --
+#+BEGIN_SRC plantuml :file ${1:export-file-name} :cmdline -charset UTF-8
+${0}
+#+END_SRC
