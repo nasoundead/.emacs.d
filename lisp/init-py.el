@@ -32,8 +32,7 @@
 (use-package py-autopep8
   :init
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
-(use-package realgud
-  :ensure t)
+
 (use-package indent-tools
   :ensure t
   :init

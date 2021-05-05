@@ -31,150 +31,10 @@
 ;;
 ;;; Code:
 
-;;
-;;; Helpers
-
-(defun +lookup--set-handler (spec functions-var &optional async enable)
-  (when spec
-    (cl-destructuring-bind (fn . plist)
-        (sea-enlist spec)
-      (if (not enable)
-          (remove-hook functions-var fn 'local)
-        (put fn '+lookup-async (or (plist-get plist :async) async))
-        (add-hook functions-var fn nil 'local)))))
-
-(defun +lookup--run-handler (handler identifier)
-  (if (commandp handler)
-      (call-interactively handler)
-    (funcall handler identifier)))
-
-(defun +lookup--run-handlers (handler identifier origin)
-  (sea-log "Looking up '%s' with '%s'" identifier handler)
-  (condition-case-unless-debug e
-      (let ((wconf (current-window-configuration))
-            (result (condition-case-unless-debug e
-                        (+lookup--run-handler handler identifier)
-                      (error
-                       (sea-log "Lookup handler %S threw an error: %s" handler e)
-                       'fail))))
-        (cond ((eq result 'fail)
-               (set-window-configuration wconf)
-               nil)
-              ((or (get handler '+lookup-async)
-                   (eq result 'deferred)))
-              ((or result
-                   (null origin)
-                   (/= (point-marker) origin))
-               (prog1 (point-marker)
-                 (set-window-configuration wconf)))))
-    ((error user-error)
-     (message "Lookup handler %S: %s" handler e)
-     nil)))
-
-(defun +lookup--jump-to (prop identifier &optional display-fn arg)
-  (let* ((origin (point-marker))
-         (handlers (plist-get (list :definition '+lookup-definition-functions
-                                    :references '+lookup-references-functions
-                                    :documentation '+lookup-documentation-functions
-                                    :file '+lookup-file-functions)
-                              prop))
-         (result
-          (if arg
-              (if-let*
-                  ((handler (intern-soft
-                             (completing-read "Select lookup handler: "
-                                              (remq t (append (symbol-value handlers)
-                                                              (default-value handlers)))
-                                              nil t))))
-                  (+lookup--run-handlers handler identifier origin)
-                (user-error "No lookup handler selected"))
-            (run-hook-wrapped handlers #'+lookup--run-handlers identifier origin))))
-    (when (cond ((null result)
-                 (message "No lookup handler could find %S" identifier)
-                 nil)
-                ((markerp result)
-                 (funcall (or display-fn #'switch-to-buffer)
-                          (marker-buffer result))
-                 (goto-char result)
-                 result)
-                (result))
-      (with-current-buffer (marker-buffer origin)
-        (better-jumper-set-jump (marker-position origin)))
-      result)))
 
 
-(defun +lookup-symbol-or-region (&optional initial)
-  "Grab the symbol at point or selected region."
-  (cond ((stringp initial)
-         initial)
-        ((use-region-p)
-         (buffer-substring-no-properties (region-beginning)
-                                         (region-end)))
-        ((require 'xref nil t)
-         ;; A little smarter than using `symbol-at-point', though in most cases,
-         ;; xref ends up using `symbol-at-point' anyway.
-         (xref-backend-identifier-at-point (xref-find-backend)))))
 
 
-;;
-;;; Lookup backends
-
-(defun +lookup--xref-show (fn identifier)
-  (let ((xrefs (funcall fn
-                        (xref-find-backend)
-                        identifier)))
-    (when xrefs
-      (xref--show-xrefs xrefs nil)
-      (if (cdr xrefs)
-          'deferred
-        t))))
-
-(defun +lookup-xref-definitions-backend-fn (identifier)
-  "Non-interactive wrapper for `xref-find-definitions'"
-  (+lookup--xref-show 'xref-backend-definitions identifier))
-
-(defun +lookup-xref-references-backend-fn (identifier)
-  "Non-interactive wrapper for `xref-find-references'"
-  (+lookup--xref-show 'xref-backend-references identifier))
-
-(defun +lookup-dumb-jump-backend-fn (_identifier)
-  "Look up the symbol at point (or selection) with `dumb-jump', which conducts a
-project search with ag, rg, pt, or git-grep, combined with extra heuristics to
-reduce false positives.
-
-This backend prefers \"just working\" over accuracy."
-  (and (require 'dumb-jump nil t)
-       (dumb-jump-go)))
-
-(defun +lookup-project-search-backend-fn (identifier)
-  "Conducts a simple project text search for IDENTIFIER.
-
-Uses and requires `+ivy-file-search' or `+helm-file-search'. Will return nil if
-neither is available. These search backends will use ag, rg, or pt (in an order
-dictated by `+ivy-project-search-engines' or `+helm-project-search-engines',
-falling back to git-grep)."
-  (unless identifier
-    (let ((query (rxt-quote-pcre identifier)))
-      (ignore-errors
-        (cond ((featurep! :completion ivy)
-               (+ivy-file-search nil :query query)
-               t)
-              ((featurep! :completion helm)
-               (+helm-file-search nil :query query)
-               t))))))
-
-(defun +lookup-evil-goto-definition-backend-fn (_identifier)
-  "Uses `evil-goto-definition' to conduct a text search for IDENTIFIER in the
-current buffer."
-  (and (fboundp 'evil-goto-definition)
-       (ignore-errors
-         (cl-destructuring-bind (beg . end)
-             (bounds-of-thing-at-point 'symbol)
-           (evil-goto-definition)
-           (let ((pt (point)))
-             (not (and (>= pt beg)
-                       (<  pt end))))))))
-                       
 ;; "What am I looking at?" This module helps you answer this question.
 ;;
 ;;   + `+lookup/definition': a jump-to-definition that should 'just work'
@@ -188,20 +48,26 @@ current buffer."
 ;; `dumb-jump' to find what you want.
 
 (defvar +lookup-provider-url-alist
-  (append '(("Google"            . "https://google.com/search?q=%s")
-            ("Google images"     . "https://www.google.com/images?q=%s")
-            ("Google maps"       . "https://maps.google.com/maps?q=%s")
-            ("Project Gutenberg" . "http://www.gutenberg.org/ebooks/search/?query=%s")
-            ("DuckDuckGo"        . "https://duckduckgo.com/?q=%s")
-            ("DevDocs.io"        . "https://devdocs.io/#q=%s")
-            ("StackOverflow"     . "https://stackoverflow.com/search?q=%s")
-            ("Github"            . "https://github.com/search?ref=simplesearch&q=%s")
-            ("Youtube"           . "https://youtube.com/results?aq=f&oq=&search_query=%s")
-            ("Wolfram alpha"     . "https://wolframalpha.com/input/?i=%s")
-            ("Wikipedia"         . "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
-            ("Rust Docs"         . "https://doc.rust-lang.org/edition-guide/?search=%s")))
-  "An alist that maps online resources to their search url or a function that
-produces an url. Used by `+lookup/online'.")
+  (append '(("Google"            +lookup--online-backend-google "https://google.com/search?q=%s")
+            ("Google images"     "https://www.google.com/images?q=%s")
+            ("Google maps"       "https://maps.google.com/maps?q=%s")
+            ("Project Gutenberg" "http://www.gutenberg.org/ebooks/search/?query=%s")
+            ("DuckDuckGo"        +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
+            ("DevDocs.io"        "https://devdocs.io/#q=%s")
+            ("StackOverflow"     "https://stackoverflow.com/search?q=%s")
+            ("Github"            "https://github.com/search?ref=simplesearch&q=%s")
+            ("Youtube"           "https://youtube.com/results?aq=f&oq=&search_query=%s")
+            ("Wolfram alpha"     "https://wolframalpha.com/input/?i=%s")
+            ("Wikipedia"         "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
+            ("Rust Docs" "https://doc.rust-lang.org/edition-guide/?search=%s"))
+          )
+  "An alist that maps online resources to either:
+
+  1. A search url (needs on '%s' to substitute with an url encoded query),
+  2. A non-interactive function that returns the search url in #1,
+  3. An interactive command that does its own search for that provider.
+
+Used by `+lookup/online'.")
 
 (defvar +lookup-open-url-fn #'browse-url
   "Function to use to open search urls.")
@@ -253,18 +119,75 @@ If the argument is interactive (satisfies `commandp'), it is called with
 argument: the identifier at point. See `set-lookup-handlers!' about adding to
 this list.")
 
+(defvar +lookup-dictionary-enable-online t
+  "If non-nil, look up dictionaries online.
 
-;; Jump to definition via `ag'/`rg'/`grep'
+Setting this to nil will force it to use offline backends, which may be less
+than perfect, but available without an internet connection.
+
+Used by `+lookup/word-definition' and `+lookup/word-synonyms'.
+
+For `+lookup/word-definition', this is ignored on Mac, where Emacs users
+Dictionary.app behind the scenes to get definitions.")
+
+
+;;
+;;; dumb-jump
+
 (use-package dumb-jump
-  :init (add-hook 'after-init-hook #'dumb-jump-mode)
+  :commands dumb-jump-result-follow
   :config
-  (setq dumb-jump-prefer-searcher 'rg
-        dumb-jump-default-project sea-emacs-dir
-        dumb-jump-aggressive nil)
-  (with-eval-after-load 'ivy
-    (setq dumb-jump-selector 'ivy))
+  (setq dumb-jump-default-project sea-emacs-dir
+        dumb-jump-aggressive nil
+        dumb-jump-selector 'ivy)
   (add-hook 'dumb-jump-after-jump-hook #'better-jumper-set-jump))
 
+(defadvice! sea-set-jump-a (orig-fn &rest args)
+  "Set a jump point and ensure ORIG-FN doesn't set any new jump points."
+  (better-jumper-set-jump (if (markerp (car args)) (car args)))
+  (let ((evil--jumps-jumping t)
+        (better-jumper--jumping t))
+    (apply orig-fn args)))
+
+(defadvice! sea-set-jump-maybe-a (orig-fn &rest args)
+  "Set a jump point if ORIG-FN returns non-nil."
+  (let ((origin (point-marker))
+        (result
+         (let* ((evil--jumps-jumping t)
+                (better-jumper--jumping t))
+           (apply orig-fn args))))
+    (unless result
+      (with-current-buffer (marker-buffer origin)
+        (better-jumper-set-jump
+         (if (markerp (car args))
+             (car args)
+           origin))))
+    result))
+(use-package better-jumper
+  :preface
+  ;; REVIEW Suppress byte-compiler warning spawning a *Compile-Log* buffer at
+  ;; startup. This can be removed once gilbertw1/better-jumper#2 is merged.
+  (defvar better-jumper-local-mode nil)
+  :init
+  (global-set-key [remap evil-jump-forward]  #'better-jumper-jump-forward)
+  (global-set-key [remap evil-jump-backward] #'better-jumper-jump-backward)
+  (global-set-key [remap xref-pop-marker-stack] #'better-jumper-jump-backward)
+  :config
+  (better-jumper-mode +1)
+  (add-hook 'better-jumper-post-jump-hook #'recenter)
+
+  (defun sea-set-jump-h ()
+    "Run `better-jumper-set-jump' but return nil, for short-circuiting hooks."
+    (better-jumper-set-jump)
+    nil)
+
+  ;; Creates a jump point before killing a buffer. This allows you to undo
+  ;; killing a buffer easily (only works with file buffers though; it's not
+  ;; possible to resurrect special buffers).
+  (advice-add #'kill-current-buffer :around #'sea-set-jump-a)
+
+  ;; Create a jump point before jumping with imenu.
+  (advice-add #'imenu :around #'sea-set-jump-a))
 ;;
 ;;; xref
 
@@ -284,13 +207,53 @@ this list.")
       (funcall orig-fn)))
 
   ;; Use `better-jumper' instead of xref's marker stack
-  (advice-add #'xref-push-marker-stack :around #'doom-set-jump-a)
+  (advice-add #'xref-push-marker-stack :around #'sea-set-jump-a)
 
   (use-package ivy-xref
     :config
     (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
     (set-popup-rule! "^\\*xref\\*$" :ignore t))
+
   )
+
+
+;;
+;;; Dash docset integration
+
+(use-package dash-docs
+  :defer t
+  :init
+  (add-hook '+lookup-documentation-functions #'+lookup-dash-docsets-backend-fn)
+  :config
+  (setq dash-docs-enable-debugging sea-debug-mode
+        dash-docs-docsets-path (concat sea-etc-dir "docsets/")
+        dash-docs-min-length 2
+        dash-docs-browser-func #'eww)
+
+  ;; Before `gnutls' is loaded, `gnutls-algorithm-priority' is treated as a
+  ;; lexical variable, which breaks `+lookup*fix-gnutls-error'
+  (defvar gnutls-algorithm-priority)
+  (defadvice! +lookup--fix-gnutls-error-a (orig-fn url)
+    "Fixes integer-or-marker-p errors emitted from Emacs' url library,
+particularly, the `url-retrieve-synchronously' call in
+`dash-docs-read-json-from-url'. This is part of a systemic issue with Emacs 26's
+networking library (fixed in Emacs 27+, apparently).
+
+See https://github.com/magit/ghub/issues/81"
+    :around #'dash-docs-read-json-from-url
+    (let ((gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+      (funcall orig-fn url)))
+
+  (use-package counsel-dash))
+
+
+;;
+;;; Dictionary integration
+
+
+(define-key! text-mode-map
+    [remap +lookup/definition] #'+lookup/word-definition
+    [remap +lookup/references] #'+lookup/word-synonyms)
 
 
 

@@ -64,9 +64,10 @@
       :m  "[a" #'evil-backward-arg
       :n  "]b" #'next-buffer
       :n  "[b" #'previous-buffer
-      :m  "gd" #'+lookup/definition
-      :m  "gD" #'+lookup/references
-      :n  "gf" #'+lookup/file
+      :nv  "K" #'+lookup/documentation
+      :nv  "gd" #'+lookup/definition
+      :nv  "gD" #'+lookup/references
+      :nv  "gf" #'+lookup/file
       :n  "gQ" #'+format:region
       :n  "gp" #'+evil/reselect-paste
       :v  "gp" #'+evil/paste-preserve-register

@@ -17,7 +17,7 @@
 ;; (use-package srcery-theme)
 ;; (use-package darktooth-theme)
 (use-package doom-themes)
-;; (setq-default custom-enabled-themes '(srcery))
+(setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."

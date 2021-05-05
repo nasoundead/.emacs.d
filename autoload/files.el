@@ -3,22 +3,96 @@
 ;;
 ;; Public library
 
+(defun sea--resolve-path-forms (spec &optional directory)
+  "Converts a simple nested series of or/and forms into a series of
+`file-exists-p' checks.
+
+For example
+
+  (sea--resolve-path-forms
+    '(or A (and B C))
+    \"~\")
+
+Returns (approximately):
+
+  '(let* ((_directory \"~\")
+          (A (expand-file-name A _directory))
+          (B (expand-file-name B _directory))
+          (C (expand-file-name C _directory)))
+     (or (and (file-exists-p A) A)
+         (and (if (file-exists-p B) B)
+              (if (file-exists-p C) C))))
+
+This is used by `file-exists-p!' and `project-file-exists-p!'."
+  (declare (pure t) (side-effect-free t))
+  (let ((exists-fn (if (fboundp 'projectile-file-exists-p)
+                       #'projectile-file-exists-p
+                     #'file-exists-p)))
+    (if (and (listp spec)
+             (memq (car spec) '(or and)))
+        (cons (car spec)
+              (mapcar (sea-rpartial #'sea--resolve-path-forms directory)
+                      (cdr spec)))
+      (let ((filevar (make-symbol "file")))
+        `(let* ((file-name-handler-alist nil)
+                (,filevar ,spec))
+           (and (stringp ,filevar)
+                ,(if directory
+                     `(let ((default-directory ,directory))
+                        (,exists-fn ,filevar))
+                   (list exists-fn filevar))
+                ,filevar))))))
+
+(defun sea--path (&rest segments)
+  (let (file-name-handler-alist)
+    (let ((dir (pop segments)))
+      (unless segments
+        (setq dir (expand-file-name dir)))
+      (while segments
+        (setq dir (expand-file-name (car segments) dir)
+              segments (cdr segments)))
+      dir)))
+
+;;;###autoload
+(defun sea-glob (&rest segments)
+  "Construct a path from SEGMENTS and expand glob patterns.
+Returns nil if the path doesn't exist."
+  (let* (case-fold-search
+         file-name-handler-alist
+         (dir (apply #'sea--path segments)))
+    (if (string-match-p "[[*?]" dir)
+        (file-expand-wildcards dir t)
+      (if (file-exists-p dir)
+          dir))))
+
+;;;###autoload
+(defun sea-path (&rest segments)
+  "Constructs a file path from SEGMENTS."
+  (if segments
+      (apply #'sea--path segments)
+    (file!)))
+
+;;;###autoload
+(defun sea-dir (&rest segments)
+  "Constructs a path from SEGMENTS.
+See `sea-path'."
+  (when-let (path (apply #'sea-path segments))
+    (directory-file-name (file-name-directory path))))
+
 ;;;###autoload
 (cl-defun sea-files-in
-    (path-or-paths &rest rest
-                   &key
-                   filter
-                   map
-                   full
-                   nosort
-                   (follow-symlinks t)
-                   (type 'files)
-                   (relative-to (unless full default-directory))
-                   (depth 99999)
-                   (mindepth 0)
-                   (match "/[^.]"))
-  "Returns a list of files/directories in PATH-OR-PATHS (one string path or a
-list of them).
+    (paths &rest rest
+           &key
+           filter
+           map
+           (full t)
+           (follow-symlinks t)
+           (type 'files)
+           (relative-to (unless full default-directory))
+           (depth 99999)
+           (mindepth 0)
+           (match "/[^._][^/]+"))
+  "Return a list of files/directories in PATHS (one string or a list of them).
 
 FILTER is a function or symbol that takes one argument (the path). If it returns
 non-nil, the entry will be excluded.
@@ -37,49 +111,100 @@ be relative to it.
 The search recurses up to DEPTH and no further. DEPTH is an integer.
 
 MATCH is a string regexp. Only entries that match it will be included."
-  (cond
-   ((listp path-or-paths)
-    (cl-loop for path in path-or-paths
-             if (file-directory-p path)
-             nconc (apply #'sea-files-in path (plist-put rest :relative-to relative-to))))
-   ((let ((path path-or-paths)
-          result)
-      (when (file-directory-p path)
-        (dolist (file (directory-files path nil "." nosort))
-          (unless (member file '("." ".."))
-            (let ((fullpath (expand-file-name file path)))
-              (cond ((file-directory-p fullpath)
-                     (when (and (memq type '(t dirs))
-                                (string-match-p match fullpath)
-                                (not (and filter (funcall filter fullpath)))
-                                (not (and (file-symlink-p fullpath)
-                                          (not follow-symlinks)))
-                                (<= mindepth 0))
-                       (setq result
-                             (nconc result
-                                    (list (cond (map (funcall map fullpath))
-                                                (relative-to (file-relative-name fullpath relative-to))
-                                                (fullpath))))))
-                     (unless (< depth 1)
-                       (setq result
-                             (nconc result (apply #'sea-files-in fullpath
-                                                  (append `(:mindepth ,(1- mindepth)
-                                                            :depth ,(1- depth)
-                                                            :relative-to ,relative-to)
-                                                          rest))))))
-                    ((and (memq type '(t files))
-                          (string-match-p match fullpath)
-                          (not (and filter (funcall filter fullpath)))
-                          (<= mindepth 0))
-                     (push (if relative-to
-                               (file-relative-name fullpath relative-to)
-                             fullpath)
-                           result))))))
-        result)))))
+  (let (file-name-handler-alist
+        result)
+    (dolist (file (mapcan (sea-rpartial #'sea-glob "*") (sea-enlist paths)))
+      (cond ((file-directory-p file)
+             (nconcq! result
+                      (and (memq type '(t dirs))
+                           (string-match-p match file)
+                           (not (and filter (funcall filter file)))
+                           (not (and (file-symlink-p file)
+                                     (not follow-symlinks)))
+                           (<= mindepth 0)
+                           (list (cond (map (funcall map file))
+                                       (relative-to (file-relative-name file relative-to))
+                                       (file))))
+                      (and (>= depth 1)
+                           (apply #'sea-files-in file
+                                  (append (list :mindepth (1- mindepth)
+                                                :depth (1- depth)
+                                                :relative-to relative-to)
+                                          rest)))))
+            ((and (memq type '(t files))
+                  (string-match-p match file)
+                  (not (and filter (funcall filter file)))
+                  (<= mindepth 0))
+             (push (if relative-to
+                       (file-relative-name file relative-to)
+                     file)
+                   result))))
+    result))
+
+;;;###autoload
+(defun sea-file-cookie-p (file &optional cookie null-value)
+  "Returns the evaluated result of FORM in a ;;;###COOKIE FORM at the top of
+FILE.
+
+If COOKIE doesn't exist, return NULL-VALUE."
+  (unless (file-exists-p file)
+    (signal 'file-missing file))
+  (unless (file-readable-p file)
+    (error "%S is unreadable" file))
+  (with-temp-buffer
+    (insert-file-contents file nil 0 256)
+    (if (re-search-forward (format "^;;;###%s " (regexp-quote (or cookie "if")))
+                           nil t)
+        (let ((load-file-name file))
+          (eval (sexp-at-point) t))
+      null-value)))
+
+;;;###autoload
+(defmacro file-exists-p! (files &optional directory)
+  "Returns non-nil if the FILES in DIRECTORY all exist.
+
+DIRECTORY is a path; defaults to `default-directory'.
+
+Returns the last file found to meet the rules set by FILES, which can be a
+single file or nested compound statement of `and' and `or' statements."
+  `(let ((p ,(sea--resolve-path-forms files directory)))
+     (and p (expand-file-name p ,directory))))
+
+;;;###autoload
+(defun sea-file-size (file &optional dir)
+  "Returns the size of FILE (in DIR) in bytes."
+  (let ((file (expand-file-name file dir)))
+    (unless (file-exists-p file)
+      (error "Couldn't find file %S" file))
+    (unless (file-readable-p file)
+      (error "File %S is unreadable; can't acquire its filesize"
+             file))
+    (nth 7 (file-attributes file))))
+
+(defvar w32-get-true-file-attributes)
+;;;###autoload
+(defun sea-directory-size (dir)
+  "Returns the size of FILE (in DIR) in kilobytes."
+  (unless (file-directory-p dir)
+    (error "Directory %S does not exist" dir))
+  (if (executable-find "du")
+      (/ (string-to-number (cdr (sea-call-process "du" "-sb" dir)))
+         1024.0)
+    ;; REVIEW This is slow and terribly inaccurate, but it's something
+    (let ((w32-get-true-file-attributes t)
+          (file-name-handler-alist dir)
+          (max-lisp-eval-depth 5000)
+          (sum 0.0))
+      (dolist (attrs (directory-files-and-attributes dir nil nil t) sum)
+        (unless (member (car attrs) '("." ".."))
+          (cl-incf
+           sum (if (eq (nth 1 attrs) t) ; is directory
+                   (sea-directory-size (expand-file-name (car attrs) dir))
+                 (/ (nth 8 attrs) 1024.0))))))))
 
 
 ;;
-;; Helpers
+;;; Helpers
 
 (defun sea--forget-file (old-path &optional new-path)
   "Ensure `recentf', `projectile' and `save-place' forget OLD-PATH."
@@ -88,8 +213,8 @@ MATCH is a string regexp. Only entries that match it will be included."
       (recentf-add-file new-path))
     (recentf-remove-if-non-kept old-path))
   (when (and (bound-and-true-p projectile-mode)
-             (projectile-project-p)
-             (projectile-file-cached-p old-path (projectile-project-root)))
+             (sea-project-p)
+             (projectile-file-cached-p old-path (sea-project-root)))
     (projectile-purge-file-from-cache old-path))
   (when (bound-and-true-p save-place-mode)
     (save-place-forget-unreadable-files)))
@@ -111,7 +236,7 @@ MATCH is a string regexp. Only entries that match it will be included."
                             (list new-path))))
          (new-path-dir (file-name-directory new-path))
          (project-root (sea-project-root))
-         (short-new-name (if (file-in-directory-p new-path project-root)
+         (short-new-name (if (and project-root (file-in-directory-p new-path project-root))
                              (file-relative-name new-path project-root)
                            (abbreviate-file-name new-path))))
     (unless (file-directory-p new-path-dir)
@@ -131,30 +256,7 @@ MATCH is a string regexp. Only entries that match it will be included."
 
 
 ;;
-;; Commands
-;;;###autoload
-(defun sea/copy-file-path (&optional *dir-path-only-p)
-  "Copy the current buffer's file path or dired path to `kill-ring'.
-Result is full path.
-If `universal-argument' is called first, copy only the dir path.
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2016-07-17"
-  (interactive "P")
-  (let ((-fpath
-         (if (equal major-mode 'dired-mode)
-             (expand-file-name default-directory)
-           (if (null (buffer-file-name))
-               (user-error "Current buffer is not associated with a file.")
-             (buffer-file-name)))))
-    (kill-new
-     (if (null *dir-path-only-p)
-         (progn
-           (message "File path copied: 「%s」" -fpath)
-           -fpath
-           )
-       (progn
-         (message "Directory path copied: 「%s」" (file-name-directory -fpath))
-         (file-name-directory -fpath))))))
+;;; Commands
 
 ;;;###autoload
 (defun sea/delete-this-file (&optional path force-p)
@@ -186,9 +288,11 @@ kills the buffer. If FORCE-P, force the deletion (don't ask for confirmation)."
 (defun sea/copy-this-file (new-path &optional force-p)
   "Copy current buffer's file to NEW-PATH. If FORCE-P, overwrite the destination
 file if it exists, without confirmation."
-  (interactive "F")
+  (interactive
+   (list (read-file-name "Copy file to: ")
+         current-prefix-arg))
   (pcase (catch 'status
-           (when-let* ((dest (sea--copy-file (buffer-file-name) new-path force-p)))
+           (when-let (dest (sea--copy-file (buffer-file-name) new-path force-p))
              (sea--update-file new-path)
              (message "File successfully copied to %s" dest)))
     (`overwrite-self (error "Cannot overwrite self"))
@@ -199,68 +303,56 @@ file if it exists, without confirmation."
 (defun sea/move-this-file (new-path &optional force-p)
   "Move current buffer's file to NEW-PATH. If FORCE-P, overwrite the destination
 file if it exists, without confirmation."
-  (interactive "FP")
+  (interactive
+   (list (read-file-name "Move file to: ")
+         current-prefix-arg))
   (pcase (catch 'status
            (let ((old-path (buffer-file-name))
                  (new-path (expand-file-name new-path)))
-             (when-let* ((dest (sea--copy-file old-path new-path force-p)))
+             (when-let (dest (sea--copy-file old-path new-path force-p))
                (when (file-exists-p old-path)
                  (delete-file old-path))
-               (kill-this-buffer)
-               (find-file new-path)
+               (kill-current-buffer)
                (sea--forget-file old-path new-path)
                (sea--update-file new-path)
+               (find-file new-path)
                (message "File successfully moved to %s" dest))))
     (`overwrite-self (error "Cannot overwrite self"))
     (`aborted (message "Aborted"))
     (_ t)))
 
+(defun sea--sudo-file (file)
+  (let ((host (or (file-remote-p file 'host) "localhost")))
+    (concat "/" (when (file-remote-p file)
+                  (concat (file-remote-p file 'method) ":"
+                          (if-let (user (file-remote-p file 'user))
+                              (concat user "@" host)
+                            host)
+                          "|"))
+            "sudo:root@" host
+            ":" (or (file-remote-p file 'localname)
+                    file))))
+
 ;;;###autoload
 (defun sea/sudo-find-file (file)
   "Open FILE as root."
-  (interactive
-   (list (read-file-name "Open as root: ")))
-  (when (file-writable-p file)
-    (user-error "File is user writeable, aborting sudo"))
-  (find-file (if (file-remote-p file)
-                 (concat "/" (file-remote-p file 'method) ":" (file-remote-p file 'user) "@" (file-remote-p file 'host)  "|sudo:root@" (file-remote-p file 'host) ":" (file-remote-p file 'localname))
-               (concat "/sudo:root@localhost:" file))))
+  (interactive "FOpen file as root: ")
+  (find-file (sea--sudo-file file)))
 
 ;;;###autoload
 (defun sea/sudo-this-file ()
   "Open the current file as root."
   (interactive)
-  (sea/sudo-find-file (file-truename buffer-file-name)))
+  (find-alternate-file (sea--sudo-file buffer-file-name)))
 
-
-;;;###autoload (autoload '+evil:delete-this-file "feature/evil/autoload/files" nil t)
-(evil-define-command +evil:delete-this-file (&optional filename force-p)
-  "Delete FILENAME (defaults to the file associated with current buffer) and
-kills the buffer. If FORCE-P, force the deletion (don't ask for confirmation)."
-  :repeat nil
-  (interactive "<f><!>")
-  (sea/delete-this-file (or filename (file-truename buffer-file-name))
-                         force-p))
-
-;;;###autoload (autoload '+evil:move-this-file "feature/evil/autoload/files" nil t)
-(evil-define-command +evil:move-this-file (new-path &optional force-p)
-  "Move current buffer's file to NEW-PATH. Replaces %, # and other vim-esque
-filename modifiers (see `+evil*ex-replace-special-filenames'). If FORCE-P,
-overwrite the destination file if it exists, without confirmation."
-  :repeat nil
-  (interactive "<f><!>")
-  (when (or (not new-path) (string-empty-p new-path))
-    (user-error "No new path was specified"))
-  (sea/move-this-file new-path force-p))
-
-;;;###autoload (autoload '+evil:copy-this-file "feature/evil/autoload/files" nil nil)
-(evil-define-command +evil:copy-this-file (new-path &optional force-p)
-  "Copy current buffer's file to NEW-PATH. Replaces %, # and other vim-esque
-filename modifiers (see `+evil*ex-replace-special-filenames'). If FORCE-P,
-overwrite the destination file if it exists, without confirmation."
-  :repeat nil
-  (interactive "<f><!>")
-  (when (or (not new-path) (string-empty-p new-path))
-    (user-error "No new path was specified"))
-  (sea/copy-this-file new-path force-p))
-
+;;;###autoload
+(defun sea/sudo-save-buffer ()
+  "Save this file as root."
+  (interactive)
+  (let ((origin (current-buffer))
+        (buffer (sea--sudo-file buffer-file-name)))
+    (unwind-protect
+        (with-current-buffer buffer
+          (save-buffer))
+      (unless (eq origin buffer)
+        (kill-buffer buffer)))))
