@@ -432,6 +432,9 @@ extension, try to guess one."
   (advice-add #'newline-and-indent :override #'+default*newline-indent-and-continue-comments)
   )
 
+(use-package tiny)
+
+
 (provide 'init-edit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
