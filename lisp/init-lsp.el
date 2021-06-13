@@ -52,7 +52,7 @@
   :bind (:map lsp-mode-map
           ("C-c C-d" . lsp-describe-thing-at-point)
           ([remap xref-find-definitions] . lsp-find-definition)
-          ([remap xref-find-references] . lsp-find-references))
+          ([remap xref-find-references] . lsp-ui-peek-find-references))
   :init
   ;; @see https://github.com/emacs-lsp/lsp-mode#performance
   (setq read-process-output-max (* 1024 1024)) ;; 1MB

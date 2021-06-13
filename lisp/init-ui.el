@@ -17,7 +17,8 @@
 ;; (use-package srcery-theme)
 ;; (use-package darktooth-theme)
 (use-package doom-themes)
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
+;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
+;; (setq-default custom-enabled-themes '(doom-zenburn))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
@@ -74,9 +75,9 @@
   (setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
-              ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))))
+              ((eq system-type 'windows-nt) '("Monaco"  "宋体"))))
   (set-face-attribute 'default nil :font
-                      (format "%s:pixelsize=%d" (car fonts) 16))
+                      (format "%s:pixelsize=%d" (car fonts) 14))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family (car (cdr fonts)))))

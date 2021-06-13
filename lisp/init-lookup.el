@@ -88,6 +88,7 @@ this list.")
 
 (defvar +lookup-references-functions
   '(+lookup-xref-references-backend-fn
+    +lookup-dumb-jump-backend-fn
     +lookup-project-search-backend-fn)
   "Functions for `+lookup/references' to try, before resorting to `dumb-jump'.
 Stops at the first function to return non-nil or change the current
@@ -194,7 +195,7 @@ Dictionary.app behind the scenes to get definitions.")
 ;; The lookup commands are superior, and will consult xref if there are no
 ;; better backends available.
 (global-set-key [remap xref-find-definitions] #'+lookup/definition)
-(global-set-key [remap xref-find-references]  #'+lookup/references)
+;; (global-set-key [remap xref-find-references]  #'+lookup/references)
 
 (after! xref
   ;; We already have `projectile-find-tag' and `evil-jump-to-tag', no need for
