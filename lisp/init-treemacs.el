@@ -36,7 +36,8 @@
              treemacs-filewatch-mode
              treemacs-fringe-indicator-mode
              treemacs-git-mode)
-  :bind (([f8]        . treemacs)
+  :bind (
+         ([f8]        . treemacs)
          ("M-0"       . treemacs-select-window)
          ("C-x 1"     . treemacs-delete-other-windows)
          ("C-x t 1"   . treemacs-delete-other-windows)
@@ -82,6 +83,7 @@
         treemacs-width                         30)
 
   (treemacs-follow-mode t)
+  (require 'treemacs-evil)
   (treemacs-filewatch-mode t)
   (treemacs-fringe-indicator-mode t)
   (pcase (cons (not (null (executable-find "git")))
@@ -126,7 +128,15 @@
   :bind (([M-f8] . treemacs-projectile)
          :map projectile-command-map
          ("h" . treemacs-projectile)))
-
+(use-package treemacs-icons-dired
+  :after (treemacs dired)
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
+(use-package treemacs-evil)
 (use-package treemacs-magit
   :after treemacs magit
   :commands treemacs-magit--schedule-update
