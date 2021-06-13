@@ -45,11 +45,10 @@
          (lsp-mode . (lambda ()
                        ;; Integrate `which-key'
                        (lsp-enable-which-key-integration)
-
                        ;; Format and organize imports
-                       (unless (apply #'derived-mode-p centaur-lsp-format-on-save-ignore-modes)
-                         (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                         (add-hook 'before-save-hook #'lsp-organize-imports t t)))))
+                       (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                       (add-hook 'before-save-hook #'lsp-organize-imports t t)
+                       )))
   :bind (:map lsp-mode-map
           ("C-c C-d" . lsp-describe-thing-at-point)
           ([remap xref-find-definitions] . lsp-find-definition)
@@ -62,7 +61,7 @@
         lsp-keep-workspace-alive nil ; Auto-kill LSP server
         lsp-enable-indentation nil
         lsp-enable-on-type-formatting nil
-        lsp-prefer-capf t
+        ;; lsp-prefer-capf t
         lsp-keymap-prefix "C-c l")
 
   ;; For `lsp-clients'
@@ -78,8 +77,8 @@
          ("M-<f6>" . lsp-ui-hydra/body))
   :hook (lsp-mode . lsp-ui-mode)
   :init (setq lsp-ui-doc-enable t
-              lsp-ui-doc-use-webkit nil
-              lsp-ui-doc-delay 0.2
+              ;; lsp-ui-doc-use-webkit nil
+              ;; lsp-ui-doc-delay 0.2
               lsp-ui-doc-include-signature t
               lsp-ui-doc-position 'at-point
               lsp-ui-doc-border (face-foreground 'default)

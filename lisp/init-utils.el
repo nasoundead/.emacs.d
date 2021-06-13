@@ -60,6 +60,14 @@ This command switches to browser."
     ;; (eww myUrl) ; emacs's own browser
     ))
 
+(defun delete-process-interactive ()
+  "Delete process started in Emacs."
+  (interactive)
+  (let ((pname (ido-completing-read "Process Name: "
+                                    (mapcar 'process-name (process-list)))))
+
+    (delete-process (get-process pname))))
+
 (provide 'init-utils)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

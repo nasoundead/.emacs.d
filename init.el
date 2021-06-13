@@ -134,6 +134,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-prog)
 (require 'init-emacs-lisp)
 (require 'init-lsp)
+(require 'init-go)
 (require 'init-py)
 (require 'init-rust)
 (require 'init-js)
