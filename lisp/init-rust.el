@@ -30,12 +30,18 @@
 
 ;;; Code:
 ;;
-;; 
-(use-package rust-mode
-  :init 
-  (autoload 'rust-mode "rust-mode" nil t)
-  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
-
+;;
+;; (use-package rust-mode
+;;   :init
+;;   (autoload 'rust-mode "rust-mode" nil t)
+;;   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode)))
+;; (use-package rust-mode
+;;   :mode "\\.rs\\'"
+;;   :init
+;;   (setq rust-format-on-save t))
+(use-package rustic
+  :hook (rustic-mode . lsp)
+  )
 (provide 'init-rust)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

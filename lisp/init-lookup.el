@@ -194,7 +194,7 @@ Dictionary.app behind the scenes to get definitions.")
 
 ;; The lookup commands are superior, and will consult xref if there are no
 ;; better backends available.
-(global-set-key [remap xref-find-definitions] #'+lookup/definition)
+;; (global-set-key [remap xref-find-definitions] #'+lookup/definition)
 ;; (global-set-key [remap xref-find-references]  #'+lookup/references)
 
 (after! xref

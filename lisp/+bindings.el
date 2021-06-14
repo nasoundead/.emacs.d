@@ -65,8 +65,10 @@
       :n  "]b" #'next-buffer
       :n  "[b" #'previous-buffer
       :nv  "K" #'+lookup/documentation
-      :nv  "gd" #'+lookup/definition
+      ;; :nv  "gd" #'+lookup/definition
+      :nv  "gd" #'xref-find-definitions
       :nv  "gD" #'+lookup/references
+      ;; :nv  "gD" #'xref-find-references
       :nv  "gf" #'+lookup/file
       :n  "gQ" #'+format:region
       :n  "gp" #'+evil/reselect-paste

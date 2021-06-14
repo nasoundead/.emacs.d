@@ -75,7 +75,7 @@
   (setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
-              ((eq system-type 'windows-nt) '("Monaco"  "宋体"))))
+              ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))))
   (set-face-attribute 'default nil :font
                       (format "%s:pixelsize=%d" (car fonts) 16))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
