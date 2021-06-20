@@ -47,19 +47,19 @@
   (interactive)
   (byte-recompile-directory package-user-dir nil t))
 
-(use-package lispy
-  :init
-  (add-hook 'emacs-lisp-mode-hook (lambda()(lispy-mode 1)))
-  (add-hook 'minibuffer-setup-hook (lambda()(when (eq this-command 'eval-expression)
-                                              (lispy-mode 1)))))
-(use-package lispyville
-  :init
-  (add-hook 'lispy-mode-hook #'lispyville-mode)
-  ;; (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
-  :config
-  (lispyville-set-key-theme '(operators c-w additional))
-  (setq targets-text-objects nil)
-  )
+;; (use-package lispy
+;;   :init
+;;   (add-hook 'emacs-lisp-mode-hook (lambda()(lispy-mode 1)))
+;;   (add-hook 'minibuffer-setup-hook (lambda()(when (eq this-command 'eval-expression)
+;;                                               (lispy-mode 1)))))
+;; (use-package lispyville
+;;   :init
+;;   (add-hook 'lispy-mode-hook #'lispyville-mode)
+;;   ;; (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
+;;   :config
+;;   (lispyville-set-key-theme '(operators c-w additional))
+;;   (setq targets-text-objects nil)
+;;   )
 
 ;; (use-package evil-lispy
 ;;   :init

@@ -28,6 +28,9 @@
 
 (use-package evil
   :ensure t
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
   :config
   (evil-mode 1))
 
@@ -185,6 +188,11 @@ the new algorithm is confusing, like in python or ruby."
   (global-evil-surround-mode)
   :ensure t)
 (use-package evil-args)
-  
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :custom (evil-collection-setup-minibuffer t)
+  :config
+  (evil-collection-init))
 
 (provide 'init-evil)

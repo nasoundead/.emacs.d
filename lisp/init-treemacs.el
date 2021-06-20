@@ -51,7 +51,7 @@
   (with-eval-after-load 'winum
     (bind-key (kbd "M-9") #'treemacs-select-window winum-keymap))
   :config
-  (setq treemacs-collapse-dirs                 (if (executable-find "python") 3 0)
+  (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
         treemacs-deferred-git-apply-delay      0.5
         treemacs-display-in-side-window        t
         treemacs-file-event-delay              5000
@@ -83,44 +83,16 @@
         treemacs-width                         30)
 
   (treemacs-follow-mode t)
-  (require 'treemacs-evil)
-  (treemacs-filewatch-mode t)
-  (treemacs-fringe-indicator-mode t)
+  (treemacs-fringe-indicator-mode 'always)
   (pcase (cons (not (null (executable-find "git")))
-               (not (null (executable-find "python3"))))
+                (not (null treemacs-python-executable)))
     (`(t . t)
-     (treemacs-git-mode 'deferred))
+      (treemacs-git-mode 'deferred))
     (`(t . _)
-     (treemacs-git-mode 'simple)))
+      (treemacs-git-mode 'simple)))
+  (require 'treemacs-evil))
 
-  (if (fboundp 'define-fringe-bitmap)
-      (define-fringe-bitmap 'treemacs--fringe-indicator-bitmap
-        (vector #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111
-                #b00000111111))))
+
 
 ;; Projectile integration for treemacs
 (use-package treemacs-projectile
