@@ -160,8 +160,8 @@ fundamental-mode) for performance sake."
                 (if (char-displayable-p ?→) " → " " -> ")))
 
 ;; An all-in-one comment command to rule them all
-(use-package comment-dwim-2
-  :bind ("M-;" . comment-dwim-2))
+;; (use-package comment-dwim-2
+;;   :bind ("M-;" . comment-dwim-2))
 
 ;; A comprehensive visual interface to diff & patch
 (use-package ediff
@@ -211,8 +211,8 @@ fundamental-mode) for performance sake."
 (use-package pcre2el
   :commands rxt-quote-pcre)
 
-(use-package smart-forward
-  :commands (smart-up smart-down smart-backward smart-forward))
+;; (use-package smart-forward
+;;   :commands (smart-up smart-down smart-backward smart-forward))
 
 ;; Treat undo history as a tree
 (use-package undo-tree

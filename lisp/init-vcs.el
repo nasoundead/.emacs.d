@@ -6,12 +6,11 @@
   :init
   ;; Must be set early to prevent ~/.emacs.d/transient from being created
   (setq transient-levels-file  (concat sea-etc-dir "transient/levels")
-        transient-values-file  (concat  "transient/values")
-        transient-history-file (concat  "transient/values")
-        transient-history-file (concat  "transient/history"))
+        transient-values-file  (concat sea-etc-dir "transient/values")
+        transient-history-file (concat sea-etc-dir "transient/values")
+        transient-history-file (concat sea-etc-dir "transient/history"))
   :config
   (setq magit-completing-read-function 'ivy-completing-read)
-
   ;; :bind
   ;; Magic
   ;; ("C-x g s" . magit-status)
