@@ -75,7 +75,7 @@
   (setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
-              ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))))
+              ((eq system-type 'windows-nt) '("Consolas"  "宋体"))))
   (set-face-attribute 'default nil :font
                       (format "%s:pixelsize=%d" (car fonts) 16))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
@@ -86,6 +86,22 @@
 
   (custom-set-faces
    '(org-table ((t (:family "Ubuntu Mono"))))
+   )
+
+  ;; set font for emoji
+  (set-fontset-font
+   t
+   '(#x1f300 . #x1fad0)
+   (cond
+    ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
+    ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
+    ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
+    ((member "Symbola" (font-family-list)) "Symbola")
+    ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))
+   ;; Apple Color Emoji should be before Symbola, but Richard Stallman disabled it.
+   ;; GNU Emacs Removes Color Emoji Support on the Mac
+   ;; http://ergoemacs.org/misc/emacs_macos_emoji.html
+   ;;
    )
 
   ;; (require 'font-lock+)
