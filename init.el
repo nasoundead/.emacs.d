@@ -112,6 +112,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-ui)
 (require 'init-modeline)
 (require 'init-edit)
+(require 'init-smartparens)
 (require 'init-folding)
 (require 'init-highlight)
 (require 'init-lookup)

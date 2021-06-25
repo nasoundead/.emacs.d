@@ -159,11 +159,13 @@ the new algorithm is confusing, like in python or ruby."
   (global-evil-surround-mode)
   :ensure t)
 (use-package evil-args)
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :custom (evil-collection-setup-minibuffer t)
-  :config
-  (evil-collection-init))
+;; (use-package evil-collection
+;;   :after evil
+;;   :ensure t
+;;   :custom (evil-collection-setup-minibuffer t)
+;;   :config
+;;   (evil-collection-init))
+
+(require 'evil-magit)
 
 (provide 'init-evil)
