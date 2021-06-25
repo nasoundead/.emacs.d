@@ -142,13 +142,13 @@
                                       all-the-icons-wicon all-the-icons-alltheicon))
     (advice-add fn :around #'sea*disable-all-the-icons-in-tty)))
 
-(use-package mini-frame
-  :init (add-hook 'sea-init-ui-hook #'mini-frame-mode)
-  :config
-  (custom-set-variables
-   '(mini-frame-show-parameters
-     '((top . 0)
-       (width . 0.7)
-       (left . 0.5)))))
+;; (use-package mini-frame
+;;   :init (add-hook 'sea-init-ui-hook #'mini-frame-mode)
+;;   :config
+;;   (custom-set-variables
+;;    '(mini-frame-show-parameters
+;;      '((top . 0)
+;;        (width . 0.7)
+;;        (left . 0.5)))))
 
 (provide 'init-ui)

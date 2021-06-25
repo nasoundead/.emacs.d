@@ -32,11 +32,6 @@
   (setq wgrep-change-readonly-file t))
 
 
-;; Log keyboard commands to buffer
-(use-package command-log-mode
-  :diminish (command-log-mode . "¢")
-  :init (setq command-log-mode-auto-show t))
-
 ;; restart emacs
 (use-package restart-emacs)
 

@@ -1,7 +1,7 @@
 ;;; init-smartparens.el --- Configure of smartparens -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
-(require 'cl)
+;; (require 'cl)
 (use-package smartparens
   :init
   (add-hook 'js-mode-hook #'smartparens-mode)
@@ -15,14 +15,14 @@
   (sp-local-pair 'lisp-interaction-mode "'" nil :actions nil)
   ;; Don't do square-bracket space-expansion where it doesn't make sense to
   (sp-local-pair '(emacs-lisp-mode org-mode markdown-mode gfm-mode)
-		 "[" nil :post-handlers '(:rem ("| " "SPC")))
+                 "[" nil :post-handlers '(:rem ("| " "SPC")))
 
   ;; Reasonable default pairs for comments
   (sp-local-pair (append sp--html-modes '(markdown-mode gfm-mode))
-		 "<!--" "-->" :actions '(insert) :post-handlers '(("| " "SPC")))
+                 "<!--" "-->" :actions '(insert) :post-handlers '(("| " "SPC")))
   (sp-local-pair
    '(js2-mode typescript-mode rjsx-mode rust-mode c-mode c++-mode objc-mode
-	      java-mode php-mode css-mode scss-mode less-css-mode stylus-mode)
+              java-mode php-mode css-mode scss-mode less-css-mode stylus-mode)
    "/*" "*/"
    :actions '(insert)
    :post-handlers '(("| " "SPC") ("|\n*/[i][d-2]" "RET") ("\n* ||\n*/[i][d-2]" "*")))
@@ -58,52 +58,52 @@
 + Resorts to `delete-char' if n > 1"
     (interactive "p\nP")
     (or (integerp n)
-	(signal 'wrong-type-argument (list 'integerp n)))
+        (signal 'wrong-type-argument (list 'integerp n)))
     (cond ((and (use-region-p)
-		delete-active-region
-		(= n 1))
-	   ;; If a region is active, kill or delete it.
-	   (if (eq delete-active-region 'kill)
-	       (kill-region (region-beginning) (region-end) 'region)
-	     (funcall region-extract-function 'delete-only)))
-	  ;; In Overwrite mode, maybe untabify while deleting
-	  ((null (or (null overwrite-mode)
-		     (<= n 0)
-		     (memq (char-before) '(?\t ?\n))
-		     (eobp)
-		     (eq (char-after) ?\n)))
-	   (let ((ocol (current-column)))
-	     (delete-char (- n) killflag)
-	     (save-excursion
-	       (insert-char ?\s (- ocol (current-column)) nil))))
-	  ;;
-	  ((and (= n 1) (bound-and-true-p smartparens-mode))
-	   (cond ((and (memq (char-before) (list ?\  ?\t))
-		       (save-excursion
-			 (and (/= (skip-chars-backward " \t" (line-beginning-position)) 0)
-			      (bolp))))
-		  (doom--backward-delete-whitespace-to-column))
-		 ((let* ((pair (ignore-errors (sp-get-thing)))
-			 (op   (plist-get pair :op))
-			 (cl   (plist-get pair :cl))
-			 (beg  (plist-get pair :beg))
-			 (end  (plist-get pair :end)))
-		    (cond ((and end beg (= end (+ beg (length op) (length cl))))
-			   (sp-backward-delete-char 1))
-			  ((doom-surrounded-p pair 'inline 'balanced)
-			   (delete-char -1 killflag)
-			   (delete-char 1)
-			   (when (= (point) (+ (length cl) beg))
-			     (sp-backward-delete-char 1)
-			     (sp-insert-pair op)))
-			  ((and (bolp) (doom-surrounded-p pair nil 'balanced))
-			   (delete-region beg end)
-			   (sp-insert-pair op)
-			   t)
-			  ((run-hook-with-args-until-success 'doom-delete-backward-functions))
-			  ((doom--backward-delete-whitespace-to-column)))))))
-	  ;; Otherwise, do simple deletion.
-	  ((delete-char (- n) killflag))))
+                delete-active-region
+                (= n 1))
+           ;; If a region is active, kill or delete it.
+           (if (eq delete-active-region 'kill)
+               (kill-region (region-beginning) (region-end) 'region)
+             (funcall region-extract-function 'delete-only)))
+          ;; In Overwrite mode, maybe untabify while deleting
+          ((null (or (null overwrite-mode)
+                     (<= n 0)
+                     (memq (char-before) '(?\t ?\n))
+                     (eobp)
+                     (eq (char-after) ?\n)))
+           (let ((ocol (current-column)))
+             (delete-char (- n) killflag)
+             (save-excursion
+               (insert-char ?\s (- ocol (current-column)) nil))))
+          ;;
+          ((and (= n 1) (bound-and-true-p smartparens-mode))
+           (cond ((and (memq (char-before) (list ?\  ?\t))
+                       (save-excursion
+                         (and (/= (skip-chars-backward " \t" (line-beginning-position)) 0)
+                              (bolp))))
+                  (doom--backward-delete-whitespace-to-column))
+                 ((let* ((pair (ignore-errors (sp-get-thing)))
+                         (op   (plist-get pair :op))
+                         (cl   (plist-get pair :cl))
+                         (beg  (plist-get pair :beg))
+                         (end  (plist-get pair :end)))
+                    (cond ((and end beg (= end (+ beg (length op) (length cl))))
+                           (sp-backward-delete-char 1))
+                          ((doom-surrounded-p pair 'inline 'balanced)
+                           (delete-char -1 killflag)
+                           (delete-char 1)
+                           (when (= (point) (+ (length cl) beg))
+                             (sp-backward-delete-char 1)
+                             (sp-insert-pair op)))
+                          ((and (bolp) (doom-surrounded-p pair nil 'balanced))
+                           (delete-region beg end)
+                           (sp-insert-pair op)
+                           t)
+                          ((run-hook-with-args-until-success 'doom-delete-backward-functions))
+                          ((doom--backward-delete-whitespace-to-column)))))))
+          ;; Otherwise, do simple deletion.
+          ((delete-char (- n) killflag))))
   (defun +default*newline-indent-and-continue-comments ()
     "A replacement for `newline-and-indent'.
 
@@ -112,8 +112,8 @@ languages with weak native comment continuation support (like C-family
 languages)."
     (interactive)
     (if (and (sp-point-in-comment)
-	     comment-line-break-function)
-	(funcall comment-line-break-function)
+             comment-line-break-function)
+        (funcall comment-line-break-function)
       (newline nil t)
       (indent-according-to-mode)))
   )
@@ -121,21 +121,21 @@ languages)."
 (defmacro def-pairs (pairs)
   `(progn
      ,@(loop for (key . val) in pairs
-	     collect
-	     `(defun ,(read (concat
-			     "wrap-with-"
-			     (prin1-to-string key)
-			     "s"))
-		  (&optional arg)
-		(interactive "p")
-		(sp-wrap-with-pair ,val)))))
+         collect
+         `(defun ,(read (concat
+                 "wrap-with-"
+                 (prin1-to-string key)
+                 "s"))
+          (&optional arg)
+        (interactive "p")
+        (sp-wrap-with-pair ,val)))))
 
 (def-pairs ((paren . "(")
-	    (bracket . "[")
-	    (brace . "{")
-	    (single-quote . "'")
-	    (double-quote . "\"")
-	    (back-quote . "`")))
+        (bracket . "[")
+        (brace . "{")
+        (single-quote . "'")
+        (double-quote . "\"")
+        (back-quote . "`")))
 
 
 
