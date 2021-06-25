@@ -1,36 +1,7 @@
-
-; (use-package evil-leader
-  ; :ensure t
-  ; :config
-  ; (global-evil-leader-mode)
-  ; (evil-leader/set-leader "<SPC>")
-  ; )
-; (evil-leader/set-key
-  ; "ff" 'counsel-find-file
-  ; "bb" 'ivy-switch-buffer
-  ; "bp" 'previous-buffer
-  ; "bn" 'next-buffer
-  ; "bd" 'kill-this-buffer
-  ; "<SPC>" 'counsel-M-x
-  ; "wd" 'delete-window
-  ; "wm" 'delete-other-windows
-  ; "ws" 'split-window-horizontally-instead
-  ; "wv" 'split-window-vertically-instead
-  ; "gs" 'magit-status
-  ; )
-; (evil-define-key 'visual 'global
-  ; "j" 'evil-next-visual-line
-  ; "k" 'evil-previous-visual-line)
-  
-; (define-key evil-normal-state-map (kbd "[b") 'previous-buffer)
-; (define-key evil-normal-state-map (kbd "]b") 'next-buffer)
-; (define-key evil-normal-state-map (kbd "M-.") nil)
-
 (use-package evil
   :ensure t
-  :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
+  ;; :init
+  ;; (setq evil-want-keybinding nil)
   :config
   (evil-mode 1))
 
@@ -45,11 +16,11 @@
 (use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :config (evil-commentary-mode 1))
-  
+
 (use-package evil-easymotion
   :after evil-snipe
   :commands evilem-create)
-  
+
 (use-package evil-embrace
   :after evil-surround
   :config
@@ -101,7 +72,7 @@
     (embrace-add-pair-regexp ?f "([^ ]+ " ")" #'+evil--embrace-elisp-fn))
   (add-hook! (org-mode LaTeX-mode)
     (embrace-add-pair-regexp ?l "\\[a-z]+{" "}" #'+evil--embrace-latex)))
-	
+
 (use-package evil-escape
   :commands evil-escape-mode
   :init
@@ -114,7 +85,7 @@
   ;; no `evil-escape' in minibuffer
   (push #'minibufferp evil-escape-inhibit-functions)
   (map! :irvo "C-g" #'evil-escape))
-  
+
 (use-package evil-exchange
   :commands evil-exchange
   :config
@@ -123,18 +94,18 @@
       (evil-exchange-cancel)
       t))
   (add-hook '+evil-esc-hook #'+evil|escape-exchange))
- 
+
 
 (use-package evil-matchit
   :commands (evilmi-jump-items evilmi-text-object global-evil-matchit-mode)
-  :config 
+  :config
   (global-evil-matchit-mode 1)
   (defun +evil|simple-matchit ()
     "A hook to force evil-matchit to favor simple bracket jumping. Helpful when
 the new algorithm is confusing, like in python or ruby."
     (setq-local evilmi-always-simple-jump t))
   (add-hook 'python-mode-hook #'+evil|simple-matchit))
-  
+
 (use-package evil-multiedit
   :commands (evil-multiedit-match-all
              evil-multiedit-match-and-next
@@ -146,19 +117,19 @@ the new algorithm is confusing, like in python or ruby."
              evil-multiedit-prev
              evil-multiedit-abort
              evil-multiedit-ex-match))
-			 
+
 (use-package evil-mc
   :commands (evil-mc-make-cursor-here evil-mc-make-all-cursors
-             evil-mc-undo-all-cursors evil-mc-pause-cursors
-             evil-mc-resume-cursors evil-mc-make-and-goto-first-cursor
-             evil-mc-make-and-goto-last-cursor
-             evil-mc-make-cursor-move-next-line
-             evil-mc-make-cursor-move-prev-line evil-mc-make-cursor-at-pos
-             evil-mc-has-cursors-p evil-mc-make-and-goto-next-cursor
-             evil-mc-skip-and-goto-next-cursor evil-mc-make-and-goto-prev-cursor
-             evil-mc-skip-and-goto-prev-cursor evil-mc-make-and-goto-next-match
-             evil-mc-skip-and-goto-next-match evil-mc-skip-and-goto-next-match
-             evil-mc-make-and-goto-prev-match evil-mc-skip-and-goto-prev-match)
+                                      evil-mc-undo-all-cursors evil-mc-pause-cursors
+                                      evil-mc-resume-cursors evil-mc-make-and-goto-first-cursor
+                                      evil-mc-make-and-goto-last-cursor
+                                      evil-mc-make-cursor-move-next-line
+                                      evil-mc-make-cursor-move-prev-line evil-mc-make-cursor-at-pos
+                                      evil-mc-has-cursors-p evil-mc-make-and-goto-next-cursor
+                                      evil-mc-skip-and-goto-next-cursor evil-mc-make-and-goto-prev-cursor
+                                      evil-mc-skip-and-goto-prev-cursor evil-mc-make-and-goto-next-match
+                                      evil-mc-skip-and-goto-next-match evil-mc-skip-and-goto-next-match
+                                      evil-mc-make-and-goto-prev-match evil-mc-skip-and-goto-prev-match)
   :init
   (defvar evil-mc-key-map (make-sparse-keymap))
   :config
@@ -166,8 +137,8 @@ the new algorithm is confusing, like in python or ruby."
 
   ;; Add custom commands to whitelisted commands
   (dolist (fn '(sea/deflate-space-maybe sea/inflate-space-maybe
-                sea/backward-to-bol-or-indent sea/forward-to-last-non-comment-or-eol
-                sea/backward-kill-to-bol-and-indent sea/newline-and-indent))
+                                        sea/backward-to-bol-or-indent sea/forward-to-last-non-comment-or-eol
+                                        sea/backward-kill-to-bol-and-indent sea/newline-and-indent))
     (push (cons fn '((:default . evil-mc-execute-default-call)))
           evil-mc-custom-known-commands))
 
@@ -181,7 +152,7 @@ the new algorithm is confusing, like in python or ruby."
       (evil-mc-resume-cursors)
       t))
   (add-hook '+evil-esc-hook #'+evil|escape-multiple-cursors))
-  
+
 (use-package evil-surround
   :defer t
   :init
