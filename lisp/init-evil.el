@@ -1,17 +1,9 @@
 (use-package evil
   :ensure t
-  ;; :init
-  ;; (setq evil-want-keybinding nil)
+  :init
+  (setq evil-want-keybinding nil)
   :config
   (evil-mode 1))
-
-; (use-package key-chord
-; :init
-; :config
-; (setq key-chord-two-keys-delay 0.1) ; default 0.1
-; (setq key-chord-one-key-delay 0.2) ; default 0.2)
-; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
-; (key-chord-mode 1))
 
 (use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
@@ -159,13 +151,13 @@ the new algorithm is confusing, like in python or ruby."
   (global-evil-surround-mode)
   :ensure t)
 (use-package evil-args)
-;; (use-package evil-collection
-;;   :after evil
-;;   :ensure t
-;;   :custom (evil-collection-setup-minibuffer t)
-;;   :config
-;;   (evil-collection-init))
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :custom (evil-collection-setup-minibuffer t)
+  :init
+  (evil-collection-init))
 
-(require 'evil-magit)
+;; (require 'evil-magit)
 
 (provide 'init-evil)

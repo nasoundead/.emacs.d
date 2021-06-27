@@ -54,7 +54,7 @@
   {
   |
   } => {|}
-+ Otherwise, resort to `doom--backward-delete-whitespace-to-column'.
++ Otherwise, resort to `sea--backward-delete-whitespace-to-column'.
 + Resorts to `delete-char' if n > 1"
     (interactive "p\nP")
     (or (integerp n)
@@ -82,7 +82,7 @@
                        (save-excursion
                          (and (/= (skip-chars-backward " \t" (line-beginning-position)) 0)
                               (bolp))))
-                  (doom--backward-delete-whitespace-to-column))
+                  (sea--backward-delete-whitespace-to-column))
                  ((let* ((pair (ignore-errors (sp-get-thing)))
                          (op   (plist-get pair :op))
                          (cl   (plist-get pair :cl))
@@ -90,18 +90,18 @@
                          (end  (plist-get pair :end)))
                     (cond ((and end beg (= end (+ beg (length op) (length cl))))
                            (sp-backward-delete-char 1))
-                          ((doom-surrounded-p pair 'inline 'balanced)
+                          ((sea-surrounded-p pair 'inline 'balanced)
                            (delete-char -1 killflag)
                            (delete-char 1)
                            (when (= (point) (+ (length cl) beg))
                              (sp-backward-delete-char 1)
                              (sp-insert-pair op)))
-                          ((and (bolp) (doom-surrounded-p pair nil 'balanced))
+                          ((and (bolp) (sea-surrounded-p pair nil 'balanced))
                            (delete-region beg end)
                            (sp-insert-pair op)
                            t)
-                          ((run-hook-with-args-until-success 'doom-delete-backward-functions))
-                          ((doom--backward-delete-whitespace-to-column)))))))
+                          ((run-hook-with-args-until-success 'sea-delete-backward-functions))
+                          ((sea--backward-delete-whitespace-to-column)))))))
           ;; Otherwise, do simple deletion.
           ((delete-char (- n) killflag))))
   (defun +default*newline-indent-and-continue-comments ()

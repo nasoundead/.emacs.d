@@ -228,6 +228,8 @@ languages)."
     (newline nil t)
     (indent-according-to-mode)))
 
+
+;;;###autoload
 (defun sea--backward-delete-whitespace-to-column ()
   "Delete back to the previous column of whitespace, or as much whitespace as
 possible, or just one char if that's not possible."
@@ -237,31 +239,31 @@ possible, or just one char if that's not possible."
          (cl (plist-get context :cl))
          open-len close-len)
     (cond ;; When in strings (sp acts weird with quotes; this is the fix)
-          ;; Also, skip closing delimiters
-          ((and op cl
-                (string= op cl)
-                (and (string= (char-to-string (or (char-before) 0)) op)
-                     (setq open-len (length op)))
-                (and (string= (char-to-string (or (char-after) 0)) cl)
-                     (setq close-len (length cl))))
-           (delete-char (- open-len))
-           (delete-char close-len))
+     ;; Also, skip closing delimiters
+     ((and op cl
+           (string= op cl)
+           (and (string= (char-to-string (or (char-before) 0)) op)
+                (setq open-len (length op)))
+           (and (string= (char-to-string (or (char-after) 0)) cl)
+                (setq close-len (length cl))))
+      (delete-char (- open-len))
+      (delete-char close-len))
 
-          ;; Delete up to the nearest tab column IF only whitespace between
-          ;; point and bol.
-          ((and (not indent-tabs-mode)
-                (not (bolp))
-                (not (sp-point-in-string))
-                (save-excursion (>= (- (skip-chars-backward " \t")) tab-width)))
-           (let ((movement (% (current-column) tab-width)))
-             (when (= movement 0)
-               (setq movement tab-width))
-             (delete-char (- movement)))
-           (unless (memq (char-before) (list ?\n ?\ ))
-             (insert " ")))
+     ;; Delete up to the nearest tab column IF only whitespace between
+     ;; point and bol.
+     ((and (not indent-tabs-mode)
+           (not (bolp))
+           (not (sp-point-in-string))
+           (save-excursion (>= (- (skip-chars-backward " \t")) tab-width)))
+      (let ((movement (% (current-column) tab-width)))
+        (when (= movement 0)
+          (setq movement tab-width))
+        (delete-char (- movement)))
+      (unless (memq (char-before) (list ?\n ?\ ))
+        (insert " ")))
 
-          ;; Otherwise do a regular delete
-          ((delete-char -1)))))
+     ;; Otherwise do a regular delete
+     ((delete-char -1)))))
 
 ;;;###autoload
 (defun +default*delete-backward-char (n &optional killflag)

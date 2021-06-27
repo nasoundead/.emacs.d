@@ -117,7 +117,6 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-highlight)
 (require 'init-lookup)
 (require 'init-keybinds)
-
 (require 'init-ivy)
 (require 'init-company)
 (require 'init-yasnippet)
