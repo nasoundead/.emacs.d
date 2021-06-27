@@ -100,11 +100,11 @@
   :bind (([M-f8] . treemacs-projectile)
          :map projectile-command-map
          ("h" . treemacs-projectile)))
-;; (use-package treemacs-icons-dired
-;;   :after (treemacs dired)
-;;   :ensure t
-;;   :hook (dired-mode . treemacs-icons-dired-mode)
-;;   )
+(use-package treemacs-icons-dired
+  :after (treemacs dired)
+  :ensure t
+  :hook (dired-mode . treemacs-icons-dired-mode)
+  )
 (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
   :ensure t

@@ -29,54 +29,84 @@
 ;;
 
 ;;; Code:
-(use-package company
-  :diminish company-mode
-  :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
-  :commands company-abort
-  :init
-  (defun sea-company-yasnippet ()
-    (interactive)
-    (company-abort)
-    (call-interactively 'company-yasnippet))
-  :bind (("M-/" . company-complete)
-         ("<backtab>" . sea-company-yasnippet)
-         :map company-active-map
-         ("C-p" . company-select-previous)
-         ("C-k" . company-select-previous)
-         ("C-n" . company-select-next)
-         ("C-j" . company-select-next)
-         ("<tab>" . company-complete-common-or-cycle)
-         ("<backtab>" . sea-company-yasnippet)
-         :map company-search-map
-         ("C-p" . company-select-previous)
-         ("C-k" . company-select-previous)
-         ("C-n" . company-select-next)
-         ("C-j" . company-select-next))
-  :hook (after-init . global-company-mode)
+;; (use-package company
+;;   :diminish company-mode
+;;   :defines (company-dabbrev-ignore-case company-dabbrev-downcase)
+;;   :commands company-abort
+;;   :init
+;;   (defun sea-company-yasnippet ()
+;;     (interactive)
+;;     (company-abort)
+;;     (call-interactively 'company-yasnippet))
+;;   :bind (("M-/" . company-complete)
+;;          ("<backtab>" . sea-company-yasnippet)
+;;          :map company-active-map
+;;          ("C-p" . company-select-previous)
+;;          ("C-k" . company-select-previous)
+;;          ("C-n" . company-select-next)
+;;          ("C-j" . company-select-next)
+;;          ("<tab>" . company-complete-common-or-cycle)
+;;          ("<backtab>" . sea-company-yasnippet)
+;;          :map company-search-map
+;;          ("C-p" . company-select-previous)
+;;          ("C-k" . company-select-previous)
+;;          ("C-n" . company-select-next)
+;;          ("C-j" . company-select-next))
+;;   :hook (after-init . global-company-mode)
 
-  :config
-  (setq company-idle-delay 0.5
-        company-tooltip-limit 10
+;;   :config
+;;   (setq company-idle-delay 0.5
+;;         company-tooltip-limit 10
+;;         company-dabbrev-downcase nil
+;;         company-dabbrev-ignore-case nil
+;;         company-dabbrev-code-other-buffers t
+;;         company-tooltip-align-annotations t
+;;         company-require-match 'never
+;;         company-minimum-prefix-length 3
+;;         company-global-modes '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode)
+;;         company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)
+;;         company-backends '(company-capf company-dabbrev company-ispell)
+;;         company-transformers '(company-sort-by-occurrence))
+;;   (after! yasnippet
+;;     (nconc company-backends '(company-yasnippet)))
+;;   (nconc company-backends '(company-files))
+;;   )
+;; (use-package company-quickhelp
+;;   :after company
+;;   :config
+;;   (setq company-quickhelp-delay nil)
+;;   (company-quickhelp-mode +1))
+;; (provide 'init-company)
+
+(use-package company
+  :commands company-complete-common company-manual-begin company-grab-line
+  ;; :after-call pre-command-hook after-find-file
+  :init
+  (setq company-minimum-prefix-length 2
+        company-tooltip-limit 14
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
         company-tooltip-align-annotations t
         company-require-match 'never
-        company-minimum-prefix-length 3
-        company-global-modes '(not eshell-mode comint-mode erc-mode message-mode help-mode gud-mode)
-        company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)
-        company-backends '(company-capf company-dabbrev company-ispell)
-        company-transformers '(company-sort-by-occurrence))
-  (after! yasnippet
-    (nconc company-backends '(company-yasnippet)))
-  )
-
-(use-package company-quickhelp
-  :after company
+        company-global-modes
+        '(not erc-mode message-mode help-mode gud-mode eshell-mode)
+        company-backends '(company-capf)
+        company-frontends
+        '(company-pseudo-tooltip-frontend
+          company-echo-metadata-frontend))
+  :hook (after-init . global-company-mode)
   :config
-  (setq company-quickhelp-delay nil)
-  (company-quickhelp-mode +1))
-(provide 'init-company)
+  (add-hook 'company-mode-hook #'evil-normalize-keymaps)
+  ;; Allow users to switch between backends on the fly. E.g. C-x C-s followed
+  ;; by C-x C-n, will switch from `company-yasnippet' to
+  ;; `company-dabbrev-code'.
+  (defadvice! +company--abort-previous-a (&rest _)
+      :before #'company-begin-backend
+      (company-abort))
+
+  (add-hook 'company-mode-hook #'+company-init-backends-h)
+)
 
 (use-package company-statistics
   :after company
@@ -148,5 +178,7 @@
 ;;               ((boundp sym)   'ElispVariable)
 ;;               ((featurep sym) 'ElispFeature)
 ;;               ((facep sym)    'ElispFace))))))
+
+(provide 'init-company)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; init-company.el ends here
+;; ; init-company.el ends here
