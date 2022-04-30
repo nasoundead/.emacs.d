@@ -32,7 +32,7 @@
 
   ;; company backend for tern
   ;; http://ternjs.net/doc/manual.html#emacs
-  (use-package company-tern)
+  ;; (use-package company-tern)
 
   ;; Run a JavaScript interpreter in an inferior process window
   ;; https://github.com/redguardtoo/js-comint

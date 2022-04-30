@@ -7,15 +7,15 @@
   :init (add-hook 'after-init-hook #'browse-url-dwim-mode))
 
 ;; Youdao Dictionay
-;; (use-package youdao-dictionary
-;;   :bind (("C-c y" . youdao-dictionary-search-at-point)
-;;          ("C-c Y" . youdao-dictionary-search-at-point-tooltip))
-;;   :config
-;;   ;; Cache documents
-;;   (setq url-automatic-caching t)
+(use-package youdao-dictionary
+  :bind (("C-c y" . youdao-dictionary-search-at-point)
+         ("C-c Y" . youdao-dictionary-search-at-point-tooltip))
+  :config
+  ;; Cache documents
+  (setq url-automatic-caching t)
 
-;;   ;; Enable Chinese word segmentation support (支持中文分词)
-;;   (setq youdao-dictionary-use-chinese-word-segmentation t))
+  ;; Enable Chinese word segmentation support (支持中文分词)
+  (setq youdao-dictionary-use-chinese-word-segmentation t))
 
 ;; Search utils: `ag', `rg', `pt'
 (use-package ag

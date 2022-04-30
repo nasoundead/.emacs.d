@@ -45,8 +45,8 @@ corresponding to the mode line clicked."
             (face (cond (no-errors 'error)
                         (no-warnings 'warning)
                         (t 'success))))
-       (propertize (format "E%sW%s" (or no-errors 0) (or no-warnings 0))
-                   'face face)))
+       (propertize (format "错%s 警%s" (or no-errors 0) (or no-warnings 0)) 'face face)
+       ))
     (`interrupted " -")
     (`suspicious '(propertize " ?" 'face 'warning))))
 

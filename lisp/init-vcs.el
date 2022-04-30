@@ -11,9 +11,6 @@
         transient-history-file (concat sea-etc-dir "transient/history"))
   :config
   (setq magit-completing-read-function 'ivy-completing-read)
-  ;; :bind
-  ;; Magic
-  ;; ("C-x g s" . magit-status)
   )
 
 (use-package magit-popup)
@@ -22,32 +19,6 @@
 (use-package magit-gitflow
   :diminish magit-gitflow-mode
   :init (add-hook 'magit-mode-hook #'turn-on-magit-gitflow))
-
-;; (use-package evil-magit
-;;   :init
-;;   (setq evil-magit-state 'normal
-;;         evil-magit-use-z-for-folds t)
-;;   :config
-;;   (unmap! magit-mode-map
-;;     ;; Replaced by z1, z2, z3, etc
-;;     "M-1" "M-2" "M-3" "M-4"
-;;     "1" "2" "3" "4"
-;;     "0") ; moved to g=
-;;   (evil-define-key* 'normal magit-status-mode-map [escape] nil) ; q is enough
-;;   (evil-define-key* '(normal visual) magit-mode-map
-;;     "%"  #'magit-gitflow-popup
-;;     "zz" #'evil-scroll-line-to-center
-;;     "g=" #'magit-diff-default-context)
-;;   (define-key! 'normal
-;;     (magit-status-mode-map
-;;      magit-stash-mode-map
-;;      magit-revision-mode-map
-;;      magit-diff-mode-map)
-;;     [tab] #'magit-section-t   (when-let (desc (assoc (car key) evil-magit-rebase-commands-w-descriptions))
-;;                                 (setcar desc (cdr key))))
-;;   (evil-define-key* evil-magit-state git-rebase-mode-map
-;;     "gj" #'git-rebase-move-line-down
-;;     "gk" #'git-rebase-move-line-up))
 
 ;; Git-Svn extension for Magit
 (use-package magit-svn
@@ -72,11 +43,6 @@
   :bind (("C-x v S" . smeargle)
          ("C-x v C" . smeargle-commits)
          ("C-x v R" . smeargle-clear)))
-
-;; Git modes
-(use-package gitattributes-mode)
-(use-package gitconfig-mode)
-(use-package gitignore-mode)
 
 
 ;; Open github/gitlab/bitbucket page

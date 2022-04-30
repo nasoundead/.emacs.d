@@ -89,8 +89,7 @@
     (`(t . t)
       (treemacs-git-mode 'deferred))
     (`(t . _)
-      (treemacs-git-mode 'simple)))
-  (require 'treemacs-evil))
+      (treemacs-git-mode 'simple))))
 
 
 

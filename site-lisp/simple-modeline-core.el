@@ -96,7 +96,7 @@
     (concat
      left
      (propertize " "
-                 'display `((space :align-to (- right ,reserve)))
+                 'display `((space :align-to (- right ,reserve 1)))
                  'face '(:inherit simple-modeline-space))
      right)))
 

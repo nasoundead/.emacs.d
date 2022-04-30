@@ -97,7 +97,7 @@
   :commands robot-mode
   :mode "\\.robot\\'")
 
-(add-hook 'prog-mode-hook 'yafolding-mode)
+;; (add-hook 'prog-mode-hook 'yafolding-mode)
 
 (provide 'init-prog)
 

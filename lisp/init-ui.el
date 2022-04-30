@@ -12,7 +12,7 @@
 
 
 (setq custom-safe-themes t)
-(use-package color-theme-sanityinc-tomorrow)
+;; (use-package color-theme-sanityinc-tomorrow)
 ;; (use-package zenburn-theme)
 ;; (use-package srcery-theme)
 ;; (use-package darktooth-theme)
@@ -45,7 +45,28 @@
   (reapply-themes))
 
 
-                                        ;!; highlight matching delimiters
+(use-package dashboard
+  :ensure t
+  :init
+  (dashboard-setup-startup-hook)
+  :config
+  ;; Set the title
+  (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+  ;; Set the banner
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-navigator t)
+
+  (setq dashboard-set-init-info t)
+  (setq dashboard-items '((recents  . 9)
+                          (bookmarks . 5)
+                          (projects . 9)
+                          (agenda . 5)
+                          (registers . 5)))
+  (setq show-week-agenda-p t))
+
+;; highlight matching delimiters
 (setq show-paren-delay 0.1
       show-paren-highlight-openparen t
       show-paren-when-point-inside-paren t)
@@ -142,13 +163,100 @@
                                       all-the-icons-wicon all-the-icons-alltheicon))
     (advice-add fn :around #'sea*disable-all-the-icons-in-tty)))
 
-;; (use-package mini-frame
-;;   :init (add-hook 'sea-init-ui-hook #'mini-frame-mode)
-;;   :config
-;;   (custom-set-variables
-;;    '(mini-frame-show-parameters
-;;      '((top . 0)
-;;        (width . 0.7)
-;;        (left . 0.5)))))
+
+(use-package highlight-indent-guides
+  :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
+  :init
+  (setq highlight-indent-guides-method 'character)
+  :config
+  (add-hook 'focus-in-hook #'highlight-indent-guides-auto-set-faces)
+  ;; `highlight-indent-guides' breaks in these modes
+  (add-hook! '(visual-line-mode-hook org-indent-mode-hook)
+    (defun +indent-guides-disable-maybe-h ()
+      (when highlight-indent-guides-mode
+        (highlight-indent-guides-mode -1)))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;----------------------------------------------------------------------------
+;; When splitting window, show (other-buffer) in the new window
+;;----------------------------------------------------------------------------
+(defun split-window-func-with-other-buffer (split-function)
+  (lambda (&optional arg)
+    "Split this window and switch to the new window unless ARG is provided."
+    (interactive "P")
+    (funcall split-function)
+    (let ((target-window (next-window)))
+      (set-window-buffer target-window (other-buffer))
+      (unless arg
+        (select-window target-window)))))
+
+(global-set-key (kbd "C-x 2") (split-window-func-with-other-buffer 'split-window-vertically))
+(global-set-key (kbd "C-x 3") (split-window-func-with-other-buffer 'split-window-horizontally))
+
+(defun sanityinc/toggle-delete-other-windows ()
+  "Delete other windows in frame if any, or restore previous window config."
+  (interactive)
+  (if (and winner-mode
+           (equal (selected-window) (next-window)))
+      (winner-undo)
+    (delete-other-windows)))
+
+(global-set-key (kbd "C-x 1") 'sanityinc/toggle-delete-other-windows)
+
+;;----------------------------------------------------------------------------
+;; Rearrange split windows
+;;----------------------------------------------------------------------------
+(defun split-window-horizontally-instead ()
+  "Kill any other windows and re-split such that the current window is on the top half of the frame."
+  (interactive)
+  (let ((other-buffer (and (next-window) (window-buffer (next-window)))))
+    (delete-other-windows)
+    (split-window-horizontally)
+    (when other-buffer
+      (set-window-buffer (next-window) other-buffer))))
+
+(defun split-window-vertically-instead ()
+  "Kill any other windows and re-split such that the current window is on the left half of the frame."
+  (interactive)
+  (let ((other-buffer (and (next-window) (window-buffer (next-window)))))
+    (delete-other-windows)
+    (split-window-vertically)
+    (when other-buffer
+      (set-window-buffer (next-window) other-buffer))))
+
+(global-set-key (kbd "C-x |") 'split-window-horizontally-instead)
+(global-set-key (kbd "C-x _") 'split-window-vertically-instead)
+
+
+;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
+(defun sanityinc/split-window()
+  "Split the window to see the most recent buffer in the other window.
+Call a second time to restore the original window configuration."
+  (interactive)
+  (if (eq last-command 'sanityinc/split-window)
+      (progn
+        (jump-to-register :sanityinc/split-window)
+        (setq this-command 'sanityinc/unsplit-window))
+    (window-configuration-to-register :sanityinc/split-window)
+    (switch-to-buffer-other-window nil)))
+
+(global-set-key (kbd "<f7>") 'sanityinc/split-window)
+
+
+
+(defun sanityinc/toggle-current-window-dedication ()
+  "Toggle whether the current window is dedicated to its current buffer."
+  (interactive)
+  (let* ((window (selected-window))
+         (was-dedicated (window-dedicated-p window)))
+    (set-window-dedicated-p window (not was-dedicated))
+    (message "Window %sdedicated to %s"
+             (if was-dedicated "no longer " "")
+             (buffer-name))))
+
+(global-set-key (kbd "C-c <down>") 'sanityinc/toggle-current-window-dedication)
 
 (provide 'init-ui)
