@@ -19,7 +19,7 @@
 
   (setq projectile-switch-project-action
         '(lambda ()
-           (venv-projectile-auto-workon)
+          ;;  (venv-projectile-auto-workon)
            (projectile-find-file)))
 
   ;; Faster indexing on Windows

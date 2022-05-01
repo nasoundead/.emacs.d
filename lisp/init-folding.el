@@ -41,7 +41,10 @@
           (hs-show-all))
     (toggle-selective-display column)))
 
-(load-library "hideshow")
+
+(add-hook 'prog-mode (lambda()
+                       (load-library "hideshow")))
+
 (global-set-key (kbd "C-{") 'toggle-hiding)
 (global-set-key (kbd "C-\\") 'toggle-selective-display)
 (add-hook 'c-mode-common-hook   'hs-minor-mode)

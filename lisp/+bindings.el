@@ -379,10 +379,9 @@
 
       ;; treemacs
       (:after treemacs
-        ;; "<f8>"   #'+treemacs/toggle
-        ;; "<C-f8>" #'+treemacs/find-file
         (:map treemacs-mode-map
-          "h" #'treemacs-goto-parent-node)
+          :n "h" #'treemacs-goto-parent-node
+          :n "l" #'treemacs-RET-action)
         )
       ;; --- Major mode bindings --------------------------
       (:after markdown-mode

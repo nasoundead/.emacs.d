@@ -41,6 +41,17 @@
 ;;   (setq rust-format-on-save t))
 (use-package rustic
   :hook (rustic-mode . lsp)
+  :hook (lsp-mode . (lambda()
+                      (lsp-rust-analyzer-cargo-watch-command "clippy")
+                      (lsp-rust-analyzer-server-display-inlay-hints t)
+                      (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+                      (lsp-rust-analyzer-display-chaining-hints t)
+                      (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+                      (lsp-rust-analyzer-display-closure-return-type-hints t)
+                      (lsp-rust-analyzer-display-parameter-hints nil)
+                      (lsp-rust-analyzer-display-reborrow-hints nil)
+                      ))
+
   )
 (provide 'init-rust)
 

@@ -50,13 +50,16 @@
   :init
   (with-eval-after-load 'winum
     (bind-key (kbd "M-9") #'treemacs-select-window winum-keymap))
+
   :config
   (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
         treemacs-deferred-git-apply-delay      0.5
         treemacs-display-in-side-window        t
-        treemacs-file-event-delay              5000
+        treemacs-file-treemacs-directory-name-transformer      #'identity
+        treemacs-eldoc-display                 'simpleevent-delay
         treemacs-file-follow-delay             0.2
         treemacs-follow-after-init             t
+        treemacs-file-event-delay              5000
         treemacs-git-command-pipe              ""
         treemacs-goto-tag-strategy             'refetch-index
         treemacs-indentation                   2
@@ -64,6 +67,7 @@
         treemacs-is-never-other-window         nil
         treemacs-max-git-entries               5000
         treemacs-no-png-images                 nil
+        treemacs-litter-directories            '("/node_modules" "/.venv" "/.cask")
         treemacs-no-delete-other-windows       t
         treemacs-project-follow-cleanup        nil
         treemacs-persist-file                  (concat sea-cache-dir "treemacs-persist")
@@ -83,13 +87,17 @@
         treemacs-width                         30)
 
   (treemacs-follow-mode t)
+  (treemacs-git-mode t)
+  ;; (treemacs-load-all-the-icons-with-workaround-font)
+  (treemacs-filewatch-mode t)
   (treemacs-fringe-indicator-mode 'always)
+  (treemacs-hide-gitignored-files-mode nil)
   (pcase (cons (not (null (executable-find "git")))
-                (not (null treemacs-python-executable)))
+               (not (null treemacs-python-executable)))
     (`(t . t)
-      (treemacs-git-mode 'deferred))
+     (treemacs-git-mode 'deferred))
     (`(t . _)
-      (treemacs-git-mode 'simple))))
+     (treemacs-git-mode 'simple))))
 
 
 
@@ -108,7 +116,8 @@
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
   :ensure t
   :config (treemacs-set-scope-type 'Perspectives))
-(use-package treemacs-evil)
+(use-package treemacs-evil
+  :after (treemacs evil))
 (use-package treemacs-magit
   :after treemacs magit
   :commands treemacs-magit--schedule-update
@@ -117,6 +126,16 @@
           magit-post-stage
           magit-post-unstage)
          . treemacs-magit--schedule-update))
+
+(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  :ensure t
+  :config (treemacs-set-scope-type 'Perspectives))
+
+(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+  :after (treemacs)
+  :ensure t
+  :config (treemacs-set-scope-type 'Tabs))
 
 (provide 'init-treemacs)
 

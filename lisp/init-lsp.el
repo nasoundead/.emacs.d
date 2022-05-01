@@ -36,7 +36,6 @@
 ;; Emacs client for the Language Server Protocol
 ;; https://github.com/emacs-lsp/lsp-mode#supported-languages
 (use-package lsp-mode
-  :defines (lsp-clients-python-library-directories lsp-rust-rls-server-command)
   :commands (lsp-enable-which-key-integration lsp-format-buffer lsp-organize-imports)
   :diminish
   :hook ((prog-mode . (lambda ()
@@ -53,21 +52,30 @@
           ("C-c C-d" . lsp-describe-thing-at-point)
           ([remap xref-find-definitions] . lsp-find-definition)
           ([remap xref-find-references] . lsp-ui-peek-find-references))
+
   :init
   ;; @see https://github.com/emacs-lsp/lsp-mode#performance
-  (setq read-process-output-max (* 1024 1024)) ;; 1MB
+  (setq read-process-output-max (* 3 1024 1024)) ;; 1MB
 
-  (setq lsp-auto-guess-root nil      ; Detect project root
-        lsp-keep-workspace-alive nil ; Auto-kill LSP server
-        lsp-enable-indentation nil
-        lsp-enable-on-type-formatting nil
-        ;; lsp-prefer-capf t
-        lsp-keymap-prefix "C-c l")
+  :config
+  (setq
+   ;; lsp-auto-guess-root nil      ; Detect project root
+   ;; lsp-keep-workspace-alive nil ; Auto-kill LSP server
+   ;; lsp-enable-indentation nil
+   ;; lsp-enable-on-type-formatting nil
+   ;; lsp-prefer-capf t
+   lsp-rust-analyzer-server-display-inlay-hints t
+   lsp-rust-analyzer-inlay-hints-mode t
+   lsp-rust-analyzer-cargo-watch-command "clippy"
+   lsp-rust-analyzer-display-parameter-hints t
+   lsp-rust-analyzer-display-chaining-hints t
+   )
 
   ;; For `lsp-clients'
-  (setq lsp-clients-python-library-directories '("/usr/local/" "/usr/"))
-  (unless (executable-find "rls")
-    (setq lsp-rust-rls-server-command '("rustup" "run" "stable" "rls"))))
+  ;; (setq lsp-clients-python-library-directories '("/usr/local/" "/usr/"))
+  ;; (unless (executable-find "rls")
+  ;;   (setq lsp-rust-rls-server-command '("rustup" "run" "stable" "rls")))
+  )
 
 (use-package lsp-ui
   :custom-face

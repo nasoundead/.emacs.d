@@ -12,7 +12,7 @@
 
 
 (setq custom-safe-themes t)
-;; (use-package color-theme-sanityinc-tomorrow)
+(use-package color-theme-sanityinc-tomorrow)
 ;; (use-package zenburn-theme)
 ;; (use-package srcery-theme)
 ;; (use-package darktooth-theme)
@@ -101,7 +101,7 @@
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
               ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))))
   (set-face-attribute 'default nil :font
-                      (format "%s:pixelsize=%d" (car fonts) 14))
+                      (format "%s:pixelsize=%d" (car fonts) 16))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family (car (cdr fonts)))))
