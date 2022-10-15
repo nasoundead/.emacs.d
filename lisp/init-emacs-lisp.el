@@ -37,33 +37,18 @@
     :diminish elisp-slime-nav-mode
     :bind (:map elisp-slime-nav-mode-map
                 ("C-h o" . elisp-slime-nav-describe-elisp-thing-at-point))
-    :init (dolist (hook '(emacs-lisp-mode-hook
-                          lisp-interaction-mode-hook
-                          ielm-mode-hook))
-            (add-hook hook #'turn-on-elisp-slime-nav-mode))))
+    ;; :init (dolist (hook '(emacs-lisp-mode-hook
+    ;;                       lisp-interaction-mode-hook
+    ;;                       ielm-mode-hook))
+    ;;         (add-hook hook #'turn-on-elisp-slime-nav-mode))
+    )
+  )
 
 (defun recompile-elpa ()
   "Recompile packages in elpa directory. Useful if you switch Emacs versions."
   (interactive)
   (byte-recompile-directory package-user-dir nil t))
 
-;; (use-package lispy
-;;   :init
-;;   (add-hook 'emacs-lisp-mode-hook (lambda()(lispy-mode 1)))
-;;   (add-hook 'minibuffer-setup-hook (lambda()(when (eq this-command 'eval-expression)
-;;                                               (lispy-mode 1)))))
-;; (use-package lispyville
-;;   :init
-;;   (add-hook 'lispy-mode-hook #'lispyville-mode)
-;;   ;; (general-add-hook '(emacs-lisp-mode-hook lisp-mode-hook) #'lispyville-mode)
-;;   :config
-;;   (lispyville-set-key-theme '(operators c-w additional))
-;;   (setq targets-text-objects nil)
-;;   )
-
-;; (use-package evil-lispy
-;;   :init
-;;   (add-hook 'emacs-lisp-mode-hook #'evil-lispy-mode))
 
 (provide 'init-emacs-lisp)
 

@@ -42,6 +42,7 @@
 (use-package rustic
   :hook (rustic-mode . lsp)
   :hook (lsp-mode . (lambda()
+                      (tree-sitter-hl-mode)
                       (lsp-rust-analyzer-cargo-watch-command "clippy")
                       (lsp-rust-analyzer-server-display-inlay-hints t)
                       (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")

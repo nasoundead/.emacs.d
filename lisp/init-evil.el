@@ -9,9 +9,9 @@
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :config (evil-commentary-mode 1))
 
-(use-package evil-easymotion
-  :after evil-snipe
-  :commands evilem-create)
+;; (use-package evil-easymotion
+;;   :after evil-snipe
+;;   :commands evilem-create)
 
 (use-package evil-embrace
   :after evil-surround
@@ -151,12 +151,11 @@ the new algorithm is confusing, like in python or ruby."
   (global-evil-surround-mode)
   :ensure t)
 (use-package evil-args)
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :custom (evil-collection-setup-minibuffer t)
-  :init
-  (evil-collection-init))
+;; (use-package evil-collection
+;;   :after evil
+;;   :ensure t
+;;   :config
+;;   (evil-collection-init))
 
 ;; (require 'evil-magit)
 

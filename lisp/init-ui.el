@@ -13,15 +13,10 @@
 
 (setq custom-safe-themes t)
 (use-package color-theme-sanityinc-tomorrow)
-;; (use-package zenburn-theme)
-;; (use-package srcery-theme)
-;; (use-package darktooth-theme)
 (use-package doom-themes)
-(use-package tao-theme)
-(use-package ample-theme)
 (use-package gruber-darker-theme)
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
-;; (setq-default custom-enabled-themes '(doom-zenburn))
+(setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
@@ -78,6 +73,13 @@
 (add-hook 'sea-init-ui-hook #'winner-mode)
 
 
+;; postframe
+(use-package posframe)
+
+;; sort tab
+;; (require 'sort-tab)
+;; (sort-tab-mode 1)
+
 ;; Restore old window configurations
 (use-package winner
   :ensure nil
@@ -99,7 +101,9 @@
   (setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
-              ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))))
+              ;; ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
+              ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
+              ))
   (set-face-attribute 'default nil :font
                       (format "%s:pixelsize=%d" (car fonts) 16))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
@@ -230,7 +234,7 @@
 (global-set-key (kbd "C-x |") 'split-window-horizontally-instead)
 (global-set-key (kbd "C-x _") 'split-window-vertically-instead)
 
-
+
 ;; Borrowed from http://postmomentum.ch/blog/201304/blog-on-emacs
 (defun sanityinc/split-window()
   "Split the window to see the most recent buffer in the other window.
@@ -246,7 +250,7 @@ Call a second time to restore the original window configuration."
 (global-set-key (kbd "<f7>") 'sanityinc/split-window)
 
 
-
+
 (defun sanityinc/toggle-current-window-dedication ()
   "Toggle whether the current window is dedicated to its current buffer."
   (interactive)

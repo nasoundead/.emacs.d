@@ -118,10 +118,11 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-lookup)
 (require 'init-keybinds)
 (require 'init-ivy)
+(require 'init-treesitter)
 (require 'init-company)
+;; (require 'init-corfu)
 (require 'init-yasnippet)
 (require 'init-projectile)
-(require 'init-workspace)
 (require 'init-flycheck)
 (require 'init-treemacs)
 

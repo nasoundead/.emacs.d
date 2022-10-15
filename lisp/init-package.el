@@ -6,10 +6,11 @@
 
 (require 'package)
 (setq package-enable-at-startup nil
-      package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
-			 ("melpa" . "http://elpa.emacs-china.org/melpa/")
-			 ("org" . "http://elpa.emacs-china.org/org/")
+      package-archives '(("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
+			 ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
+			 ("org" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
 			 ))
+
 (package-initialize)
 ;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)

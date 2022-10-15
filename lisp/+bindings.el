@@ -23,23 +23,24 @@
       :i [remap newline]   #'newline-and-indent
       :i "C-S-j"           #'+default/newline
 
+      :n "s"    #'evil-window-map
       ;; --- Global keybindings ---------------------------
       ;; Make M-x available everywhere
       :gnvime "M-x" #'execute-extended-command
       :gnvime "A-x" #'execute-extended-command
 
       ;; A little sandbox to run code in
-      :gnvime "M-;" #'eval-expression
+      :gnvime "M-:" #'eval-expression
 
       ;; Text-scaling
       :n "M-+"   (λ! (text-scale-set 0))
       :n "M-="   #'text-scale-increase
       :n "M--"   #'text-scale-decrease
 
-      :enm "C-S-h"   #'evil-window-left
-      :enm "C-S-j"   #'evil-window-down
-      :enm "C-S-k"   #'evil-window-up
-      :enm "C-S-l"   #'evil-window-right
+      :enm "C-h"   #'evil-window-left
+      :enm "C-j"   #'evil-window-down
+      :enm "C-k"   #'evil-window-up
+      :enm "C-l"   #'evil-window-right
 
       ;; Simple window/frame navigation/manipulation
       :n "M-w"   #'delete-window
@@ -63,7 +64,9 @@
       :m  "]a" #'evil-forward-arg
       :m  "[a" #'evil-backward-arg
       :n  "]b" #'next-buffer
+      :n  "L" #'next-buffer
       :n  "[b" #'previous-buffer
+      :n  "H" #'previous-buffer
       :nv  "K" #'+lookup/documentation
       ;; :nv  "gd" #'+lookup/definition
       :nv  "gd" #'xref-find-definitions
@@ -90,19 +93,16 @@
       :i  [C-tab] #'aya-expand
       :nv [C-tab] #'aya-create
 
-      ;; company-mode (vim-like omnicompletion)
-      :i "C-@"    #'+company/complete
-      :i "C-SPC"  #'+company/complete
-      (:prefix "C-x"
-        :i "C-l"   #'+company/whole-lines
-        :i "C-k"   #'+company/dict-or-keywords
-        :i "C-f"   #'company-files
-        :i "C-]"   #'company-etags
-        :i "s"     #'company-ispell
-        :i "C-s"   #'company-yasnippet
-        :i "C-o"   #'company-capf
-        :i "C-n"   #'+company/dabbrev
-        :i "C-p"   #'+company/dabbrev-code-previous)
+      (:map custom-theme-choose-mode-map
+        :gvnime "j" #'widget-forward
+        :gvnime "k" #'widget-backward)
+
+      (:after corfu
+        (:map corfu-map
+          ;; "C-j" #'corfu-next
+          ;; "C-k" #'corfu-previous
+          )
+        )
       (:after company
         (:map company-active-map
           ;; Don't interfere with `evil-delete-backward-word' in insert mode
@@ -129,39 +129,17 @@
           [escape]  #'company-search-abort))
 
       ;; counsel
-
       (:after counsel
         (:map counsel-ag-map
           [backtab]  #'+ivy/wgrep-occur      ; search/replace on results
           "C-SPC"    #'ivy-call-and-recenter ; preview
           "M-RET"    (+ivy-do-action! #'+ivy-git-grep-other-window-action)))
 
-      ;; easymotion
-      :m "gs" #'+evil/easymotion        ; lazy-load `evil-easymotion'
-      (:after evil-easymotion
-        :map evilem-map
-        "a" (evilem-create #'evil-forward-arg)
-        "A" (evilem-create #'evil-backward-arg)
-        "s" (evilem-create #'evil-snipe-repeat
-                           :name 'evil-easymotion-snipe-forward
-                           :pre-hook (save-excursion (call-interactively #'evil-snipe-s))
-                           :bind ((evil-snipe-scope 'buffer)
-                                  (evil-snipe-enable-highlight)
-                                  (evil-snipe-enable-incremental-highlight)))
-        "S" (evilem-create #'evil-snipe-repeat
-                           :name 'evil-easymotion-snipe-backward
-                           :pre-hook (save-excursion (call-interactively #'evil-snipe-S))
-                           :bind ((evil-snipe-scope 'buffer)
-                                  (evil-snipe-enable-highlight)
-                                  (evil-snipe-enable-incremental-highlight)))
-        "SPC" #'avy-goto-char-timer
-        "/" (evilem-create #'evil-ex-search-next
-                           :pre-hook (save-excursion (call-interactively #'evil-ex-search-forward))
-                           :bind ((evil-search-wrap)))
-        "?" (evilem-create #'evil-ex-search-previous
-                           :pre-hook (save-excursion (call-interactively #'evil-ex-search-backward))
-                           :bind ((evil-search-wrap))))
 
+      (:map xref--xref-buffer-mode-map
+        :n "RET" #'xref-goto-xref
+        :n "j" #'xref-next-line
+        :n "k" #'xref-prev-line)
       ;; evil
       (:after evil
         :textobj "x" #'evil-inner-xml-attr               #'evil-outer-xml-attr
@@ -178,11 +156,6 @@
           "C-k"     #'evil-window-up
           "C-l"     #'evil-window-right
           "C-w"     #'other-window
-          ;; Swapping windows
-          "H"       #'+evil/window-move-left
-          "J"       #'+evil/window-move-down
-          "K"       #'+evil/window-move-up
-          "L"       #'+evil/window-move-right
           "C-S-w"   #'ace-swap-window
           ;; Window undo/redo
           "u"       #'winner-undo
@@ -192,8 +165,12 @@
           "s"       #'sea/split-window-horizontally-instead
           "v"       #'sea/split-window-vertically-instead
           ;; Delete window
-          "c"       #'+workspace/close-window-or-workspace
-          "m"     #'ace-delete-window))
+          "c"     #'ace-delete-window
+          "h"     #'shrink-window-horizontally
+          "l"     #'enlarge-window-horizontally
+          "j"     #'enlarge-window
+          "k"     #'shrink-window
+          ))
 
       ;; evil-commentary
       :n  "gc"  #'evil-commentary
@@ -244,16 +221,6 @@
           "C-n" #'evil-multiedit-next
           "C-p" #'evil-multiedit-prev))
 
-      ;; evil-snipe
-      (:after evil-snipe
-        :map evil-snipe-parent-transient-map
-        ;; switch to evil-easymotion/avy after a snipe
-        "C-;" (λ! (require 'evil-easymotion)
-                  (call-interactively
-                   (evilem-create #'evil-snipe-repeat
-                                  :bind ((evil-snipe-scope 'whole-buffer)
-                                         (evil-snipe-enable-highlight)
-                                         (evil-snipe-enable-incremental-highlight))))))
 
       ;; evil-surround
       :v  "S"  #'evil-surround-region
