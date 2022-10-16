@@ -60,8 +60,8 @@
   (define-key dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/"))))
 
 
-(evil-define-key 'normal  dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/")))
-(evil-define-key 'normal  dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+;; (evil-define-key 'normal  dired-mode-map (kbd "~") '(lambda ()(interactive)(find-alternate-file "~/")))
+;; (evil-define-key 'normal  dired-mode-map (kbd "RET") 'dired-find-alternate-file)
 
 ;; we want dired not not make always a new buffer if visiting a directory
 ;; but using only one dired buffer for all directories.

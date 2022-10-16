@@ -189,10 +189,10 @@ the new algorithm is confusing, like in python or ruby."
 
 (use-package evil-collection
   :init
-  (add-hook 'evil-mode-hook '(lambda() (evil-collection-init)))
-  :config
+  (add-hook 'after-init-hook  #'evil-collection-init)
   (evil-define-key 'normal dired-mode-map
     (kbd "<RET>") 'dired-find-alternate-file
+    (kbd "=") 'sea/dired-diff
     "`" 'dired-open-term
     "o" 'dired-find-file-other-window
     "s" 'dired-sort-toggle-or-edit
