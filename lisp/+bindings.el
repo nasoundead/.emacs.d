@@ -97,12 +97,14 @@
         :gvnime "j" #'widget-forward
         :gvnime "k" #'widget-backward)
 
-      (:after corfu
-        (:map corfu-map
-          ;; "C-j" #'corfu-next
-          ;; "C-k" #'corfu-previous
-          )
-        )
+      ;; evil-easymotion
+      ;; :m "gs" evilem-map
+      (:map evilem-map
+        "a" (evilem-create #'evil-forward-arg)
+        "A" (evilem-create #'evil-backward-arg)
+        "s" #'evil-avy-goto-char-2
+        "/" #'evil-avy-goto-char-timer)
+
       (:after company
         (:map company-active-map
           ;; Don't interfere with `evil-delete-backward-word' in insert mode
@@ -129,11 +131,11 @@
           [escape]  #'company-search-abort))
 
       ;; counsel
-      (:after counsel
-        (:map counsel-ag-map
-          [backtab]  #'+ivy/wgrep-occur      ; search/replace on results
-          "C-SPC"    #'ivy-call-and-recenter ; preview
-          "M-RET"    (+ivy-do-action! #'+ivy-git-grep-other-window-action)))
+      ;; (:after counsel
+      ;;   (:map counsel-ag-map
+      ;;     [backtab]  #'+ivy/wgrep-occur      ; search/replace on results
+      ;;     "C-SPC"    #'ivy-call-and-recenter ; preview
+      ;;     "M-RET"    (+ivy-do-action! #'+ivy-git-grep-other-window-action)))
 
 
       (:map xref--xref-buffer-mode-map
@@ -228,15 +230,15 @@
       :o  "S"  #'evil-Surround-edit
 
       ;; lispyville
-      (:after lispyville-mode
-        :map lispyville-mode-map
-        :n "gc" #'lispyville-comment-or-uncomment
-        :n "gy" #'lispyville-comment-and-clone-dwim
-        :n ",ci" #'lispyville-comment-or-uncomment-line
-        :n "M-(" #'lispyville-wrap-with-round
-        :n "M-[" #'lispyville-wrap-with-brackets
-        :n "M-{" #'lispyville-wrap-with-braces
-        )
+      ;; (:after lispyville-mode
+      ;;   :map lispyville-mode-map
+      ;;   :n "gc" #'lispyville-comment-or-uncomment
+      ;;   :n "gy" #'lispyville-comment-and-clone-dwim
+      ;;   :n ",ci" #'lispyville-comment-or-uncomment-line
+      ;;   :n "M-(" #'lispyville-wrap-with-round
+      ;;   :n "M-[" #'lispyville-wrap-with-brackets
+      ;;   :n "M-{" #'lispyville-wrap-with-braces
+      ;;   )
 
       ;; expand-region
       :v  "v"  #'er/expand-region
@@ -390,7 +392,6 @@
       :desc "Find file in project"    :n "SPC" #'projectile-find-file
       :desc "Browse files"            :n "."   #'find-file
       :desc "Toggle last popup"       :n "~"   #'+popup/toggle
-      :desc "Resume last search"      :n "'"   #'ivy-resume
 
       :desc "Blink cursor line"       :n "DEL" #'+nav-flash/blink-cursor
       :desc "Jump to bookmark"        :n "RET" #'bookmark-jump
@@ -424,14 +425,16 @@
         :desc "Spelling error"        :nv "s" #'evil-next-flyspell-error
         :desc "Spelling correction"   :n  "S" #'flyspell-correct-word-generic)
 
-      (:desc "search" :prefix "/"
+      (:desc "s+default/search-cwd+default/search-cwdearch" :prefix "/"
 
         :desc "Buffer"                 :nv "b" #'swiper
-        :desc "Project"                :nv "p" #'+ivy/project-search
-        :desc "Directory"              :nv "d" #'+ivy/project-search-from-cwd
+        ;; :desc "Project"                :nv "p" #'+ivy/project-search
+        :desc "Project"                :nv "p" #'+vertico/project-search
+        ;; :desc "Directory"              :nv "d" #'+ivy/project-search-from-cwd
+        :desc "Directory"              :nv "d" #'+vertico/project-search-from-cwd
 
-        :desc "Symbols"                :nv "i" #'imenu
-        :desc "Symbols across buffers" :nv "I" #'imenu-anywhere
+        :desc "Symbols"                :nv "i" #'consult-imenu
+        :desc "Symbols across buffers" :nv "I" #'consult-imenu-multi
         :desc "Online providers"       :nv "o" #'+lookup/online-select)
 
       (:desc "buffer" :prefix "b"

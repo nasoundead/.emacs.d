@@ -9,9 +9,39 @@
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :config (evil-commentary-mode 1))
 
+(use-package evil-snipe
+  :ensure t
+  :diminish
+  :init
+  (evil-snipe-mode +1)
+  (evil-snipe-override-mode +1)
+  (evil-define-key '(normal motion) evil-snipe-local-mode-map
+    "s" nil
+    "S" nil)
+
+  (evil-define-key 'operator evil-snipe-local-mode-map
+    "z" 'evil-snipe-s
+    "Z" 'evil-snipe-S
+    "x" 'evil-snipe-x
+    "X" 'evil-snipe-X)
+
+  (evil-define-key 'motion evil-snipe-override-local-mode-map
+    "f" 'evil-snipe-f
+    "F" 'evil-snipe-F
+    "t" 'evil-snipe-t
+    "T" 'evil-snipe-T)
+
+  (when evil-snipe-override-evil-repeat-keys
+    (evil-define-key 'motion map
+      ";" 'evil-snipe-repeat
+      "," 'evil-snipe-repeat-reverse)) )
+
 (use-package evil-easymotion
   :after evil-snipe
-  :commands evilem-create)
+  :commands evilem-create
+  :init
+  (evilem-default-keybindings "gs")
+  )
 
 (use-package evil-embrace
   :after evil-surround
@@ -152,7 +182,8 @@ the new algorithm is confusing, like in python or ruby."
   :ensure t)
 (use-package evil-args)
 
-(require 'evil-magit)
+;; (require 'evil-magit)
+(add-hook 'magit-mode-hook #'(lambda() (require 'evil-magit)))
 
 ;; (use-package evil-collection
 ;;   :demand t

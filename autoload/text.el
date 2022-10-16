@@ -1,4 +1,18 @@
-;;; core/autoload/text.el -*- lexical-binding: t; -*-
+;;; lisp/lib/text.el -*- lexical-binding: t; -*-
+
+;;;###autoload
+(defvar sea-point-in-comment-functions ()
+  "List of functions to run to determine if point is in a comment.
+
+Each function takes one argument: the position of the point. Stops on the first
+function to return non-nil. Used by `sea-point-in-comment-p'.")
+
+;;;###autoload
+(defvar sea-point-in-string-functions ()
+  "List of functions to run to determine if point is in a string.
+
+Each function takes one argument: the position of the point. Stops on the first
+function to return non-nil. Used by `sea-point-in-string-p'.")
 
 ;;;###autoload
 (defun sea-surrounded-p (pair &optional inline balanced)
@@ -28,31 +42,20 @@ lines, above and below, with only whitespace in between."
 ;;;###autoload
 (defun sea-point-in-comment-p (&optional pos)
   "Return non-nil if POS is in a comment.
-
 POS defaults to the current position."
-  ;; REVIEW Should we cache `syntax-ppss'?
-  (let* ((pos (or pos (point)))
-         (ppss (syntax-ppss pos)))
-    (or (nth 4 ppss)
-        (nth 8 ppss)
-        (and (< pos (point-max))
-             (memq (char-syntax (char-after pos)) '(?< ?>))
-             (not (eq (char-after pos) ?\n)))
-        (when-let (s (car (syntax-after pos)))
-          (or (and (/= 0 (logand (lsh 1 16) s))
-                   (nth 4 (sea-syntax-ppss (+ pos 2))))
-              (and (/= 0 (logand (lsh 1 17) s))
-                   (nth 4 (sea-syntax-ppss (+ pos 1))))
-              (and (/= 0 (logand (lsh 1 18) s))
-                   (nth 4 (sea-syntax-ppss (- pos 1))))
-              (and (/= 0 (logand (lsh 1 19) s))
-                   (nth 4 (sea-syntax-ppss (- pos 2)))))))))
+  (let ((pos (or pos (point))))
+    (if sea-point-in-comment-functions
+        (run-hook-with-args-until-success 'sea-point-in-comment-functions pos)
+      (nth 4 (syntax-ppss pos)))))
 
 ;;;###autoload
 (defun sea-point-in-string-p (&optional pos)
   "Return non-nil if POS is in a string."
   ;; REVIEW Should we cache `syntax-ppss'?
-  (nth 3 (syntax-ppss pos)))
+  (let ((pos (or pos (point))))
+    (if sea-point-in-string-functions
+        (run-hook-with-args-until-success 'sea-point-in-string-functions pos)
+      (nth 3 (syntax-ppss pos)))))
 
 ;;;###autoload
 (defun sea-point-in-string-or-comment-p (&optional pos)
@@ -60,74 +63,166 @@ POS defaults to the current position."
   (or (sea-point-in-string-p pos)
       (sea-point-in-comment-p pos)))
 
+;;;###autoload
+(defun sea-region-active-p ()
+  "Return non-nil if selection is active.
+Detects evil visual mode as well."
+  (declare (side-effect-free t))
+  (or (use-region-p)
+      (and (bound-and-true-p evil-local-mode)
+           (evil-visual-state-p))))
+
+;;;###autoload
+(defun sea-region-beginning ()
+  "Return beginning position of selection.
+Uses `evil-visual-beginning' if available."
+  (declare (side-effect-free t))
+  (or (and (bound-and-true-p evil-local-mode)
+           (markerp evil-visual-beginning)
+           (marker-position evil-visual-beginning))
+      (region-beginning)))
+
+;;;###autoload
+(defun sea-region-end ()
+  "Return end position of selection.
+Uses `evil-visual-end' if available."
+  (declare (side-effect-free t))
+  (if (bound-and-true-p evil-local-mode)
+      evil-visual-end
+    (region-end)))
+
+;;;###autoload
+(defun sea-thing-at-point-or-region (&optional thing prompt)
+  "Grab the current selection, THING at point, or xref identifier at point.
+
+Returns THING if it is a string. Otherwise, if nothing is found at point and
+PROMPT is non-nil, prompt for a string (if PROMPT is a string it'll be used as
+the prompting string). Returns nil if all else fails.
+
+NOTE: Don't use THING for grabbing symbol-at-point. The xref fallback is smarter
+in some cases."
+  (declare (side-effect-free t))
+  (cond ((stringp thing)
+         thing)
+        ((sea-region-active-p)
+         (buffer-substring-no-properties
+          (sea-region-beginning)
+          (sea-region-end)))
+        (thing
+         (thing-at-point thing t))
+        ((require 'xref nil t)
+         ;; Eglot, nox (a fork of eglot), and elpy implementations for
+         ;; `xref-backend-identifier-at-point' betray the documented purpose of
+         ;; the interface. Eglot/nox return a hardcoded string and elpy prepends
+         ;; the line number to the symbol.
+         (if (memq (xref-find-backend) '(eglot elpy nox))
+             (thing-at-point 'symbol t)
+           ;; A little smarter than using `symbol-at-point', though in most
+           ;; cases, xref ends up using `symbol-at-point' anyway.
+           (xref-backend-identifier-at-point (xref-find-backend))))
+        (prompt
+         (read-string (if (stringp prompt) prompt "")))))
+
 
 ;;
-;; Commands
+;;; Commands
 
-(defvar sea--last-backward-pt most-positive-fixnum)
+(defun sea--bol-bot-eot-eol (&optional pos)
+  (save-mark-and-excursion
+    (when pos
+      (goto-char pos))
+    (let* ((bol (if visual-line-mode
+                    (save-excursion
+                      (beginning-of-visual-line)
+                      (point))
+                  (line-beginning-position)))
+           (bot (save-excursion
+                  (goto-char bol)
+                  (skip-chars-forward " \t\r")
+                  (point)))
+           (eol (if visual-line-mode
+                    (save-excursion (end-of-visual-line) (point))
+                  (line-end-position)))
+           (eot (or (save-excursion
+                      (if (not comment-use-syntax)
+                          (progn
+                            (goto-char bol)
+                            (when (re-search-forward comment-start-skip eol t)
+                              (or (match-end 1) (match-beginning 0))))
+                        (goto-char eol)
+                        (while (and (sea-point-in-comment-p)
+                                    (> (point) bol))
+                          (backward-char))
+                        (skip-chars-backward " " bol)
+                        (or (eq (char-after) 32)
+                            (eolp)
+                            (bolp)
+                            (forward-char))
+                        (point)))
+                    eol)))
+      (list bol bot eot eol))))
+
+(defvar sea--last-backward-pt nil)
 ;;;###autoload
-(defun sea/backward-to-bol-or-indent ()
+(defun sea/backward-to-bol-or-indent (&optional point)
   "Jump between the indentation column (first non-whitespace character) and the
 beginning of the line. The opposite of
 `sea/forward-to-last-non-comment-or-eol'."
-  (interactive)
-  (let ((pt (point)))
-    (cl-destructuring-bind (bol . bot)
-        (save-excursion
-          (beginning-of-visual-line)
-          (cons (point)
-                (progn (skip-chars-forward " \t\r")
-                       (point))))
+  (interactive "^d")
+  (let ((pt (or point (point))))
+    (cl-destructuring-bind (bol bot _eot _eol)
+        (sea--bol-bot-eot-eol pt)
       (cond ((> pt bot)
              (goto-char bot))
             ((= pt bol)
-             (goto-char (min sea--last-backward-pt bot))
-             (setq sea--last-backward-pt most-positive-fixnum))
+             (or (and sea--last-backward-pt
+                      (= (line-number-at-pos sea--last-backward-pt)
+                         (line-number-at-pos pt)))
+                 (setq sea--last-backward-pt nil))
+             (goto-char (or sea--last-backward-pt bot))
+             (setq sea--last-backward-pt nil))
             ((<= pt bot)
              (setq sea--last-backward-pt pt)
              (goto-char bol))))))
 
-(defvar sea--last-forward-pt -1)
+(defvar sea--last-forward-pt nil)
 ;;;###autoload
-(defun sea/forward-to-last-non-comment-or-eol ()
+(defun sea/forward-to-last-non-comment-or-eol (&optional point)
   "Jumps between the last non-blank, non-comment character in the line and the
 true end of the line. The opposite of `sea/backward-to-bol-or-indent'."
+  (interactive "^d")
+  (let ((pt (or point (point))))
+    (cl-destructuring-bind (_bol _bot eot eol)
+        (sea--bol-bot-eot-eol pt)
+      (cond ((< pt eot)
+             (goto-char eot))
+            ((= pt eol)
+             (goto-char (or sea--last-forward-pt eot))
+             (setq sea--last-forward-pt nil))
+            ((>= pt eot)
+             (setq sea--last-backward-pt pt)
+             (goto-char eol))))))
+
+;;;###autoload
+(defun sea/backward-kill-to-bol-and-indent ()
+  "Kill line to the first non-blank character. If invoked again afterwards, kill
+line to beginning of line. Same as `evil-delete-back-to-indentation'."
   (interactive)
-  (let ((eol (if (not visual-line-mode)
-                 (line-end-position)
-               (save-excursion (end-of-visual-line) (point)))))
-    (if (or (and (< (point) eol)
-                 (sp-point-in-comment))
-            (not (sp-point-in-comment eol)))
-        (if (= (point) eol)
-            (progn
-              (goto-char sea--last-forward-pt)
-              (setq sea--last-forward-pt -1))
-          (setq sea--last-forward-pt (point))
-          (goto-char eol))
-      (let* ((bol (save-excursion (beginning-of-visual-line) (point)))
-             (boc (or (save-excursion
-                        (if (not comment-use-syntax)
-                            (progn
-                              (goto-char bol)
-                              (when (re-search-forward comment-start-skip eol t)
-                                (or (match-end 1) (match-beginning 0))))
-                          (goto-char eol)
-                          (while (and (sp-point-in-comment)
-                                      (> (point) bol))
-                            (backward-char))
-                          (skip-chars-backward " " bol)
-                          (point)))
-                      eol)))
-        (when (> sea--last-forward-pt boc)
-          (setq boc sea--last-forward-pt))
-        (if (or (= eol (point))
-                (> boc (point)))
-            (progn
-              (goto-char boc)
-              (setq sea--last-forward-pt -1))
-          (setq sea--last-forward-pt (point))
-          (goto-char eol))))))
+  (let ((empty-line-p (save-excursion (beginning-of-line)
+                                      (looking-at-p "[ \t]*$"))))
+    (funcall (if (fboundp 'evil-delete)
+                 #'evil-delete
+               #'delete-region)
+             (point-at-bol) (point))
+    (unless empty-line-p
+      (indent-according-to-mode))))
+
+;;;###autoload
+(defun sea/delete-backward-word (arg)
+  "Like `backward-kill-word', but doesn't affect the kill-ring."
+  (interactive "p")
+  (let (kill-ring)
+    (ignore-errors (backward-kill-word arg))))
 
 ;;;###autoload
 (defun sea/dumb-indent ()
@@ -156,20 +251,6 @@ true end of the line. The opposite of `sea/backward-to-bol-or-indent'."
                 (- tab-width movement)))))))))
 
 ;;;###autoload
-(defun sea/backward-kill-to-bol-and-indent ()
-  "Kill line to the first non-blank character. If invoked again
-afterwards, kill line to beginning of line."
-  (interactive)
-  (let ((empty-line-p (save-excursion (beginning-of-line)
-                                      (looking-at-p "[ \t]*$"))))
-    (funcall (if (fboundp 'evil-delete)
-                 #'evil-delete
-               #'delete-region)
-             (point-at-bol) (point))
-    (unless empty-line-p
-      (indent-according-to-mode))))
-
-;;;###autoload
 (defun sea/retab (arg &optional beg end)
   "Converts tabs-to-spaces or spaces-to-tabs within BEG and END (defaults to
 buffer start and end, to make indentation consistent. Which it does depends on
@@ -177,7 +258,7 @@ the value of `indent-tab-mode'.
 
 If ARG (universal argument) is non-nil, retab the current buffer using the
 opposite indentation style."
-  (interactive "Pr")
+  (interactive "P\nr")
   (unless (and beg end)
     (setq beg (point-min)
           end (point-max)))
@@ -192,15 +273,9 @@ opposite indentation style."
 
 Respects `require-final-newline'."
   (interactive)
-  (goto-char (point-max))
-  (skip-chars-backward " \t\n\v")
-  (when (looking-at "\n\\(\n\\|\\'\\)")
-    (forward-char 1))
-  (when require-final-newline
-    (unless (bolp)
-      (insert "\n")))
-  (when (looking-at "\n+")
-    (replace-match "")))
+  (save-excursion
+    (goto-char (point-max))
+    (delete-blank-lines)))
 
 ;;;###autoload
 (defun sea/dos2unix ()
@@ -240,14 +315,15 @@ editorconfig or dtrt-indent installed."
          (let (editorconfig-lisp-use-default-indent)
            (editorconfig-set-indentation nil width)))
         ((require 'dtrt-indent nil t)
-         (when-let (var (nth 2 (assq major-mode dtrt-indent-hook-mapping-list)))
-           (sea-log "Updated %s = %d" var width)
-           (set var width))))
+         (when-let (vars (nth 2 (assq major-mode dtrt-indent-hook-mapping-list)))
+           (dolist (var (ensure-list vars))
+             (sea-log "Updated %s = %d" var width)
+             (set var width)))))
   (message "Changed indentation to %d" width))
 
 
 ;;
-;; Hooks
+;;; Hooks
 
 ;;;###autoload
 (defun sea-enable-delete-trailing-whitespace-h ()
