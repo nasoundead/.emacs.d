@@ -70,17 +70,12 @@
       :nv  "K" #'+lookup/documentation
       ;; :nv  "gd" #'+lookup/definition
       :nv  "gd" #'xref-find-definitions
-      :nv  "gD" #'+lookup/references
+      :nv  "gr" #'+lookup/references
       ;; :nv  "gD" #'xref-find-references
       :nv  "gf" #'+lookup/file
       :n  "gQ" #'+format:region
       :n  "gp" #'+evil/reselect-paste
       :v  "gp" #'+evil/paste-preserve-register
-      :n  "gr" #'+eval:region
-      :n  "gR" #'+eval/buffer
-      :v  "gR" #'+eval:replace-region
-      :v  "@"  #'+evil:apply-macro
-      :n  "g@" #'+evil:apply-macro
       ;; repeat in visual mode (FIXME buggy)
       :v  "."  #'evil-repeat
       ;; don't leave visual mode after shifting
@@ -229,16 +224,11 @@
       :o  "s"  #'evil-surround-edit
       :o  "S"  #'evil-Surround-edit
 
-      ;; lispyville
-      ;; (:after lispyville-mode
-      ;;   :map lispyville-mode-map
-      ;;   :n "gc" #'lispyville-comment-or-uncomment
-      ;;   :n "gy" #'lispyville-comment-and-clone-dwim
-      ;;   :n ",ci" #'lispyville-comment-or-uncomment-line
-      ;;   :n "M-(" #'lispyville-wrap-with-round
-      ;;   :n "M-[" #'lispyville-wrap-with-brackets
-      ;;   :n "M-{" #'lispyville-wrap-with-braces
-      ;;   )
+      ;; evil-lion
+      :n "gl" #'evil-lion-left
+      :n "gL" #'evil-lion-right
+      :v "gl" #'evil-lion-left
+      :v "gL" #'evil-lion-right
 
       ;; expand-region
       :v  "v"  #'er/expand-region
@@ -328,9 +318,9 @@
       :n  "!"  #'rotate-text
 
       ;; swiper
-      (:after swiper
-        (:map swiper-map
-          [backtab]  #'+ivy/wgrep-occur))
+      ;; (:after swiper
+      ;;   (:map swiper-map
+      ;;     [backtab]  #'+ivy/wgrep-occur))
 
       ;; yasnippet
       (:after yasnippet
@@ -630,8 +620,8 @@
       (list "C-j" "C-k" "gd" "gf" "K" "[" "]" "gz"
             sea-leader-key sea-localleader-key))
 
-(evil-ex-define-cmd "mc"           #'+multiple-cursors:evil-mc)
-(evil-ex-define-cmd "iedit"        #'evil-multiedit-ex-match)
-(evil-ex-define-cmd "git"         #'magit-status)         ; open magit status window
-(evil-ex-define-cmd "rg"        #'+ivy:rg)
-(evil-ex-define-cmd "rgc[wd]"   #'+ivy:rg-from-cwd)
+(evil-ex-define-cmd "mc"      #'+multiple-cursors:evil-mc)
+(evil-ex-define-cmd "iedit"   #'evil-multiedit-ex-match)
+(evil-ex-define-cmd "git"     #'magit-status)         ; open magit status window
+(evil-ex-define-cmd "rg"      #'+vertico/project-search)
+(evil-ex-define-cmd "rgc[wd]" #'+vertico/project-search-from-cwd)
