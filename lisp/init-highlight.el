@@ -22,6 +22,20 @@
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
 ;;
+
+
+(use-package highlight-global
+  :ensure nil
+  :commands (highlight-frame-toggle)
+  :bind (("M-h" . highlight-frame-toggle))
+  :config
+  (progn
+    (setq-default highlight-faces
+                  '(('hi-red-b . 0)
+                    ('hi-aquamarine . 0)
+                    ('hi-pink . 0)
+                    ('hi-blue-b . 0)))))
+
 ;; Highlight symbols
 ;; (use-package symbol-overlay
 ;;   :diminish
