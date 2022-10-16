@@ -35,8 +35,6 @@
   :init
   (setq company-minimum-prefix-length 2
         company-tooltip-limit 14
-        ;; Trigger completion immediately.
-        company-idle-delay 0
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
@@ -78,8 +76,8 @@
   (add-hook 'sea-project-hook #'+company|enable-project-dicts))
 
 
-;; (require 'company-tabnine)
-;; (add-to-list 'company-backends #'company-tabnine)
+(require 'company-tabnine)
+(add-to-list 'company-backends #'company-tabnine)
 
 
 (provide 'init-company)

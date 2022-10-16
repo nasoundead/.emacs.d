@@ -88,7 +88,8 @@
           magit-post-unstage)
          . treemacs-magit--schedule-update))
 
-
+(use-package treemacs-all-the-icons
+  :after treemacs)
 
 (use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
   :after (treemacs)

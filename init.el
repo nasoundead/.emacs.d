@@ -100,8 +100,6 @@ Meant to be used with `run-hook-wrapped'."
     ;; return nil so `run-hook-wrapped' won't short circuit
     nil))
 
-
-
 (add-to-list 'load-path sea-core-dir)
 (add-to-list 'load-path sea-site-lisp-dir)
 (require 'init-package)
@@ -119,17 +117,14 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-keybinds)
 ;; (require 'init-ivy)
 (require 'init-vertico)
-;; (require 'init-company)
-(require 'init-corfu)
-
-
+(require 'init-company)
+;; (require 'init-corfu)
 (require 'init-treesitter)
 
 (require 'init-yasnippet)
 (require 'init-projectile)
 (require 'init-flycheck)
 (require 'init-treemacs)
-
 
 (require 'init-utils)
 (require 'init-vcs)

@@ -271,6 +271,17 @@ extension, try to guess one."
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
 
+;; 输入法切换
+(when IS-WIN
+  (defun emacs-ime-disable ()
+    (w32-set-ime-open-status nil))
+
+  (defun emacs-ime-enable ()
+    (w32-set-ime-open-status t))
+
+  ;; (add-hook 'evil-insert-state-entry-hook 'emacs-ime-disable)
+  (add-hook 'evil-insert-state-exit-hook 'emacs-ime-disable))
+
 (provide 'init-edit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
