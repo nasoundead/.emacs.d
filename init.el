@@ -119,17 +119,22 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-keybinds)
 ;; (require 'init-ivy)
 (require 'init-vertico)
-(require 'init-company)
+;; (require 'init-company)
+(require 'init-corfu)
+
+
 (require 'init-treesitter)
-;; (require 'init-corfu)
+
 (require 'init-yasnippet)
 (require 'init-projectile)
 (require 'init-flycheck)
 (require 'init-treemacs)
 
+
 (require 'init-utils)
 (require 'init-vcs)
 (require 'init-dired)
+(require 'init-c)
 (require 'init-restore)
 (require 'init-org)
 (require 'init-eshell)

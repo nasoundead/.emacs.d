@@ -43,12 +43,14 @@
   (corfu-preview-current nil)
   (corfu-echo-documentation t)
   :bind (:map corfu-map
-          ("TAB" . corfu-next)
-          ([tab] . corfu-next)
-          ("S-TAB" . corfu-previous)
+          ("TAB"    . corfu-next)
+          ("C-j"    . corfu-next)
+          ([tab]    . corfu-next)
+          ("S-TAB"  . corfu-previous)
+          ("C-k"    . corfu-previous)
           ([backtab]. corfu-previous)
-          ("C-d" . corfu-info-documentation)
-          ("M-." . corfu-info-location))
+          ("C-d"    . corfu-info-documentation)
+          ("M-      ." . corfu-info-location))
   :init
   (global-corfu-mode)
 

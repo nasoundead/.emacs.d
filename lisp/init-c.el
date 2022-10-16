@@ -54,6 +54,7 @@
   (with-eval-after-load 'company
     (use-package company-c-headers
       :init (cl-pushnew 'company-c-headers company-backends))))
+(require 'cmake-mode)
 
 (provide 'init-c)
 

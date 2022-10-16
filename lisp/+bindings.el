@@ -162,7 +162,7 @@
           "s"       #'sea/split-window-horizontally-instead
           "v"       #'sea/split-window-vertically-instead
           ;; Delete window
-          "c"     #'ace-delete-window
+          "c"     #'delete-window
           "h"     #'shrink-window-horizontally
           "l"     #'enlarge-window-horizontally
           "j"     #'enlarge-window

@@ -35,6 +35,8 @@
   :init
   (setq company-minimum-prefix-length 2
         company-tooltip-limit 14
+        ;; Trigger completion immediately.
+        company-idle-delay 0
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
@@ -53,11 +55,11 @@
   ;; by C-x C-n, will switch from `company-yasnippet' to
   ;; `company-dabbrev-code'.
   (defadvice! +company--abort-previous-a (&rest _)
-      :before #'company-begin-backend
-      (company-abort))
+    :before #'company-begin-backend
+    (company-abort))
 
   (add-hook 'company-mode-hook #'+company-init-backends-h)
-)
+  )
 
 (use-package company-statistics
   :after company
@@ -74,6 +76,10 @@
         (cl-pushnew mode company-dict-minor-mode-list :test #'eq)
       (setq company-dict-minor-mode-list (delq mode company-dict-minor-mode-list))))
   (add-hook 'sea-project-hook #'+company|enable-project-dicts))
+
+
+;; (require 'company-tabnine)
+;; (add-to-list 'company-backends #'company-tabnine)
 
 
 (provide 'init-company)
