@@ -76,8 +76,8 @@
   (add-hook 'sea-project-hook #'+company|enable-project-dicts))
 
 
-(require 'company-tabnine)
-(add-to-list 'company-backends #'company-tabnine)
+;; (require 'company-tabnine)
+;; (add-to-list 'company-backends #'company-tabnine)
 
 
 (provide 'init-company)

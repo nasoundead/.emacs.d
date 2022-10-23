@@ -17,3 +17,4 @@ request/
 var/
 transient/
 ^flycheck_*.el
+eln-cache

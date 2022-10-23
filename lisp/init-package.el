@@ -13,7 +13,9 @@
       package-archives
       '(("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
         ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
-        ("org" . "http://mirrors.ustc.edu.cn/elpa/nongnu/"))
+        ("org" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        )
       )
 
 (package-initialize)

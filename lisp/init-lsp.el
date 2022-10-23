@@ -61,22 +61,13 @@
 
   :config
   (setq
-   ;; lsp-auto-guess-root nil      ; Detect project root
-   ;; lsp-keep-workspace-alive nil ; Auto-kill LSP server
-   ;; lsp-enable-indentation nil
-   ;; lsp-enable-on-type-formatting nil
-   ;; lsp-prefer-capf t
+   ;; lsp-keymap-prefix "M-l"
    lsp-rust-analyzer-server-display-inlay-hints t
    lsp-rust-analyzer-inlay-hints-mode t
    lsp-rust-analyzer-cargo-watch-command "clippy"
    lsp-rust-analyzer-display-parameter-hints t
    lsp-rust-analyzer-display-chaining-hints t
    )
-
-  ;; For `lsp-clients'
-  ;; (setq lsp-clients-python-library-directories '("/usr/local/" "/usr/"))
-  ;; (unless (executable-find "rls")
-  ;;   (setq lsp-rust-rls-server-command '("rustup" "run" "stable" "rls")))
   )
 
 (use-package lsp-ui
@@ -86,43 +77,11 @@
          :map lsp-ui-mode-map
          ("M-<f6>" . lsp-ui-hydra/body))
   :hook (lsp-mode . lsp-ui-mode)
-  :init (setq lsp-ui-doc-enable t
-              ;; lsp-ui-doc-use-webkit nil
-              ;; lsp-ui-doc-delay 0.2
-              lsp-ui-doc-include-signature t
-              lsp-ui-doc-position 'at-point
-              lsp-ui-doc-border (face-foreground 'default)
-              lsp-eldoc-enable-hover nil ; Disable eldoc displays in minibuffer
-
-              lsp-ui-sideline-enable t
-              lsp-ui-sideline-show-hover nil
-              lsp-ui-sideline-show-diagnostics nil
-              lsp-ui-sideline-ignore-duplicate t
-
-              lsp-ui-imenu-enable t
-              lsp-ui-imenu-colors `(,(face-foreground 'font-lock-keyword-face)
-                                    ,(face-foreground 'font-lock-string-face)
-                                    ,(face-foreground 'font-lock-constant-face)
-                                    ,(face-foreground 'font-lock-variable-name-face)))
   :config
-  (add-to-list 'lsp-ui-doc-frame-parameters '(right-fringe . 8))
-
   ;; `C-g'to close doc
   (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
+  )
 
-  ;; Reset `lsp-ui-doc-background' after loading theme
-  (add-hook 'after-load-theme-hook
-            (lambda ()
-              (setq lsp-ui-doc-border (face-foreground 'default))
-              (set-face-background 'lsp-ui-doc-background
-                                   (face-background 'tooltip)))))
-
-;; Ivy integration
-(use-package lsp-ivy
-  :after lsp-mode
-  :bind (:map lsp-mode-map
-          ([remap xref-find-apropos] . lsp-ivy-workspace-symbol)
-          ("C-s-." . lsp-ivy-global-workspace-symbol)))
 
 ;; `treemacs' requires 25.2+, so `dap-mode' and `lsp-treemacs' also requires 25.2+
 (when EMACS26+

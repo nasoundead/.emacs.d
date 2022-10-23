@@ -322,8 +322,9 @@
           "<M-right>"     #'+snippets/goto-end-of-field
           "<M-left>"      #'+snippets/goto-start-of-field
           "<M-backspace>" #'+snippets/delete-to-start-of-field
-          [backspace]     #'+snippets/delete-backward-char
-          [delete]        #'+snippets/delete-forward-char-or-field)
+          ;; [backspace]     #'+snippets/delete-backward-char
+          ;; [delete]        #'+snippets/delete-forward-char-or-field
+          )
         (:map yas-minor-mode-map
           :ig [tab] yas-maybe-expand
           :v  [tab] #'yas-insert-snippet))

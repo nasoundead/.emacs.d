@@ -120,22 +120,22 @@ languages)."
 
 (defmacro def-pairs (pairs)
   `(progn
-     ,@(loop for (key . val) in pairs
-         collect
-         `(defun ,(read (concat
-                 "wrap-with-"
-                 (prin1-to-string key)
-                 "s"))
-          (&optional arg)
-        (interactive "p")
-        (sp-wrap-with-pair ,val)))))
+     ,@(cl-loop for (key . val) in pairs
+                collect
+                `(defun ,(read (concat
+                                "wrap-with-"
+                                (prin1-to-string key)
+                                "s"))
+                     (&optional arg)
+                   (interactive "p")
+                   (sp-wrap-with-pair ,val)))))
 
 (def-pairs ((paren . "(")
-        (bracket . "[")
-        (brace . "{")
-        (single-quote . "'")
-        (double-quote . "\"")
-        (back-quote . "`")))
+            (bracket . "[")
+            (brace . "{")
+            (single-quote . "'")
+            (double-quote . "\"")
+            (back-quote . "`")))
 
 
 
@@ -147,29 +147,17 @@ languages)."
  ("C-<down>" . sp-down-sexp)
  ("C-<up>"   . sp-up-sexp)
 
- ("C-M-f" . sp-forward-sexp)
- ("C-M-b" . sp-backward-sexp)
-
  ("C-M-n" . sp-next-sexp)
- ("C-M-p" . sp-previous-sexp)
-
- ("C-S-f" . sp-forward-symbol)
- ("C-S-b" . sp-backward-symbol)
+ ("C-M-p" . sp-backward-sexp)
 
  ("C-<right>" . sp-forward-slurp-sexp)
  ("M-<right>" . sp-forward-barf-sexp)
  ("C-<left>"  . sp-backward-slurp-sexp)
  ("M-<left>"  . sp-backward-barf-sexp)
 
- ("C-k"   . sp-kill-hybrid-sexp)
- ("M-k"   . sp-backward-kill-sexp)
- ("C-M-w" . sp-copy-sexp)
-
  ("M-[" . sp-backward-unwrap-sexp)
  ("M-]" . sp-unwrap-sexp)
  ("M-S-]" . sp-rewrap-sexp)
-
- ("C-x C-t" . sp-transpose-hybrid-sexp)
 
  ("C-c ("  . wrap-with-parens)
  ("C-c ["  . wrap-with-brackets)

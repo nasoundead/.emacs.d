@@ -11,7 +11,9 @@
   (setq w32-rwindow-modifier 'super) ; Right Windows key
 
   (setq w32-pass-apps-to-system nil)
-  (setq w32-apps-modifier 'hyper) ; Menu/App key
+
+  (setq w32-apps-modifier 'hyper)
+  (setq w32-rwindow-modifier 'hyper)
   )
 
 ;; coding

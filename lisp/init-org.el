@@ -24,8 +24,8 @@
 (setq org-confirm-babel-evaluate nil)
 (setq org-src-fontify-natively t)
 
-(add-hook 'org-babel-after-execute-hook 'display-inline-images 'append)
-(add-hook 'org-mode-hook '(lambda ()(setq truncate-lines t)) 'append)
+(add-hook 'org-babel-after-execute-hook #'display-inline-images 'append)
+(add-hook 'org-mode-hook #'(lambda ()(setq truncate-lines t)) 'append)
 (defun display-inline-images ()
   (condition-case nil
       (org-display-inline-images)
@@ -37,7 +37,7 @@
   (let ((url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
     (unless (file-exists-p plantuml-jar-path)
       (url-copy-file url plantuml-jar-path))))
-(add-hook 'org-mode-hook '(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))))
+(add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))))
 (use-package plantuml-mode
   :init
   ;; Enable plantuml-mode for PlantUML files
