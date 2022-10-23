@@ -40,10 +40,10 @@
   :config
   (setq
    treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
-        treemacs-width                   30
-        treemacs-missing-project-action  'remove
-        treemacs-sorting                 'alphabetic-asc
-        )
+   treemacs-width                   30
+   treemacs-missing-project-action  'remove
+   treemacs-sorting                 'alphabetic-asc
+   )
 
   (treemacs-follow-mode t)
   ;; (treemacs-load-all-the-icons-with-workaround-font)

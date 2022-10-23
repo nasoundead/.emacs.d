@@ -314,14 +314,6 @@
         :m "B" #'realgud:cmd-clear
         :n "c" #'realgud:cmd-continue)
 
-      ;; rotate-text
-      :n  "!"  #'rotate-text
-
-      ;; swiper
-      ;; (:after swiper
-      ;;   (:map swiper-map
-      ;;     [backtab]  #'+ivy/wgrep-occur))
-
       ;; yasnippet
       (:after yasnippet
         (:map yas-keymap
@@ -381,9 +373,7 @@
       ;; Most commonly used
       :desc "Find file in project"    :n "SPC" #'projectile-find-file
       :desc "Browse files"            :n "."   #'find-file
-      :desc "Toggle last popup"       :n "~"   #'+popup/toggle
 
-      :desc "Blink cursor line"       :n "DEL" #'+nav-flash/blink-cursor
       :desc "Jump to bookmark"        :n "RET" #'bookmark-jump
 
 
@@ -546,7 +536,6 @@
         :desc "Find other file"         :n  "o" #'projectile-find-other-file
         :desc "Switch project"          :n  "p" #'projectile-switch-project
         :desc "Recent project files"    :n  "r" #'projectile-recentf
-        :desc "List project tasks"      :n  "t" #'+ivy/tasks
         :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache)
 
       (:desc "quit" :prefix "q"
@@ -572,8 +561,6 @@
         :desc "Impatient mode"         :n "h" #'+impatient-mode/toggle
         :desc "Evil goggles"           :n "g" #'evil-goggles-mode
         :desc "org-tree-slide mode"    :n "p" #'+org-present/start))
-
-
 
 ;;
 ;; Keybinding fixes

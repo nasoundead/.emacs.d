@@ -65,15 +65,20 @@
 
 ;; we want dired not not make always a new buffer if visiting a directory
 ;; but using only one dired buffer for all directories.
-(defadvice dired-advertised-find-file (around dired-subst-directory activate)
-  "Replace current buffer if file is a directory."
-  (interactive)
-  (let ((orig (current-buffer))
-        (filename (dired-get-filename)))
-    ad-do-it
-    (when (and (file-directory-p filename)
-               (not (eq (current-buffer) orig)))
-      (kill-buffer orig))))
+(eval-after-load "dired"
+  '(progn
+     (defadvice dired-advertised-find-file (around dired-subst-directory activate)
+       "Replace current buffer if file is a directory."
+       (interactive)
+       (let* ((orig (current-buffer))
+              ;; (filename (dired-get-filename))
+              (filename (dired-get-filename t t))
+              (bye-p (file-directory-p filename)))
+         ad-do-it
+         (when (and bye-p (not (string-match "[/\\\\]\\.$" filename)))
+           (kill-buffer orig))))))
+
+
 (eval-after-load "dired"
   ;; don't remove `other-window', the caller expects it to be there
   '(defun dired-up-directory (&optional other-window)

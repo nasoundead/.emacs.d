@@ -16,3 +16,4 @@ history
 request/
 var/
 transient/
+^flycheck_*.el
