@@ -210,10 +210,11 @@ Dictionary.app behind the scenes to get definitions.")
   ;; Use `better-jumper' instead of xref's marker stack
   (advice-add #'xref-push-marker-stack :around #'sea-set-jump-a)
 
-  (use-package ivy-xref
-    :config
-    (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
-    (set-popup-rule! "^\\*xref\\*$" :ignore t))
+  ;; (use-package ivy-xref
+  ;;   :config
+  ;;   (setq xref-show-xrefs-function #'ivy-xref-show-xrefs)
+  ;;   ;; (set-popup-rule! "^\\*xref\\*$" :ignore t)
+  ;;   )
 
   )
 

@@ -81,6 +81,8 @@
  `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
     1 'org-checkbox-done-text prepend))
  'append)
+
+
 (setq-default
  org-eldoc-breadcrumb-separator " → "
  org-enforce-todo-dependencies t
@@ -117,6 +119,70 @@
 
  ;; Scale up LaTeX previews a bit (default is too small)
  org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+
+
+(defvar org-structure-template-alist)
+
+(defun org+-avoid-old-structure-templates (fun &rest args)
+  "Call FUN with ARGS with modified `org-structure-template-alist'.
+Use a copy of `org-structure-template-alist' with all
+old structure templates removed."
+  (let ((org-structure-template-alist
+         (cl-remove-if
+          (lambda (template)
+            (null (stringp (cdr template))))
+          org-structure-template-alist)))
+    (apply fun args)))
+
+(eval-after-load "org"
+  '(when (version<= "9.2" (org-version))
+     (defun org-try-structure-completion ()
+       "Try to complete a structure template before point.
+This looks for strings like \"<e\" on an otherwise empty line and
+expands them."
+       (let ((l (buffer-substring (point-at-bol) (point)))
+             a)
+         (when (and (looking-at "[ \t]*$")
+                    (string-match "^[ \t]*<\\([a-zA-Z]+\\)$" l)
+                    (setq a (assoc (match-string 1 l) org-structure-template-alist))
+                    (null (stringp (cdr a))))
+           (org-complete-expand-structure-template (+ -1 (point-at-bol)
+                                                      (match-beginning 1)) a)
+           t)))
+
+     (defun org-complete-expand-structure-template (start cell)
+       "Expand a structure template."
+       (let ((rpl (nth 1 cell))
+             (ind ""))
+         (delete-region start (point))
+         (when (string-match "\\`[ \t]*#\\+" rpl)
+           (cond
+            ((bolp))
+            ((not (string-match "\\S-" (buffer-substring (point-at-bol) (point))))
+             (setq ind (buffer-substring (point-at-bol) (point))))
+            (t (newline))))
+         (setq start (point))
+         (when (string-match "%file" rpl)
+           (setq rpl (replace-match
+                      (concat
+                       "\""
+                       (save-match-data
+                         (abbreviate-file-name (read-file-name "Include file: ")))
+                       "\"")
+                      t t rpl)))
+         (setq rpl (mapconcat 'identity (split-string rpl "\n")
+                              (concat "\n" ind)))
+         (insert rpl)
+         (when (re-search-backward "\\?" start t) (delete-char 1))))
+
+     (advice-add 'org-tempo-add-templates :around #'org+-avoid-old-structure-templates)
+
+     (add-hook 'org-tab-after-check-for-cycling-hook #'org-try-structure-completion)
+
+     (require 'org-tempo)))
+
+
+
 ;; Block Template
 (use-package hydra :ensure t
   :config

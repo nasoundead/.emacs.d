@@ -38,7 +38,7 @@
 
 (use-package vertico-posframe
   :init
-  (vertico-posframe-mode)
+  ;; (vertico-posframe-mode)
   ;; :hook (vertico-mode . vertico-posframe-mode)
   :config
   (add-hook 'sea-reload-hook #'posframe-delete-all))

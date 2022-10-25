@@ -54,7 +54,7 @@
       :n "M-a"   #'mark-whole-buffer
       :n "M-c"   #'evil-yank
       :n "M-q"   (if (daemonp) #'delete-frame #'evil-quit-all)
-      :n "M-f"   #'swiper
+      :n "M-f"   #'consult-line
       :n "M-s"   #'save-buffer
       :gnvimr "M-v" #'clipboard-yank
 
@@ -64,16 +64,13 @@
       :m  "]a" #'evil-forward-arg
       :m  "[a" #'evil-backward-arg
       :n  "]b" #'next-buffer
-      :n  "L" #'next-buffer
       :n  "[b" #'previous-buffer
-      :n  "H" #'previous-buffer
       :nv  "K" #'+lookup/documentation
       ;; :nv  "gd" #'+lookup/definition
       :nv  "gd" #'xref-find-definitions
       :nv  "gr" #'+lookup/references
       ;; :nv  "gD" #'xref-find-references
       :nv  "gf" #'+lookup/file
-      :n  "gQ" #'+format:region
       :n  "gp" #'+evil/reselect-paste
       :v  "gp" #'+evil/paste-preserve-register
       ;; repeat in visual mode (FIXME buggy)
@@ -92,8 +89,6 @@
         :gvnime "j" #'widget-forward
         :gvnime "k" #'widget-backward)
 
-      ;; evil-easymotion
-      ;; :m "gs" evilem-map
       (:map evilem-map
         "a" (evilem-create #'evil-forward-arg)
         "A" (evilem-create #'evil-backward-arg)
@@ -408,7 +403,7 @@
 
       (:desc "s+default/search-cwd+default/search-cwdearch" :prefix "/"
 
-        :desc "Buffer"                 :nv "b" #'swiper
+        :desc "Buffer"                 :nv "b" #'consult-line
         ;; :desc "Project"                :nv "p" #'+ivy/project-search
         :desc "Project"                :nv "p" #'+vertico/project-search
         ;; :desc "Directory"              :nv "d" #'+ivy/project-search-from-cwd

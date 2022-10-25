@@ -96,6 +96,17 @@
   :ensure t
   :config (treemacs-set-scope-type 'Tabs))
 
+(map!
+ :after treemacs
+ :map treemacs-mode-map
+ :n "R" #'treemacs-rename-file
+ :n "m" #'treemacs-mark-or-unmark-path-at-point
+ :n "dd" #'treemacs-delete-file
+ :n "D" #'treemacs-delete-marked-files
+ :n "cc" #'treemacs-move-file
+ :n "C" #'treemacs-move-marked-files
+ )
+
 (provide 'init-treemacs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
