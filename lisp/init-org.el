@@ -120,6 +120,9 @@
  ;; Scale up LaTeX previews a bit (default is too small)
  org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
 
+(map! :after org
+      :map org-mode-map
+      :n "H" #'org-up-element)
 
 (defvar org-structure-template-alist)
 

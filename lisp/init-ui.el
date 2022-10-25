@@ -15,6 +15,26 @@
 (use-package color-theme-sanityinc-tomorrow)
 (use-package doom-themes)
 (use-package gruber-darker-theme)
+
+(use-package solaire-mode
+  :ensure t
+  :config
+  (solaire-global-mode +1))
+(use-package vscode-dark-plus-theme
+  :config
+  ;; (load-theme 'vscode-dark-plus t)
+  ;; Remove the border around the TODO word on org-mode files
+  (setq vscode-dark-plus-box-org-todo nil)
+
+  ;; Do not set different heights for some org faces
+  (setq vscode-dark-plus-scale-org-faces nil)
+
+  ;; Avoid inverting hl-todo face
+  (setq vscode-dark-plus-invert-hl-todo nil)
+  )
+
+
+;; (setq-default custom-enabled-themes '(vscode-dark-plus-theme))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
 (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
 ;; (setq-default custom-enabled-themes '(doom-dracula))
