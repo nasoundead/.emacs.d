@@ -1,10 +1,14 @@
 ;;; init-org.el
 ;;; Code:
 
+
 (use-package org
-  :bind
-  ("C-c l" . org-store-link)
-  ("C-c a" . org-agenda))
+  :mode (("\\.org$" . org-mode))
+  :ensure org-plus-contrib
+  :config
+  (progn
+    ;; config stuff
+    ))
 
 (use-package ob-ipython
   :init
@@ -20,6 +24,7 @@
    (emacs-lisp . t)
    (ipython . t)
    (org . t)
+   ;; (c . t)
    (latex . t)))
 (setq org-confirm-babel-evaluate nil)
 (setq org-src-fontify-natively t)

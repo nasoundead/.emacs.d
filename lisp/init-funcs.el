@@ -1,5 +1,5 @@
 ;; Add your custom functions here
-(eval-when-compile (require 'cl))
+;; (eval-when-compile (require 'cl))
 (require 'subr-x)
 (eval-and-compile
   (when (version< emacs-version "26")
@@ -9,6 +9,14 @@
 (defun sea-enlist (exp)
   "Return EXP wrapped in a list, or as-is if already a list."
   (if (listp exp) exp (list exp)))
+
+
+
+(defun icon-displayable-p ()
+  "Return non-nil if icons are displayable."
+  (and (or (display-graphic-p) (daemonp))
+       (or (featurep 'all-the-icons)
+           (require 'all-the-icons nil t))))
 
 
 (if (fboundp 'with-eval-after-load)

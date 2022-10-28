@@ -33,8 +33,6 @@
 ;;
 
 
-;; Emacs client for the Language Server Protocol
-;; https://github.com/emacs-lsp/lsp-mode#supported-languages
 (use-package lsp-mode
   :commands (lsp-enable-which-key-integration lsp-format-buffer lsp-organize-imports)
   :diminish
@@ -58,25 +56,84 @@
   (setq read-process-output-max (* 3 1024 1024)
         lsp-semantic-tokens-enable t
         )
-
-  :config
-  (setq
-   ;; lsp-keymap-prefix "M-l"
-   lsp-rust-analyzer-server-display-inlay-hints t
-   lsp-rust-analyzer-inlay-hints-mode t
-   lsp-rust-analyzer-cargo-watch-command "clippy"
-   lsp-rust-analyzer-display-parameter-hints t
-   lsp-rust-analyzer-display-chaining-hints t
-   )
   )
 
 (use-package lsp-ui
   :custom-face
   (lsp-ui-sideline-code-action ((t (:inherit warning))))
+  :pretty-hydra
+  ((:title (pretty-hydra-title "LSP UI" 'faicon "rocket" :face 'all-the-icons-green)
+           :color amaranth :quit-key "q")
+   ("Doc"
+    (("d e" (progn
+              (lsp-ui-doc-enable (not lsp-ui-doc-mode))
+              (setq lsp-ui-doc-enable (not lsp-ui-doc-enable)))
+      "enable" :toggle lsp-ui-doc-mode)
+     ("d s" (setq lsp-ui-doc-include-signature (not lsp-ui-doc-include-signature))
+      "signature" :toggle lsp-ui-doc-include-signature)
+     ("d t" (setq lsp-ui-doc-position 'top)
+      "top" :toggle (eq lsp-ui-doc-position 'top))
+     ("d b" (setq lsp-ui-doc-position 'bottom)
+      "bottom" :toggle (eq lsp-ui-doc-position 'bottom))
+     ("d p" (setq lsp-ui-doc-position 'at-point)
+      "at point" :toggle (eq lsp-ui-doc-position 'at-point))
+     ("d h" (setq lsp-ui-doc-header (not lsp-ui-doc-header))
+      "header" :toggle lsp-ui-doc-header)
+     ("d f" (setq lsp-ui-doc-alignment 'frame)
+      "align frame" :toggle (eq lsp-ui-doc-alignment 'frame))
+     ("d w" (setq lsp-ui-doc-alignment 'window)
+      "align window" :toggle (eq lsp-ui-doc-alignment 'window)))
+    "Sideline"
+    (("s e" (progn
+              (lsp-ui-sideline-enable (not lsp-ui-sideline-mode))
+              (setq lsp-ui-sideline-enable (not lsp-ui-sideline-enable)))
+      "enable" :toggle lsp-ui-sideline-mode)
+     ("s h" (setq lsp-ui-sideline-show-hover (not lsp-ui-sideline-show-hover))
+      "hover" :toggle lsp-ui-sideline-show-hover)
+     ("s d" (setq lsp-ui-sideline-show-diagnostics (not lsp-ui-sideline-show-diagnostics))
+      "diagnostics" :toggle lsp-ui-sideline-show-diagnostics)
+     ("s s" (setq lsp-ui-sideline-show-symbol (not lsp-ui-sideline-show-symbol))
+      "symbol" :toggle lsp-ui-sideline-show-symbol)
+     ("s c" (setq lsp-ui-sideline-show-code-actions (not lsp-ui-sideline-show-code-actions))
+      "code actions" :toggle lsp-ui-sideline-show-code-actions)
+     ("s i" (setq lsp-ui-sideline-ignore-duplicate (not lsp-ui-sideline-ignore-duplicate))
+      "ignore duplicate" :toggle lsp-ui-sideline-ignore-duplicate))
+    "Action"
+    (("h" backward-char "←")
+     ("j" next-line "↓")
+     ("k" previous-line "↑")
+     ("l" forward-char "→")
+     ("C-a" mwim-beginning-of-code-or-line nil)
+     ("C-e" mwim-end-of-code-or-line nil)
+     ("C-b" backward-char nil)
+     ("C-n" next-line nil)
+     ("C-p" previous-line nil)
+     ("C-f" forward-char nil)
+     ("M-b" backward-word nil)
+     ("M-f" forward-word nil)
+     ("c" lsp-ui-sideline-apply-code-actions "apply code actions"))))
   :bind (("C-c u" . lsp-ui-imenu)
          :map lsp-ui-mode-map
-         ("M-<f6>" . lsp-ui-hydra/body))
+         ("M-<f6>" . lsp-ui-hydra/body)
+         ("s-<return>" . lsp-ui-sideline-apply-code-actions))
   :hook (lsp-mode . lsp-ui-mode)
+  :init
+  (setq lsp-ui-sideline-show-diagnostics nil
+        lsp-ui-sideline-ignore-duplicate t
+        lsp-ui-doc-delay 0.1
+        lsp-ui-imenu-colors `(,(face-foreground 'font-lock-keyword-face)
+                              ,(face-foreground 'font-lock-string-face)
+                              ,(face-foreground 'font-lock-constant-face)
+                              ,(face-foreground 'font-lock-variable-name-face)))
+  ;; Set correct color to borders
+  (defun my-lsp-ui-doc-set-border ()
+    "Set the border color of lsp doc."
+    (setq lsp-ui-doc-border
+          (if (facep 'posframe-border)
+              (face-background 'posframe-border nil t)
+            (face-foreground 'shadow nil t))))
+  (my-lsp-ui-doc-set-border)
+  (add-hook 'after-load-theme-hook #'my-lsp-ui-doc-set-border t)
   :config
   ;; `C-g'to close doc
   (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
@@ -114,7 +171,6 @@
     :bind (:map lsp-mode-map
             ("C-<f8>" . lsp-treemacs-errors-list)
             ("M-<f8>" . lsp-treemacs-symbols)
-            ;; ("s-<f8>" . lsp-treemacs-java-deps-list)
             )
     ))
 

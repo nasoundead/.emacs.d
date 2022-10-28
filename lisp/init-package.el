@@ -11,9 +11,9 @@
       ;;   ("org"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/org/")
       ;;   ("gnu"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/"))
       package-archives
-      '(("gnu" . "http://mirrors.ustc.edu.cn/elpa/gnu/")
-        ("melpa" . "http://mirrors.ustc.edu.cn/elpa/melpa/")
-        ("org" . "http://mirrors.ustc.edu.cn/elpa/nongnu/")
+      '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+        ("org" . "http://orgmode.org/elpa/")
         ("marmalade" . "http://marmalade-repo.org/packages/")
         )
       )
