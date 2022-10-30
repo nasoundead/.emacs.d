@@ -68,6 +68,61 @@
   (eq system-type 'windows-nt)
   "Are we running on a Linux system?")
 
+(defconst centaur-org-directory 
+  (expand-file-name "~/org/")
+  "org dir")
+
+(defconst centaur-prettify-symbols-alist
+  '(("lambda" . ?λ)
+    ("<-"     . ?←)
+    ("->"     . ?→)
+    ("->>"    . ?↠)
+    ("=>"     . ?⇒)
+    ("map"    . ?↦)
+    ("/="     . ?≠)
+    ("!="     . ?≠)
+    ("=="     . ?≡)
+    ("<="     . ?≤)
+    (">="     . ?≥)
+    ("=<<"    . (?= (Br . Bl) ?≪))
+    (">>="    . (?≫ (Br . Bl) ?=))
+    ("<=<"    . ?↢)
+    (">=>"    . ?↣)
+    ("&&"     . ?∧)
+    ("||"     . ?∨)
+    ("not"    . ?¬))
+    "centaur-prettify-symbols-alist")
+
+(defconst centaur-prettify-org-symbols-alist
+  '(("[ ]"            . ?)
+    ("[-]"            . ?)
+    ("[X]"            . ?)
+
+    (":PROPERTIES:"   . ?)
+    (":END:"          . ?🔚)
+
+    ("#+ARCHIVE:"     . ?📦)
+    ("#+AUTHOR:"      . ?👤)
+    ("#+CREATOR:"     . ?💁)
+    ("#+DATE:"        . ?📆)
+    ("#+DESCRIPTION:" . ?⸙)
+    ("#+EMAIL:"       . ?📧)
+    ("#+HEADERS"      . ?☰)
+    ("#+OPTIONS:"     . ?⚙)
+    ("#+SETUPFILE:"   . ?⚒)
+    ("#+TAGS:"        . ?🏷)
+    ("#+TITLE:"       . ?📓)
+
+    ("#+BEGIN_SRC"    . ?⌜)
+    ("#+END_SRC"      . ?⌞)
+    ("#+begin_src"    . ?⌜)
+    ("#+end_src"      . ?⌞)
+
+    ("#+BEGIN_QUOTE"  . ?«)
+    ("#+END_QUOTE"    . ?»)
+    ("#+RESULTS:"     . ?💻))
+    "centaur-prettify-org-symbols-alist")
+
 (defvar sea-debug-mode (or (getenv "DEBUG") init-file-debug)
   "If non-nil, all sea functions will be verbose. Set DEBUG=1 in the command
 line or use --debug-init to enable this.")
@@ -152,24 +207,5 @@ Meant to be used with `run-hook-wrapped'."
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
-;; (setq custom-file (concat sea-cache-dir "custom.el"))
-;; (load custom-file t t)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes 'nil)
- '(package-selected-packages
-   '(vscode-dark-plus-theme toml-mode ztree youdao-dictionary whitespace-cleanup-mode which-key wgrep-ag web-mode web-beautify visual-regexp-steroids vimrc-mode vertico-posframe use-package unicode-fonts unicode-escape undo-tree treemacs-tab-bar treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil treemacs-all-the-icons tree-sitter-langs tiny tide tern tao-theme symbol-overlay switch-window swift-mode smeargle smartparens skewer-mode shrink-path scss-mode rustic rg restart-emacs rainbow-mode rainbow-delimiters quickrun py-autopep8 powershell plantuml-mode php-mode pcre2el origami org-projectile org-bullets orderless ob-ipython modern-cpp-font-lock mocha marginalia magit-svn magit-gitflow macrostep lsp-ui lsp-python-ms lsp-pyright lsp-java lsp-ivy json-mode js2-refactor js-comint ivy-xref ido-vertical-mode ibuffer-projectile hl-todo highlight-indent-guides hide-mode-line haml-mode gruber-darker-theme go-tag go-playground go-impl go-gen-test go-fill-struct go-dlv git-timemachine git-messenger general flymd flycheck-golangci-lint flx fish-mode evil-snipe evil-multiedit evil-mc evil-matchit evil-lion evil-exchange evil-escape evil-embrace evil-easymotion evil-commentary evil-collection evil-args eshell-z eshell-git-prompt emmet-mode embark elisp-slime-nav eldoc-eval ein editorconfig easy-kill dumb-jump doom-themes dockerfile-mode diminish diff-hl dictionary deft dashboard dash-docs css-eldoc csharp-mode counsel corfu consult company-statistics company-dict company-c-headers command-log-mode color-theme-sanityinc-tomorrow coffee-mode ccls browse-url-dwim browse-kill-ring browse-at-remote better-jumper anzu amx ample-theme aggressive-indent ag ace-link)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(diff-hl-change ((t (:background "#46D9FF"))))
- '(diff-hl-delete ((t (:background "#ff6c6b"))))
- '(diff-hl-insert ((t (:background "#98be65"))))
- '(hl-todo ((t (:box t :bold t))))
- '(lsp-ui-sideline-code-action ((t (:inherit warning))) t)
- '(org-table ((t (:family "Ubuntu Mono")))))
+(setq custom-file (concat sea-cache-dir "custom.el"))
+(load custom-file t t)

@@ -85,6 +85,9 @@
       :i  [C-tab] #'aya-expand
       :nv [C-tab] #'aya-create
 
+      (:map org-mode-map
+        :n "H" #'org-up-element)
+
       (:map custom-theme-choose-mode-map
         :gvnime "j" #'widget-forward
         :gvnime "k" #'widget-backward)

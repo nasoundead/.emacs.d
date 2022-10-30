@@ -21,11 +21,7 @@
   :config
   (solaire-global-mode +1))
 
-
-;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
-;; (setq-default custom-enabled-themes '(doom-dracula))
-;; (setq-default custom-enabled-themes '(doom-tokyo-night))
+(setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
@@ -48,7 +44,6 @@
   (setq custom-enabled-themes '(sanityinc-tomorrow-bright))
   (reapply-themes))
 
-
 (use-package dashboard
   :ensure t
   :init
@@ -56,6 +51,7 @@
   :config
   ;; Set the title
   (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+
   ;; Set the banner
   (setq dashboard-startup-banner 'logo)
   (setq dashboard-set-heading-icons t)
@@ -85,10 +81,6 @@
 ;; postframe
 (use-package posframe)
 
-;; sort tab
-;; (require 'sort-tab)
-;; (sort-tab-mode 1)
-
 ;; Restore old window configurations
 (use-package winner
   :ensure nil
@@ -114,7 +106,7 @@
               ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
               ))
   (set-face-attribute 'default nil :font
-                      (format "%s:pixelsize=%d" (car fonts) 16))
+                      (format "%s:pixelsize=%d" (car fonts) 15))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family (car (cdr fonts)))))
@@ -176,7 +168,7 @@
                                       all-the-icons-wicon all-the-icons-alltheicon))
     (advice-add fn :around #'sea*disable-all-the-icons-in-tty)))
 
-
+
 (use-package highlight-indent-guides
   :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
   :init
@@ -188,8 +180,11 @@
     (defun +indent-guides-disable-maybe-h ()
       (when highlight-indent-guides-mode
         (highlight-indent-guides-mode -1)))))
-
-
+
+(use-package page-break-lines
+  :hook ((prog-mode text-mode conf-mode) . page-break-lines-mode)
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -256,8 +251,7 @@ Call a second time to restore the original window configuration."
     (window-configuration-to-register :sanityinc/split-window)
     (switch-to-buffer-other-window nil)))
 
-(global-set-key (kbd "<f7>") 'sanityinc/split-window)
-
+;; (global-set-key (kbd "<f7>") 'sanityinc/split-window)
 
 
 (defun sanityinc/toggle-current-window-dedication ()

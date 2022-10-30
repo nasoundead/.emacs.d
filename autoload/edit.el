@@ -21,6 +21,16 @@
   (save-buffer))
 
 
+;;;###autoload
+(defun delete-carrage-returns ()
+  "Delete `^M' characters in the buffer.
+Same as `replace-string C-q C-m RET RET'."
+  (interactive)
+  (save-excursion
+    (goto-char 0)
+    (while (search-forward "\r" nil :noerror)
+      (replace-match ""))))
+
 ;; ;;;###autoload
 ;; (defun sea/backward-to-bol-or-indent ()
 ;;   "Move back to the current line's indentation. If already there, move to the

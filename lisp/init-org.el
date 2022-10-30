@@ -1,266 +1,309 @@
 ;;; init-org.el
 ;;; Code:
-
+(require 'init-funcs)
 
 (use-package org
   :mode (("\\.org$" . org-mode))
   :ensure org-plus-contrib
+  :pretty-hydra
+  ((:title (pretty-hydra-title "Org Template" 'fileicon "org" :face 'all-the-icons-green :height 1.1 :v-adjust 0.0)
+           :color blue :quit-key "q")
+   ("Basic"
+    (("a" (hot-expand "<a") "ascii")
+     ("c" (hot-expand "<c") "center")
+     ("C" (hot-expand "<C") "comment")
+     ("e" (hot-expand "<e") "example")
+     ("E" (hot-expand "<E") "export")
+     ("h" (hot-expand "<h") "html")
+     ("l" (hot-expand "<l") "latex")
+     ("n" (hot-expand "<n") "note")
+     ("o" (hot-expand "<q") "quote")
+     ("v" (hot-expand "<v") "verse"))
+    "Head"
+    (("i" (hot-expand "<i") "index")
+     ("A" (hot-expand "<A") "ASCII")
+     ("I" (hot-expand "<I") "INCLUDE")
+     ("H" (hot-expand "<H") "HTML")
+     ("L" (hot-expand "<L") "LaTeX"))
+    "Source"
+    (("s" (hot-expand "<s") "src")
+     ("m" (hot-expand "<s" "emacs-lisp") "emacs-lisp")
+     ("y" (hot-expand "<s" "python :results output") "python")
+     ("S" (hot-expand "<s" "sh") "sh")
+     ("g" (hot-expand "<s" "go :imports '\(\"fmt\"\)") "golang"))
+    "Misc"
+    (("u" (hot-expand "<s" "plantuml :file CHANGE.png") "plantuml")
+     ("Y" (hot-expand "<s" "ipython :session :exports both :results raw drawer\n$0") "ipython")
+     ("<" self-insert-command "ins"))))
+  :bind (("C-c a" . org-agenda)
+         ("C-c b" . org-switchb)
+         ("C-c x" . org-capture)
+         :map org-mode-map
+         ("<" . (lambda ()
+                  "Insert org template."
+                  (interactive)
+                  (if (or (region-active-p) (looking-back "^\s*" 1))
+                      (org-hydra/body)
+                    (self-insert-command 1)))))
+  :hook (((org-babel-after-execute org-mode) . org-redisplay-inline-images) ; display image
+         (org-mode . (lambda ()
+                       "Beautify org symbols."
+                       (when centaur-prettify-org-symbols-alist
+                         (if prettify-symbols-alist
+                             (push centaur-prettify-org-symbols-alist prettify-symbols-alist)
+                           (setq prettify-symbols-alist centaur-prettify-org-symbols-alist)))
+                       (prettify-symbols-mode 1)))
+         (org-indent-mode . (lambda()
+                              (diminish 'org-indent-mode)
+                              ;; HACK: Prevent text moving around while using brackets
+                              ;; @see https://github.com/seagle0128/.emacs.d/issues/88
+                              (make-variable-buffer-local 'show-paren-mode)
+                              (setq show-paren-mode nil))))
   :config
-  (progn
-    ;; config stuff
-    ))
-
-(use-package ob-ipython
-  :init
-  (with-eval-after-load 'company
-    (make-local-variable 'company-backend)
-    (cl-pushnew 'company-ob-ipython company-backends)))
-
-;; active Org-babel languages
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '(
-   (plantuml . t)
-   (emacs-lisp . t)
-   (ipython . t)
-   (org . t)
-   ;; (c . t)
-   (latex . t)))
-(setq org-confirm-babel-evaluate nil)
-(setq org-src-fontify-natively t)
-
-(add-hook 'org-babel-after-execute-hook #'display-inline-images 'append)
-(add-hook 'org-mode-hook #'(lambda ()(setq truncate-lines t)) 'append)
-(defun display-inline-images ()
-  (condition-case nil
-      (org-display-inline-images)
-    (error nil)))
-
-(defvar plantuml-jar-path (expand-file-name "plantuml.jar" sea-etc-dir)
-  "plantuml dir")
-(defun sea/plantuml-install()
-  (let ((url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
-    (unless (file-exists-p plantuml-jar-path)
-      (url-copy-file url plantuml-jar-path))))
-(add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))))
-(use-package plantuml-mode
-  :init
-  ;; Enable plantuml-mode for PlantUML files
-  (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-  ;; Integration with org-mode
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
-
-(use-package org-projectile
-  :config
-  (org-projectile:per-repo)
-  (setq org-projectile:per-repo-filename "todo.org"
-        org-agenda-files (append org-agenda-files (org-projectile:todo-files))))
-
-(use-package org-bullets
-  :init
-  (setq org-bullets-bullet-list '( "⦿" "○"  "✿" "◆"))
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-(defun enhance-ui-for-orgmode ()
-  "Enhance UI for orgmode."
-  (toggle-truncate-lines)
-  ;; Beautify Org Checkbox Symbol
-  (push '("[ ]" . "☐") prettify-symbols-alist)
-  (push '("[X]" . "☑" ) prettify-symbols-alist)
-  (push '("[-]" . "❍" ) prettify-symbols-alist)
-  (push '("#+BEGIN_SRC" . "⌜" ) prettify-symbols-alist)
-  (push '("#+END_SRC" . "⌞" ) prettify-symbols-alist)
-  (push '("TODO" . "☐" ) prettify-symbols-alist)
-  (push '("WORK" . "⚑" ) prettify-symbols-alist)
-  (push '("DONE" . "☑" ) prettify-symbols-alist)
-  (prettify-symbols-mode)
-  )
-(add-hook 'org-mode-hook 'enhance-ui-for-orgmode)
-
-(defface org-checkbox-done-text
-  '((t (:foreground "#71696A" :strike-through t)))
-  "Face for the text part of a checked org-mode checkbox.")
-
-(font-lock-add-keywords
- 'org-mode
- `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
-    1 'org-checkbox-done-text prepend))
- 'append)
-
-
-(setq-default
- org-eldoc-breadcrumb-separator " → "
- org-enforce-todo-dependencies t
- org-entities-user
- '(("flat"  "\\flat" nil "" "" "266D" "♭")
-   ("sharp" "\\sharp" nil "" "" "266F" "♯"))
- org-fontify-done-headline t
- org-fontify-quote-and-verse-blocks t
- org-fontify-whole-heading-line t
- org-footnote-auto-label 'plain
- org-hide-leading-stars t
- org-hide-leading-stars-before-indent-mode t
- org-image-actual-width nil
- org-list-description-max-indent 4
- org-priority-faces
- '((?a . error)
-   (?b . warning)
-   (?c . success))
- org-refile-targets
- '((nil :maxlevel . 3)
-   (org-agenda-files :maxlevel . 3))
- org-startup-indented t
- org-todo-keywords
- '((sequence "TODO(t)" "PROJ(p)" "|" "DONE(d)")
-   (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
-   (sequence "NEXT(n)" "WAIT(w)" "HOLD(h)" "|" "ABRT(c)"))
- org-todo-keyword-faces
- '(("[-]" :inherit (font-lock-constant-face bold))
-   ("[?]" :inherit (warning bold))
-   ("PROJ" :inherit (bold default))
-   ("HOLD" :inherit (warning bold))
-   ("ABRT" :inherit (error bold)))
- org-use-sub-superscripts '{}
-
- ;; Scale up LaTeX previews a bit (default is too small)
- org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-
-(map! :after org
-      :map org-mode-map
-      :n "H" #'org-up-element)
-
-(defvar org-structure-template-alist)
-
-(defun org+-avoid-old-structure-templates (fun &rest args)
-  "Call FUN with ARGS with modified `org-structure-template-alist'.
-Use a copy of `org-structure-template-alist' with all
-old structure templates removed."
-  (let ((org-structure-template-alist
-         (cl-remove-if
-          (lambda (template)
-            (null (stringp (cdr template))))
-          org-structure-template-alist)))
-    (apply fun args)))
-
-(eval-after-load "org"
-  '(when (version<= "9.2" (org-version))
-     (defun org-try-structure-completion ()
-       "Try to complete a structure template before point.
-This looks for strings like \"<e\" on an otherwise empty line and
-expands them."
-       (let ((l (buffer-substring (point-at-bol) (point)))
-             a)
-         (when (and (looking-at "[ \t]*$")
-                    (string-match "^[ \t]*<\\([a-zA-Z]+\\)$" l)
-                    (setq a (assoc (match-string 1 l) org-structure-template-alist))
-                    (null (stringp (cdr a))))
-           (org-complete-expand-structure-template (+ -1 (point-at-bol)
-                                                      (match-beginning 1)) a)
-           t)))
-
-     (defun org-complete-expand-structure-template (start cell)
-       "Expand a structure template."
-       (let ((rpl (nth 1 cell))
-             (ind ""))
-         (delete-region start (point))
-         (when (string-match "\\`[ \t]*#\\+" rpl)
-           (cond
-            ((bolp))
-            ((not (string-match "\\S-" (buffer-substring (point-at-bol) (point))))
-             (setq ind (buffer-substring (point-at-bol) (point))))
-            (t (newline))))
-         (setq start (point))
-         (when (string-match "%file" rpl)
-           (setq rpl (replace-match
-                      (concat
-                       "\""
-                       (save-match-data
-                         (abbreviate-file-name (read-file-name "Include file: ")))
-                       "\"")
-                      t t rpl)))
-         (setq rpl (mapconcat 'identity (split-string rpl "\n")
-                              (concat "\n" ind)))
-         (insert rpl)
-         (when (re-search-backward "\\?" start t) (delete-char 1))))
-
-     (advice-add 'org-tempo-add-templates :around #'org+-avoid-old-structure-templates)
-
-     (add-hook 'org-tab-after-check-for-cycling-hook #'org-try-structure-completion)
-
-     (require 'org-tempo)))
-
-
-
-;; Block Template
-(use-package hydra :ensure t
-  :config
-  ;; Define the templates
-  (setq org-structure-template-alist
-        '(("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
-          ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
-          ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
-          ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n/verse>")
-          ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n/center>")
-          ("l" "#+begin_export latex\n?\n#+end_export" "<literal style=\"latex\">\n?\n</literal>")
-          ("L" "#+latex: " "<literal style=\"latex\">?</literal>")
-          ("h" "#+begin_export html\n?\n#+end_exrt" "<literal style=\"html\">\n?\n</literal>")
-          ("H" "#+html: " "<literal style=\"html\">?</literal>")
-          ("a" "#+begin_export ascii\n?\n#+end_export")
-          ("A" "#+ascii: ")
-          ("i" "#+index: ?" "#+index: ?")
-          ("I" "#+include: %file ?" "<include file=%file markup=\"?\">")))
-
-  ;; Shortcuts
+  ;; For hydra
   (defun hot-expand (str &optional mod)
-    "Expand org template."
+    "Expand org template.
+
+STR is a structure template string recognised by org like <s. MOD is a
+string with additional parameters to add the begin line of the
+structure element. HEADER string includes more parameters that are
+prepended to the element after the #+HEADER: tag."
     (let (text)
       (when (region-active-p)
         (setq text (buffer-substring (region-beginning) (region-end)))
         (delete-region (region-beginning) (region-end)))
       (insert str)
-      (org-try-structure-completion)
+      (if (fboundp 'org-try-structure-completion)
+          (org-try-structure-completion) ; < org 9
+        (progn
+          ;; New template expansion since org 9
+          (require 'org-tempo nil t)
+          (org-tempo-complete-tag)))
       (when mod (insert mod) (forward-line))
       (when text (insert text))))
 
-  (defhydra hydra-org-template (:color blue :hint nil)
-    "
-     Org template
+  ;; active Org-babel languages
+  ;; ------------------------------------------------------------------------
+  ;; Babel
+  (setq org-confirm-babel-evaluate nil
+        org-src-fontify-natively t
+        org-src-tab-acts-natively t)
 
- block               src block         structure
---------------------------------------------------------------------------------------
-_c_: center        _s_: src         _L_: LATEX:
-_q_: quote         _e_: emacs lisp  _i_: index:
-_E_: example       _p_: python      _I_: INCLUDE:
-_v_: verse         _u_: Plantuml    _H_: HTML:
-_a_: ascii         _h_: html        _A_: ASCII:
-_l_: latex
-"
-    ("s" (hot-expand "<s"))
-    ("E" (hot-expand "<e"))
-    ("q" (hot-expand "<q"))
-    ("v" (hot-expand "<v"))
-    ("c" (hot-expand "<c"))
-    ("l" (hot-expand "<l"))
-    ("h" (hot-expand "<h"))
-    ("a" (hot-expand "<a"))
-    ("L" (hot-expand "<L"))
-    ("i" (hot-expand "<i"))
-    ("e" (hot-expand "<s" "emacs-lisp"))
-    ("p" (hot-expand "<s" "ipython :session :exports both :results raw drawer"))
-    ("S" (hot-expand "<s" "sh"))
-    ("u" (hot-expand "<s" "plantuml :file CHANGE.svg :cache yes :cmdline -charset utf-8"))
-    ("I" (hot-expand "<I"))
-    ("H" (hot-expand "<H"))
-    ("A" (hot-expand "<A"))
-    ("<" self-insert-command "ins")
-    ("ESC" nil "quit"))
+  (defconst load-language-alist
+    '((emacs-lisp . t)
+      (perl       . t)
+      (python     . t)
+      (ruby       . t)
+      (js         . t)
+      (css        . t)
+      (sass       . t)
+      (C          . t)
+      (java       . t)
+      (plantuml   . t))
+    "Alist of org ob languages.")
 
-  (define-key org-mode-map "<"
-    (lambda () (interactive)
-      (if (or (region-active-p) (looking-back "^"))
-          (hydra-org-template/body)
-        (self-insert-command 1))))
+  ;; ob-sh renamed to ob-shell since 26.1.
+  (cl-pushnew '(shell . t) load-language-alist)
+
+  (use-package ob-go
+    :init (cl-pushnew '(go . t) load-language-alist))
+
+  (use-package ob-ipython
+    :init
+    (cl-pushnew '(ipython . t) load-language-alist)
+    (with-eval-after-load 'company
+      (make-local-variable 'company-backend)
+      (cl-pushnew 'company-ob-ipython company-backends)))
+
+  (use-package ob-rust
+    :init (cl-pushnew '(rust . t) load-language-alist))
+
+  ;; Install: npm install -g @mermaid-js/mermaid-cli
+  (use-package ob-mermaid
+    :init (cl-pushnew '(mermaid . t) load-language-alist))
+
+  (use-package plantuml-mode
+    :init
+    ;; Enable plantuml-mode for PlantUML files
+    (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+    ;; Integration with org-mode
+    (cl-pushnew '(plantuml . t) load-language-alist)
+    (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
+  (defvar plantuml-jar-path (expand-file-name "plantuml.jar" sea-etc-dir)
+    "plantuml dir")
+  (defun sea/plantuml-install()
+    (let ((url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
+      (unless (file-exists-p plantuml-jar-path)
+        (url-copy-file url plantuml-jar-path))))
+  (add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))))
+
+  (org-babel-do-load-languages 'org-babel-load-languages load-language-alist)
+
+  ;; Rich text clipboard
+  (use-package org-rich-yank
+    :bind (:map org-mode-map
+            ("C-M-y" . org-rich-yank)))
+
+  ;; Table of contents
+  (use-package toc-org
+    :hook (org-mode . toc-org-mode))
+
+  ;; Auto-toggle Org LaTeX fragments
+  (use-package org-fragtog
+    :diminish
+    :hook (org-mode . org-fragtog-mode))
+
+  ;; Preview
+  (use-package org-preview-html
+    :diminish
+    :bind (:map org-mode-map
+            ("C-c C-h" . org-preview-html-mode))
+    :init (when (featurep 'xwidget-internal)
+            (setq org-preview-html-viewer 'xwidget)))
+
+  ;; Presentation
+  (use-package org-tree-slide
+    :diminish
+    :functions (org-display-inline-images
+                org-remove-inline-images)
+    :bind (:map org-mode-map
+            ("s-<f7>" . org-tree-slide-mode)
+            :map org-tree-slide-mode-map
+            ("<left>" . org-tree-slide-move-previous-tree)
+            ("<right>" . org-tree-slide-move-next-tree)
+            ("S-SPC" . org-tree-slide-move-previous-tree)
+            ("SPC" . org-tree-slide-move-next-tree))
+    :hook ((org-tree-slide-play . (lambda ()
+                                    (text-scale-increase 4)
+                                    (org-display-inline-images)
+                                    (read-only-mode 1)))
+           (org-tree-slide-stop . (lambda ()
+                                    (text-scale-increase 0)
+                                    (org-remove-inline-images)
+                                    (read-only-mode -1))))
+    :init (setq org-tree-slide-header nil
+                org-tree-slide-slide-in-effect t
+                org-tree-slide-heading-emphasis nil
+                org-tree-slide-cursor-init t
+                org-tree-slide-modeline-display 'outside
+                org-tree-slide-skip-done nil
+                org-tree-slide-skip-comments t
+                org-tree-slide-skip-outline-level 3))
+
+
+  ;; To speed up startup, don't put to init section
+  (setq
+   org-modules nil                 ; Faster loading
+   org-directory centaur-org-directory
+   org-capture-templates
+   `(("i" "Idea" entry (file ,(concat org-directory "/idea.org"))
+      "*  %^{Title} %?\n%U\n%a\n")
+     ("t" "Todo" entry (file ,(concat org-directory "/gtd.org"))
+      "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+     ("n" "Note" entry (file ,(concat org-directory "/note.org"))
+      "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
+     ("j" "Journal" entry (file+olp+datetree
+                           ,(concat org-directory "/journal.org"))
+      "*  %^{Title} %?\n%U\n%a\n" :clock-in t :clock-resume t)
+     ("b" "Book" entry (file+olp+datetree
+                        ,(concat org-directory "/book.org"))
+      "* Topic: %^{Description}  %^g %? Added: %U"))
+
+   org-todo-keywords
+   '((sequence "TODO(t)" "DOING(i)" "HANGUP(h)" "|" "DONE(d)" "CANCEL(c)")
+     (sequence "⚑(T)" "🏴(I)" "❓(H)" "|" "✔(D)" "✘(C)"))
+   org-todo-keyword-faces '(("HANGUP" . warning)
+                            ("❓" . warning))
+   org-priority-faces '((?A . error)
+                        (?B . warning)
+                        (?C . success))
+
+   ;; ;; Agenda styling
+   org-agenda-block-separator ?─
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+   org-agenda-current-time-string
+   "⭠ now ─────────────────────────────────────────────────"
+
+   org-tags-column -80
+   org-log-done 'time
+   org-catch-invisible-edits 'smart
+   org-startup-indented t
+   org-ellipsis (if (char-displayable-p ?⏷) "\t⏷" nil)
+   org-pretty-entities nil
+   org-src-fontify-natively t
+   org-eldoc-breadcrumb-separator " → "
+   org-confirm-babel-evaluate nil
+   org-hide-emphasis-markers t
+   )
+
+  ;; Add new template
+  (add-to-list 'org-structure-template-alist '("n" . "note"))
+
+  ;; Use embedded webkit browser if possible
+  (when (featurep 'xwidget-internal)
+    (push '("\\.\\(x?html?\\|pdf\\)\\'"
+            .
+            (lambda (file _link)
+              (centaur-webkit-browse-url (concat "file://" file) t)))
+          org-file-apps))
+
+  ;; (defun display-inline-images ()
+  ;;   (condition-case nil
+  ;;       (org-display-inline-images)
+  ;;     (error nil)))
+  ;; (add-hook 'org-babel-after-execute-hook #'display-inline-images 'append)
+  ;; (add-hook 'org-mode-hook #'(lambda ()(setq truncate-lines t)) 'append)
   )
+
+;; Prettify UI
+(if EMACS27+
+    (use-package org-modern
+      :hook ((org-mode . org-modern-mode)
+             (org-agenda-finalize . org-modern-agenda)
+             (org-modern-mode . (lambda ()
+                                  "Adapt `org-modern-mode'."
+                                  ;; Disable Prettify Symbols mode
+                                  (setq prettify-symbols-alist nil)
+                                  (prettify-symbols-mode -1)))
+             ))
+  (progn
+    (use-package org-superstar
+      :if (and (display-graphic-p) (char-displayable-p ?◉))
+      :hook (org-mode . org-superstar-mode)
+      :init (setq org-superstar-headline-bullets-list '("◉""○""◈""◇""⁕")))
+    (use-package org-fancy-priorities
+      :diminish
+      :hook (org-mode . org-fancy-priorities-mode)
+      :init (setq org-fancy-priorities-list
+                  (if (and (display-graphic-p) (char-displayable-p ?🅐))
+                      '("🅐" "🅑" "🅒" "🅓")
+                    '("HIGH" "MEDIUM" "LOW" "OPTIONAL"))))))
+;; ui enhance
+;; ------------------------------------------------------------------------
+;; (defun enhance-ui-for-orgmode ()
+;;   "Enhance UI for orgmode."
+;;   (toggle-truncate-lines)
+;;   ;; Beautify Org Checkbox Symbol
+;;   (push '("[ ]" . "☐") prettify-symbols-alist)
+;;   (push '("[X]" . "☑" ) prettify-symbols-alist)
+;;   (push '("[-]" . "❍" ) prettify-symbols-alist)
+;;   (push '("#+BEGIN_SRC" . "⌜" ) prettify-symbols-alist)
+;;   (push '("#+begin_src" . "⌜" ) prettify-symbols-alist)
+;;   (push '("#+END_SRC" . "⌞" ) prettify-symbols-alist)
+;;   (push '("#+end_src" . "⌞" ) prettify-symbols-alist)
+;;   (push '("TODO" . "☐" ) prettify-symbols-alist)
+;;   (push '("WORK" . "⚑" ) prettify-symbols-alist)
+;;   (push '("DONE" . "☑" ) prettify-symbols-alist)
+;;   (prettify-symbols-mode))
+;; (add-hook 'org-mode-hook 'enhance-ui-for-orgmode)
+;; (defface org-checkbox-done-text
+;;   '((t (:foreground "#71696A" :strike-through t)))
+;;   "Face for the text part of a checked org-mode checkbox.")
+
+
 
 (use-package deft)
 

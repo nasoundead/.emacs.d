@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2019-2022 Wanghaibo
 
-;; Author: Wanghaibo 
+;; Author: Wanghaibo
 
 ;; This file is not part of GNU Emacs.
 ;;
@@ -61,7 +61,7 @@
   ;; Global toggles
   (with-no-warnings
     (pretty-hydra-define toggles-hydra (:title (pretty-hydra-title "Toggles" 'faicon "toggle-on" :v-adjust -0.1)
-                                        :color amaranth :quit-key "q")
+                                               :color amaranth :quit-key "q")
       ("Basic"
        (("n" (if (fboundp 'display-line-numbers-mode)
                  (display-line-numbers-mode (if display-line-numbers-mode -1 1))
@@ -76,7 +76,8 @@
         ("l" global-page-break-lines-mode "page break lines" :toggle t)
         ("b" display-battery-mode "battery" :toggle t)
         ("i" display-time-mode "time" :toggle t)
-        ("m" doom-modeline-mode "modern mode-line" :toggle t))
+        ;; ("m" doom-modeline-mode "modern mode-line" :toggle t)
+        )
        "Highlight"
        (("h l" global-hl-line-mode "line" :toggle t)
         ("h p" show-paren-mode "paren" :toggle t)
@@ -98,7 +99,7 @@
         ("v" global-diff-hl-mode "gutter" :toggle t)
         ("V" diff-hl-flydiff-mode "live gutter" :toggle t)
         ("M" diff-hl-margin-mode "margin gutter" :toggle t)
-        ("D" diff-hl-dired-mode "dired gutter" :toggle t))       
+        ("D" diff-hl-dired-mode "dired gutter" :toggle t))
        ))))
 
 (provide 'init-hydra)
