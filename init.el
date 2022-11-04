@@ -49,6 +49,10 @@
   (expand-file-name "lisp/" user-emacs-directory)
   "core directory.")
 
+(defconst sea-bin-dir
+  (expand-file-name "bin/" user-emacs-directory)
+  "bin directory.")
+
 (defconst sea-site-lisp-dir
   (expand-file-name "site-lisp/" user-emacs-directory)
   "site-lisp directory.")
@@ -68,7 +72,7 @@
   (eq system-type 'windows-nt)
   "Are we running on a Linux system?")
 
-(defconst centaur-org-directory 
+(defconst centaur-org-directory
   (expand-file-name "~/org/")
   "org dir")
 

@@ -135,7 +135,8 @@ prepended to the element after the #+HEADER: tag."
     (let ((url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
       (unless (file-exists-p plantuml-jar-path)
         (url-copy-file url plantuml-jar-path))))
-  (add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))))
+  (add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))
+                               (setq org-plantuml-jar-path plantuml-jar-path)))
 
   (org-babel-do-load-languages 'org-babel-load-languages load-language-alist)
 
@@ -242,6 +243,90 @@ prepended to the element after the #+HEADER: tag."
   ;; Add new template
   (add-to-list 'org-structure-template-alist '("n" . "note"))
 
+  ;; snipshort
+  (defvar clipjar-location (concat sea-bin-dir "Clip.jar"))
+  (defun org-paste-image ()
+    (interactive)
+    ;; create images dir
+    (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))
+    (unless (file-exists-p target-dir)
+      (make-directory target-dir))
+    (setq filename-without-extension
+          (make-temp-name
+           (concat
+            (file-name-nondirectory
+             (buffer-file-name))
+            (format-time-string "_%Y%m%d_%H%M%S")))  )
+    (insert
+     (org-make-link-string
+      (concat "file:"
+              (string-trim
+               (shell-command-to-string
+                (mapconcat #'identity
+                           `("java"
+                             "-jar"
+                             ,(expand-file-name clipjar-location)
+                             "--name"
+                             ,(concat filename-without-extension)
+                             ,(concat target-dir)
+                             )
+                           " "
+                           ))))))
+    (org-display-inline-images))
+  (defun org-paste-image-ask-dir ()
+    (interactive)
+    (let* ((dir (read-directory-name "Dir: ")))
+      (insert
+       (org-make-link-string
+        (concat "file:"
+                (shell-command-to-string
+                 (mapconcat #'identity
+                            `("java"
+                              "-jar"
+                              ,(expand-file-name clipjar-location)
+                              "--uuid"
+                              ,(file-relative-name dir default-directory)
+                              )
+                            " "
+                            )))))))
+  (defun org-paste-image-ask-name ()
+    (interactive)
+    (let* ((image-name (string-trim (read-string "Image name: "))))
+      (insert
+       (org-make-link-string
+        (concat "file:"
+                (shell-command-to-string
+                 (mapconcat #'identity
+                            `("java"
+                              "-jar"
+                              ,(expand-file-name clipjar-location)
+                              "--name"
+                              ,(concat "'" image-name "'")        ;; image name without extension must be quoted
+                              "'/images'"               ;; Directory which the image will be saved '/tmp/images scala'
+                              )
+                            " "
+                            )))))))
+  (defun org-screenshot-and-paste-image-use-powershell()
+    "Take a screenshot into a time stamped unique-named file in the
+   same directory as the org-buffer and insert a link to this file."
+    (interactive)
+    ;; create images dir
+    (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))
+    (unless (file-exists-p target-dir)
+      (make-directory target-dir))
+    (setq filename
+          (concat
+           (make-temp-name
+            (concat
+             target-dir
+             (file-name-nondirectory
+              (buffer-file-name))
+             (format-time-string "_%Y%m%d_%H%M%S_")) ) ".png"))
+    (shell-command "snippingtool /clip")
+    (sleep-for 0.3)
+    (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+    (insert (concat "[[file:" filename "]]"))
+    (org-display-inline-images))
   ;; Use embedded webkit browser if possible
   (when (featurep 'xwidget-internal)
     (push '("\\.\\(x?html?\\|pdf\\)\\'"
@@ -249,13 +334,6 @@ prepended to the element after the #+HEADER: tag."
             (lambda (file _link)
               (centaur-webkit-browse-url (concat "file://" file) t)))
           org-file-apps))
-
-  ;; (defun display-inline-images ()
-  ;;   (condition-case nil
-  ;;       (org-display-inline-images)
-  ;;     (error nil)))
-  ;; (add-hook 'org-babel-after-execute-hook #'display-inline-images 'append)
-  ;; (add-hook 'org-mode-hook #'(lambda ()(setq truncate-lines t)) 'append)
   )
 
 ;; Prettify UI
