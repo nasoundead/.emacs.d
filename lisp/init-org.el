@@ -4,7 +4,7 @@
 
 (use-package org
   :mode (("\\.org$" . org-mode))
-  :ensure org-plus-contrib
+  ;; :ensure org-plus-contrib
   :pretty-hydra
   ((:title (pretty-hydra-title "Org Template" 'fileicon "org" :face 'all-the-icons-green :height 1.1 :v-adjust 0.0)
            :color blue :quit-key "q")
@@ -28,12 +28,12 @@
     "Source"
     (("s" (hot-expand "<s") "src")
      ("m" (hot-expand "<s" "emacs-lisp") "emacs-lisp")
-     ("y" (hot-expand "<s" "python :results output") "python")
+     ("y" (hot-expand "<s" "python :results output file :var f=\"simages/example.png\"") "python")
      ("S" (hot-expand "<s" "sh") "sh")
      ("g" (hot-expand "<s" "go :imports '\(\"fmt\"\)") "golang"))
     "Misc"
-    (("u" (hot-expand "<s" "plantuml :file CHANGE.png") "plantuml")
-     ("Y" (hot-expand "<s" "ipython :session :exports both :results raw drawer\n$0") "ipython")
+    (("u" (hot-expand "<s" "plantuml :cmdline -charset utf-8 :file /images/CHANGE.png") "plantuml")
+     ("Y" (hot-expand "<s" "ipython :session :exports both :results raw drawer") "ipython")
      ("<" self-insert-command "ins"))))
   :bind (("C-c a" . org-agenda)
          ("C-c b" . org-switchb)
@@ -111,9 +111,10 @@ prepended to the element after the #+HEADER: tag."
   (use-package ob-ipython
     :init
     (cl-pushnew '(ipython . t) load-language-alist)
-    (with-eval-after-load 'company
-      (make-local-variable 'company-backend)
-      (cl-pushnew 'company-ob-ipython company-backends)))
+    ;; (with-eval-after-load 'company
+    ;;   (make-local-variable 'company-backend)
+    ;;   (cl-pushnew 'company-ob-ipython company-backends))
+    )
 
   (use-package ob-rust
     :init (cl-pushnew '(rust . t) load-language-alist))
@@ -129,14 +130,12 @@ prepended to the element after the #+HEADER: tag."
     ;; Integration with org-mode
     (cl-pushnew '(plantuml . t) load-language-alist)
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
-  (defvar plantuml-jar-path (expand-file-name "plantuml.jar" sea-etc-dir)
-    "plantuml dir")
+  (setq org-plantuml-jar-path (expand-file-name "plantuml.jar" sea-etc-dir))
   (defun sea/plantuml-install()
     (let ((url "http://jaist.dl.sourceforge.net/project/plantuml/plantuml.jar"))
-      (unless (file-exists-p plantuml-jar-path)
-        (url-copy-file url plantuml-jar-path))))
-  (add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))
-                               (setq org-plantuml-jar-path plantuml-jar-path)))
+      (unless (file-exists-p org-plantuml-jar-path)
+        (url-copy-file url org-plantuml-jar-path))))
+  (add-hook 'org-mode-hook #'(lambda () (eval-after-load 'ob-plantuml (sea/plantuml-install))))
 
   (org-babel-do-load-languages 'org-babel-load-languages load-language-alist)
 
@@ -308,7 +307,7 @@ prepended to the element after the #+HEADER: tag."
                             )))))))
   (defun org-screenshot-and-paste-image-use-powershell()
     "Take a screenshot into a time stamped unique-named file in the
-   same directory as the org-buffer and insert a link to this file."
+        same directory as the org-buffer and insert a link to this file."
     (interactive)
     ;; create images dir
     (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))

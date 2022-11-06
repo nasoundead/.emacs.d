@@ -40,7 +40,7 @@
   ;;  e) properly delete smartparen pairs when they are encountered, without
   ;;     the need for strict mode.
   ;;  f) do none of this when inside a string
-  (advice-add #'delete-backward-char :override #'+default*delete-backward-char)
+  ;; (advice-add #'delete-backward-char :override #'+default*delete-backward-char)
 
   ;; Makes `newline-and-indent' continue comments (and more reliably)
   (advice-add #'newline-and-indent :override #'+default*newline-indent-and-continue-comments)
@@ -141,11 +141,6 @@ languages)."
 
 (bind-keys
  :map smartparens-mode-map
- ("C-M-a" . sp-beginning-of-sexp)
- ("C-M-e" . sp-end-of-sexp)
-
- ("C-<down>" . sp-down-sexp)
- ("C-<up>"   . sp-up-sexp)
 
  ("C-M-n" . sp-next-sexp)
  ("C-M-p" . sp-backward-sexp)
@@ -155,17 +150,7 @@ languages)."
  ("C-<left>"  . sp-backward-slurp-sexp)
  ("M-<left>"  . sp-backward-barf-sexp)
 
- ("M-[" . sp-backward-unwrap-sexp)
- ("M-]" . sp-unwrap-sexp)
- ("M-S-]" . sp-rewrap-sexp)
-
- ("C-c ("  . wrap-with-parens)
- ("C-c ["  . wrap-with-brackets)
- ("C-c {"  . wrap-with-braces)
- ("C-c '"  . wrap-with-single-quotes)
- ("C-c \"" . wrap-with-double-quotes)
- ("C-c _"  . wrap-with-underscores)
- ("C-c `"  . wrap-with-back-quotes))
+ )
 
 
 

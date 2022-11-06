@@ -9,7 +9,7 @@
   (setq ein:use-auto-complete t))
 (use-package py-autopep8
   :init
-  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
+  (add-hook 'python-mode-hook 'py-autopep8-mode))
 
 
 (provide 'init-py)

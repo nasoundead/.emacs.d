@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: pyplt
+# key: pyplt
+# --
+#+begin_src python :results file
+import numpy as np
+import matplotlib.pyplot as plt
+
+# random_points = np.random.randint(0, 10, (100, 2))
+# plt.scatter(random_points[:, 0], random_points[:, 1])
+$0
+def custom_function(x):  # sigmoid(x):
+    return x * x  # 1. / (1 + exp(-x))
+
+x = np.array(range(-10, 11))
+y = custom_function(x)  #sigmoid(x)
+fname = "images/example.png"
+plt.style.use('dark_background')
+plt.plot(x, y)
+plt.savefig(fname)
+return fname
+#+end_src

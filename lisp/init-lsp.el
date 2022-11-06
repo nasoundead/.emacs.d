@@ -33,6 +33,7 @@
 ;;
 
 
+
 (use-package lsp-mode
   :commands (lsp-enable-which-key-integration lsp-format-buffer lsp-organize-imports)
   :diminish
@@ -241,6 +242,41 @@
                          (lsp--send-execute-command (symbol-name command) arguments))))
         (xref--show-xrefs xrefs nil)))
     (advice-add #'lsp-execute-command :override #'my-lsp-execute-command)))
+
+;; Enable LSP in org babel
+;; https://github.com/emacs-lsp/lsp-mode/issues/377
+(cl-defmacro lsp-org-babel-enable (lang)
+  "Support LANG in org source code block."
+  (cl-check-type lang string)
+  (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
+         (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
+    `(progn
+       (defun ,intern-pre (info)
+         (setq buffer-file-name (or (->> info caddr (alist-get :file))
+                                    "org-src-babel.tmp"))
+         (when (fboundp 'lsp-deferred)
+           ;; Avoid headerline conflicts
+           (setq-local lsp-headerline-breadcrumb-enable nil)
+           (lsp-deferred))
+         (put ',intern-pre 'function-documentation
+              (format "Enable lsp-mode in the buffer of org source block (%s)."
+                      (upcase ,lang)))
+
+         (if (fboundp ',edit-pre)
+             (advice-add ',edit-pre :after ',intern-pre)
+           (progn
+             (defun ,edit-pre (info)
+               (,intern-pre info))
+             (put ',edit-pre 'function-documentation
+                  (format "Prepare local buffer environment for org source block (%s)."
+                          (upcase ,lang)))))))))
+
+(defconst org-babel-lang-list
+  '("go" "python" "ipython" "ruby" "js" "css" "sass" "c" "rust" "java" "cpp" "c++"))
+(add-to-list 'org-babel-lang-list "shell")
+(dolist (lang org-babel-lang-list)
+  (eval `(lsp-org-babel-enable ,lang)))
+
 
 (provide 'init-lsp)
 
