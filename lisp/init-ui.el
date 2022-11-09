@@ -21,6 +21,7 @@
   :config
   (solaire-global-mode +1))
 
+
 (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()

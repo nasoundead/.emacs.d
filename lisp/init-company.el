@@ -34,7 +34,8 @@
   ;; :after-call pre-command-hook after-find-file
   :init
   (setq company-minimum-prefix-length 2
-        company-tooltip-limit 14
+        company-tooltip-limit 10
+        company-show-numbers t
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         company-dabbrev-code-other-buffers t
@@ -43,7 +44,8 @@
         company-global-modes
         '(not erc-mode message-mode help-mode gud-mode eshell-mode)
         company-frontends
-        '(company-pseudo-tooltip-frontend
+        '(;; company-tng-frontend
+          company-pseudo-tooltip-frontend
           company-echo-metadata-frontend))
   :hook (after-init . global-company-mode)
   :config
@@ -77,9 +79,16 @@
 
 ;; (require 'company-tabnine)
 ;; (add-to-list 'company-backends #'company-tabnine)
-(use-package company-tabnine :ensure t)
-(add-to-list 'company-backends #'company-tabnine)
-
+(use-package company-tabnine :ensure t
+  :init
+  ;; Don't automatically use company-tabnine. Manually invoke it
+  ;; (add-to-list 'company-backends #'company-tabnine)
+  ;; (set-company-backend! 'emacs-lisp-mode
+  ;;   'company-tide 'company-yasnippet 'company-tabnine)
+  ;; M-Tab
+  ;; (define-key global-map (kbd "C-M-i") #'company-tabnine)
+  )
+;; (add-to-list 'company-backends #'company-tabnine)
 (provide 'init-company)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ; init-company.el ends here

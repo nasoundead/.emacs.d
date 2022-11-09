@@ -229,7 +229,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-keybinds)
 ;; (require 'init-ivy)
 (require 'init-vertico)
-(require 'init-company)
+(require 'init-company2)
 ;; (require 'init-corfu)
 (require 'init-treesitter)
 
