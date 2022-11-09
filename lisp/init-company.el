@@ -77,7 +77,8 @@
 
 ;; (require 'company-tabnine)
 ;; (add-to-list 'company-backends #'company-tabnine)
-
+(use-package company-tabnine :ensure t)
+(add-to-list 'company-backends #'company-tabnine)
 
 (provide 'init-company)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
