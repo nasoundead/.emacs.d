@@ -114,7 +114,6 @@
      ("M-f" forward-word nil)
      ("c" lsp-ui-sideline-apply-code-actions "apply code actions"))))
   :bind (("C-c u" . lsp-ui-imenu)
-         :map lsp-ui-mode-map
          ("M-<f6>" . lsp-ui-hydra/body)
          ("s-<return>" . lsp-ui-sideline-apply-code-actions))
   :hook (lsp-mode . lsp-ui-mode)

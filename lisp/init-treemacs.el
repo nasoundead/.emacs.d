@@ -33,7 +33,7 @@
 (use-package treemacs
   :defines winum-keymap
   :bind (
-         ([f8]        . treemacs)
+         ;; ([f8]        . treemacs)
          :map treemacs-mode-map
          ([mouse-1]   . treemacs-single-click-expand-action))
 

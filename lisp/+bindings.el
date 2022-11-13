@@ -15,6 +15,8 @@
       :gni [C-return]    #'+default/newline-below
       :gni [C-S-return]  #'+default/newline-above
 
+      :gni [F8] #'+treemacs/toggle
+
       ;; Ensure there are no conflicts
       :nmvo sea-leader-key nil
       :nmvo sea-localleader-key nil
@@ -407,9 +409,7 @@
       (:desc "s+default/search-cwd+default/search-cwdearch" :prefix "/"
 
         :desc "Buffer"                 :nv "b" #'consult-line
-        ;; :desc "Project"                :nv "p" #'+ivy/project-search
         :desc "Project"                :nv "p" #'+vertico/project-search
-        ;; :desc "Directory"              :nv "d" #'+ivy/project-search-from-cwd
         :desc "Directory"              :nv "d" #'+vertico/project-search-from-cwd
 
         :desc "Symbols"                :nv "i" #'consult-imenu
