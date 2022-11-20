@@ -176,8 +176,10 @@
 
     ("#+BEGIN_QUOTE"  . ?«)
     ("#+END_QUOTE"    . ?»)
+    ("#+begin_quote"  . ?«)
+    ("#+end_quote"    . ?»)
     ("#+RESULTS:"     . ?💻))
-    "centaur-prettify-org-symbols-alist")
+  "centaur-prettify-org-symbols-alist")
 
 (defvar sea-debug-mode (or (getenv "DEBUG") init-file-debug)
   "If non-nil, all sea functions will be verbose. Set DEBUG=1 in the command

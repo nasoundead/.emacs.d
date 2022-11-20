@@ -45,20 +45,7 @@
                   (if (or (region-active-p) (looking-back "^\s*" 1))
                       (org-hydra/body)
                     (self-insert-command 1)))))
-  :hook (((org-babel-after-execute org-mode) . org-redisplay-inline-images) ; display image
-         (org-mode . (lambda ()
-                       "Beautify org symbols."
-                       (when centaur-prettify-org-symbols-alist
-                         (if prettify-symbols-alist
-                             (push centaur-prettify-org-symbols-alist prettify-symbols-alist)
-                           (setq prettify-symbols-alist centaur-prettify-org-symbols-alist)))
-                       (prettify-symbols-mode 1)))
-         (org-indent-mode . (lambda()
-                              (diminish 'org-indent-mode)
-                              ;; HACK: Prevent text moving around while using brackets
-                              ;; @see https://github.com/seagle0128/.emacs.d/issues/88
-                              (make-variable-buffer-local 'show-paren-mode)
-                              (setq show-paren-mode nil))))
+  :hook ((org-babel-after-execute org-mode) . org-redisplay-inline-images)
   :config
   ;; For hydra
   (defun hot-expand (str &optional mod)
@@ -171,8 +158,7 @@ prepended to the element after the #+HEADER: tag."
             :map org-tree-slide-mode-map
             ("<left>" . org-tree-slide-move-previous-tree)
             ("<right>" . org-tree-slide-move-next-tree)
-            ("S-SPC" . org-tree-slide-move-previous-tree)
-            ("SPC" . org-tree-slide-move-next-tree))
+            )
     :hook ((org-tree-slide-play . (lambda ()
                                     (text-scale-increase 4)
                                     (org-display-inline-images)
@@ -241,146 +227,125 @@ prepended to the element after the #+HEADER: tag."
 
   ;; Add new template
   (add-to-list 'org-structure-template-alist '("n" . "note"))
+  )
 
-  ;; snipshort
-  (defvar clipjar-location (concat sea-bin-dir "Clip.jar"))
-  (defun org-paste-image ()
-    (interactive)
-    ;; create images dir
-    (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))
-    (unless (file-exists-p target-dir)
-      (make-directory target-dir))
-    (setq filename-without-extension
-          (make-temp-name
-           (concat
-            (file-name-nondirectory
-             (buffer-file-name))
-            (format-time-string "_%Y%m%d_%H%M%S")))  )
+
+
+(use-package org-superstar
+  :if (and (display-graphic-p) (char-displayable-p ?◉))
+  :hook (org-mode . org-superstar-mode)
+  :init (setq org-superstar-headline-bullets-list '("◉""○""◈""◇""⁕")))
+
+(use-package org-fancy-priorities
+  :diminish
+  :hook (org-mode . org-fancy-priorities-mode)
+  :init (setq org-fancy-priorities-list
+              (if (and (display-graphic-p) (char-displayable-p ?🅐))
+                  '("🅐" "🅑" "🅒" "🅓")
+                '("HIGH" "MEDIUM" "LOW" "OPTIONAL"))))
+;; ui enhance
+(defun enhance-ui-for-orgmode ()
+  "Enhance UI for orgmode."
+  (when centaur-prettify-org-symbols-alist
+    (if prettify-symbols-alist
+        (push centaur-prettify-org-symbols-alist prettify-symbols-alist)
+      (setq prettify-symbols-alist centaur-prettify-org-symbols-alist)))
+  (prettify-symbols-mode)
+  (toggle-truncate-lines)
+  )
+(add-hook 'org-mode-hook 'enhance-ui-for-orgmode)
+
+;; snipshort
+(defvar clipjar-location (concat sea-bin-dir "Clip.jar"))
+(defun org-paste-image ()
+  (interactive)
+  ;; create images dir
+  (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))
+  (unless (file-exists-p target-dir)
+    (make-directory target-dir))
+  (setq filename-without-extension
+        (make-temp-name
+         (concat
+          (file-name-nondirectory
+           (buffer-file-name))
+          (format-time-string "_%Y%m%d_%H%M%S")))  )
+  (insert
+   (org-make-link-string
+    (concat "file:"
+            (string-trim
+             (shell-command-to-string
+              (mapconcat #'identity
+                         `("java"
+                           "-jar"
+                           ,(expand-file-name clipjar-location)
+                           "--name"
+                           ,(concat filename-without-extension)
+                           ,(concat target-dir)
+                           )
+                         " "
+                         ))))))
+  (org-display-inline-images))
+(defun org-paste-image-ask-dir ()
+  (interactive)
+  (let* ((dir (read-directory-name "Dir: ")))
     (insert
      (org-make-link-string
       (concat "file:"
-              (string-trim
-               (shell-command-to-string
-                (mapconcat #'identity
-                           `("java"
-                             "-jar"
-                             ,(expand-file-name clipjar-location)
-                             "--name"
-                             ,(concat filename-without-extension)
-                             ,(concat target-dir)
-                             )
-                           " "
-                           ))))))
-    (org-display-inline-images))
-  (defun org-paste-image-ask-dir ()
-    (interactive)
-    (let* ((dir (read-directory-name "Dir: ")))
-      (insert
-       (org-make-link-string
-        (concat "file:"
-                (shell-command-to-string
-                 (mapconcat #'identity
-                            `("java"
-                              "-jar"
-                              ,(expand-file-name clipjar-location)
-                              "--uuid"
-                              ,(file-relative-name dir default-directory)
-                              )
-                            " "
-                            )))))))
-  (defun org-paste-image-ask-name ()
-    (interactive)
-    (let* ((image-name (string-trim (read-string "Image name: "))))
-      (insert
-       (org-make-link-string
-        (concat "file:"
-                (shell-command-to-string
-                 (mapconcat #'identity
-                            `("java"
-                              "-jar"
-                              ,(expand-file-name clipjar-location)
-                              "--name"
-                              ,(concat "'" image-name "'")        ;; image name without extension must be quoted
-                              "'/images'"               ;; Directory which the image will be saved '/tmp/images scala'
-                              )
-                            " "
-                            )))))))
-  (defun org-screenshot-and-paste-image-use-powershell()
-    "Take a screenshot into a time stamped unique-named file in the
+              (shell-command-to-string
+               (mapconcat #'identity
+                          `("java"
+                            "-jar"
+                            ,(expand-file-name clipjar-location)
+                            "--uuid"
+                            ,(file-relative-name dir default-directory)
+                            )
+                          " "
+                          )))))))
+(defun org-paste-image-ask-name ()
+  (interactive)
+  (let* ((image-name (string-trim (read-string "Image name: "))))
+    (insert
+     (org-make-link-string
+      (concat "file:"
+              (shell-command-to-string
+               (mapconcat #'identity
+                          `("java"
+                            "-jar"
+                            ,(expand-file-name clipjar-location)
+                            "--name"
+                            ,(concat "'" image-name "'")        ;; image name without extension must be quoted
+                            "'/images'"               ;; Directory which the image will be saved '/tmp/images scala'
+                            )
+                          " "
+                          )))))))
+(defun org-screenshot-and-paste-image-use-powershell()
+  "Take a screenshot into a time stamped unique-named file in the
         same directory as the org-buffer and insert a link to this file."
-    (interactive)
-    ;; create images dir
-    (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))
-    (unless (file-exists-p target-dir)
-      (make-directory target-dir))
-    (setq filename
+  (interactive)
+  ;; create images dir
+  (setq target-dir (concat (file-name-directory (buffer-file-name)) "images/"))
+  (unless (file-exists-p target-dir)
+    (make-directory target-dir))
+  (setq filename
+        (concat
+         (make-temp-name
           (concat
-           (make-temp-name
-            (concat
-             target-dir
-             (file-name-nondirectory
-              (buffer-file-name))
-             (format-time-string "_%Y%m%d_%H%M%S_")) ) ".png"))
-    (shell-command "snippingtool /clip")
-    (sleep-for 0.3)
-    (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
-    (insert (concat "[[file:" filename "]]"))
-    (org-display-inline-images))
-  ;; Use embedded webkit browser if possible
-  (when (featurep 'xwidget-internal)
-    (push '("\\.\\(x?html?\\|pdf\\)\\'"
-            .
-            (lambda (file _link)
-              (centaur-webkit-browse-url (concat "file://" file) t)))
-          org-file-apps))
-  )
-
-;; Prettify UI
-(if EMACS27+
-    (use-package org-modern
-      :hook ((org-mode . org-modern-mode)
-             (org-agenda-finalize . org-modern-agenda)
-             (org-modern-mode . (lambda ()
-                                  "Adapt `org-modern-mode'."
-                                  ;; Disable Prettify Symbols mode
-                                  (setq prettify-symbols-alist nil)
-                                  (prettify-symbols-mode -1)))
-             ))
-  (progn
-    (use-package org-superstar
-      :if (and (display-graphic-p) (char-displayable-p ?◉))
-      :hook (org-mode . org-superstar-mode)
-      :init (setq org-superstar-headline-bullets-list '("◉""○""◈""◇""⁕")))
-    (use-package org-fancy-priorities
-      :diminish
-      :hook (org-mode . org-fancy-priorities-mode)
-      :init (setq org-fancy-priorities-list
-                  (if (and (display-graphic-p) (char-displayable-p ?🅐))
-                      '("🅐" "🅑" "🅒" "🅓")
-                    '("HIGH" "MEDIUM" "LOW" "OPTIONAL"))))))
-;; ui enhance
-;; ------------------------------------------------------------------------
-;; (defun enhance-ui-for-orgmode ()
-;;   "Enhance UI for orgmode."
-;;   (toggle-truncate-lines)
-;;   ;; Beautify Org Checkbox Symbol
-;;   (push '("[ ]" . "☐") prettify-symbols-alist)
-;;   (push '("[X]" . "☑" ) prettify-symbols-alist)
-;;   (push '("[-]" . "❍" ) prettify-symbols-alist)
-;;   (push '("#+BEGIN_SRC" . "⌜" ) prettify-symbols-alist)
-;;   (push '("#+begin_src" . "⌜" ) prettify-symbols-alist)
-;;   (push '("#+END_SRC" . "⌞" ) prettify-symbols-alist)
-;;   (push '("#+end_src" . "⌞" ) prettify-symbols-alist)
-;;   (push '("TODO" . "☐" ) prettify-symbols-alist)
-;;   (push '("WORK" . "⚑" ) prettify-symbols-alist)
-;;   (push '("DONE" . "☑" ) prettify-symbols-alist)
-;;   (prettify-symbols-mode))
-;; (add-hook 'org-mode-hook 'enhance-ui-for-orgmode)
-;; (defface org-checkbox-done-text
-;;   '((t (:foreground "#71696A" :strike-through t)))
-;;   "Face for the text part of a checked org-mode checkbox.")
-
-
+           target-dir
+           (file-name-nondirectory
+            (buffer-file-name))
+           (format-time-string "_%Y%m%d_%H%M%S_")) ) ".png"))
+  (shell-command "snippingtool /clip")
+  (sleep-for 0.3)
+  (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+  (insert (concat "[[file:" filename "]]"))
+  (org-display-inline-images))
+;; Use embedded webkit browser if possible
+(when (featurep 'xwidget-internal)
+  (push '("\\.\\(x?html?\\|pdf\\)\\'"
+          .
+          (lambda (file _link)
+            (centaur-webkit-browse-url (concat "file://" file) t)))
+        org-file-apps))
 
 (use-package deft)
 
