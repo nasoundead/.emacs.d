@@ -8,8 +8,8 @@
 
 ;; Youdao Dictionay
 (use-package youdao-dictionary
-  :bind (("C-c y" . youdao-dictionary-search-at-point)
-         ("C-c Y" . youdao-dictionary-search-at-point-tooltip))
+  :bind (;; ("C-c y" . youdao-dictionary-search-at-point+)
+         ("C-c y" . youdao-dictionary-search-at-point-tooltip))
   :config
   ;; Cache documents
   (setq url-automatic-caching t)
