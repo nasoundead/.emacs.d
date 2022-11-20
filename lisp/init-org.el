@@ -204,7 +204,8 @@ prepended to the element after the #+HEADER: tag."
                         (?B . warning)
                         (?C . success))
 
-   ;; ;; Agenda styling
+   org-M-RET-may-split-line '((:headline . nil))
+   ;; Agenda styling
    org-agenda-block-separator ?─
    org-agenda-time-grid
    '((daily today require-timed)
