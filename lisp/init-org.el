@@ -3,7 +3,7 @@
 (require 'init-funcs)
 
 (use-package org
-  :mode (("\\.org$" . org-mode))
+  ;; :mode (("\\.org$" . org-mode))
   ;; :ensure org-plus-contrib
   :pretty-hydra
   ((:title (pretty-hydra-title "Org Template" 'fileicon "org" :face 'all-the-icons-green :height 1.1 :v-adjust 0.0)
@@ -28,7 +28,7 @@
     "Source"
     (("s" (hot-expand "<s") "src")
      ("m" (hot-expand "<s" "emacs-lisp") "emacs-lisp")
-     ("y" (hot-expand "<s" "python :results output file :var f=\"simages/example.png\"") "python")
+     ("y" (hot-expand "<s" "python :results output") "python")
      ("S" (hot-expand "<s" "sh") "sh")
      ("g" (hot-expand "<s" "go :imports '\(\"fmt\"\)") "golang"))
     "Misc"
@@ -51,10 +51,10 @@
   (defun hot-expand (str &optional mod)
     "Expand org template.
 
-STR is a structure template string recognised by org like <s. MOD is a
-string with additional parameters to add the begin line of the
-structure element. HEADER string includes more parameters that are
-prepended to the element after the #+HEADER: tag."
+    STR is a structure template string recognised by org like <s. MOD is a
+    string with additional parameters to add the begin line of the
+    structure element. HEADER string includes more parameters that are
+    prepended to the element after the #+HEADER: tag."
     (let (text)
       (when (region-active-p)
         (setq text (buffer-substring (region-beginning) (region-end)))
@@ -176,6 +176,27 @@ prepended to the element after the #+HEADER: tag."
                 org-tree-slide-skip-comments t
                 org-tree-slide-skip-outline-level 3))
 
+  (use-package org-superstar
+    :hook (org-mode . org-superstar-mode)
+    :init
+    (setq org-superstar-headline-bullets-list '("◉""○""◈""◇""⁕")))
+
+  (use-package org-fancy-priorities
+    :hook (org-mode . org-fancy-priorities-mode)
+    :init (setq org-fancy-priorities-list
+                (if (and (display-graphic-p) (char-displayable-p ?🅐))
+                    '("🅐" "🅑" "🅒" "🅓")
+                  '("high" "medium" "low" "optional"))))
+  ;; ui enhance
+  (defun enhance-ui-for-orgmode ()
+    "enhance ui for orgmode."
+    (when centaur-prettify-org-symbols-alist
+      (if prettify-symbols-alist
+          (push centaur-prettify-org-symbols-alist prettify-symbols-alist)
+        (setq prettify-symbols-alist centaur-prettify-org-symbols-alist)))
+    (prettify-symbols-mode)
+    (toggle-truncate-lines))
+  (add-hook 'org-mode-hook #'enhance-ui-for-orgmode)
 
   ;; To speed up startup, don't put to init section
   (setq
@@ -230,31 +251,6 @@ prepended to the element after the #+HEADER: tag."
   (add-to-list 'org-structure-template-alist '("n" . "note"))
   )
 
-
-
-(use-package org-superstar
-  :if (and (display-graphic-p) (char-displayable-p ?◉))
-  :hook (org-mode . org-superstar-mode)
-  :init (setq org-superstar-headline-bullets-list '("◉""○""◈""◇""⁕")))
-
-(use-package org-fancy-priorities
-  :diminish
-  :hook (org-mode . org-fancy-priorities-mode)
-  :init (setq org-fancy-priorities-list
-              (if (and (display-graphic-p) (char-displayable-p ?🅐))
-                  '("🅐" "🅑" "🅒" "🅓")
-                '("HIGH" "MEDIUM" "LOW" "OPTIONAL"))))
-;; ui enhance
-(defun enhance-ui-for-orgmode ()
-  "Enhance UI for orgmode."
-  (when centaur-prettify-org-symbols-alist
-    (if prettify-symbols-alist
-        (push centaur-prettify-org-symbols-alist prettify-symbols-alist)
-      (setq prettify-symbols-alist centaur-prettify-org-symbols-alist)))
-  (prettify-symbols-mode)
-  (toggle-truncate-lines)
-  )
-(add-hook 'org-mode-hook 'enhance-ui-for-orgmode)
 
 ;; snipshort
 (defvar clipjar-location (concat sea-bin-dir "Clip.jar"))

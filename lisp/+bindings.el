@@ -368,11 +368,11 @@
 (map! :leader
       :desc "Ex command"              :nv ";"  #'evil-ex
       :desc "M-x"                     :nv ":"  #'execute-extended-command
+      :desc "M-x"                     :n "SPC" #'execute-extended-command
       :desc "Pop up scratch buffer"   :nv "x"  #'sea/open-scratch-buffer
       :desc "Org Capture"             :nv "X"  #'org-capture
 
       ;; Most commonly used
-      :desc "Find file in project"    :n "SPC" #'projectile-find-file
       :desc "Browse files"            :n "."   #'find-file
 
       :desc "Jump to bookmark"        :n "RET" #'bookmark-jump
