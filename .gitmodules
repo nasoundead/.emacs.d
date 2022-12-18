@@ -1,0 +1,3 @@
+[submodule "site-lisp/evil"]
+	path = site-lisp/evil
+	url = https://github.com/emacs-evil/evil.git
