@@ -449,32 +449,32 @@ the first match on each line)."
 ;; completion/ivy/autoload/evil.el -*- lexical-binding: t; -*-
 ;;;###if (featurep! :editor evil)
 
-;;;###autoload
-(evil-define-command +ivy:swiper (&optional search)
-  "Invoke `swiper' with SEARCH, otherwise with the symbol at point."
-  (interactive "<a>")
-  (swiper search))
+;; ;;;###autoload
+;; (evil-define-command +ivy:swiper (&optional search)
+;;   "Invoke `swiper' with SEARCH, otherwise with the symbol at point."
+;;   (interactive "<a>")
+;;   (swiper search))
 
-;;;###autoload
-(evil-define-command +ivy:todo (&optional bang)
-  "An ex wrapper around `+ivy/tasks'."
-  (interactive "<!>")
-  (+ivy/tasks bang))
-
-
-;;
-;; Project searching
+;; ;;;###autoload
+;; (evil-define-command +ivy:todo (&optional bang)
+;;   "An ex wrapper around `+ivy/tasks'."
+;;   (interactive "<!>")
+;;   (+ivy/tasks bang))
 
 
-;;;###autoload
-(evil-define-command +ivy:rg (all-files-p query)
-  "Ex interface for `+ivy/rg'"
-  (interactive "<!><a>")
-  (+ivy/rg all-files-p query))
+;; ;;
+;; ;; Project searching
 
 
-;;;###autoload (autoload '+ivy:rg-from-cwd "completion/ivy/autoload/evil" nil t)
-(evil-define-command +ivy:rg-from-cwd (query &optional recurse-p)
-  "Ex interface for `+ivy/rg-from-cwd'."
-  (interactive "<a><!>")
-  (+ivy/rg-from-cwd (not recurse-p) query))
+;; ;;;###autoload
+;; (evil-define-command +ivy:rg (all-files-p query)
+;;   "Ex interface for `+ivy/rg'"
+;;   (interactive "<!><a>")
+;;   (+ivy/rg all-files-p query))
+
+
+;; ;;;###autoload (autoload '+ivy:rg-from-cwd "completion/ivy/autoload/evil" nil t)
+;; (evil-define-command +ivy:rg-from-cwd (query &optional recurse-p)
+;;   "Ex interface for `+ivy/rg-from-cwd'."
+;;   (interactive "<a><!>")
+;;   (+ivy/rg-from-cwd (not recurse-p) query))

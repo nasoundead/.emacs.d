@@ -49,7 +49,9 @@
 
 ;; Show native line numbers if possible, otherwise use linum
 (if (fboundp 'display-line-numbers-mode)
-    (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+    (progn 
+      (setq linum-format "%4d ")
+      (add-hook 'prog-mode-hook #'display-line-numbers-mode))
   (use-package linum-off
     :demand
     :defines linum-format

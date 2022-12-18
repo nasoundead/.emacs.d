@@ -79,15 +79,7 @@
   :init
   (setq which-key-use-C-h-commands nil
         prefix-help-command #'embark-prefix-help-command)
-  (map! [remap describe-bindings] #'embark-bindings
-        "C-;"               #'embark-act  ; to be moved to :config default if accepted
-        (:map minibuffer-local-map
-          "C-;"               #'embark-act
-          "C-c C-;"           #'embark-export
-          "C-c C-l"           #'embark-collect
-          :desc "Export to writable buffer" "C-c C-e" #'+vertico/embark-export-write)
-        (:leader
-          :desc "Actions" "a" #'embark-act)) ; to be moved to :config default if accepted
+  
   :config
   (require 'consult)
 
@@ -103,12 +95,10 @@
         cons
         '+vertico-embark-target-package-fn
         (nthcdr pos embark-target-finders)))
-  (map! (:map embark-file-map
-          :desc "Open target with sudo"        "s"   #'sea/sudo-find-file
-          :desc "Open magit-status of target"  "g"   #'+vertico/embark-magit-status
-          )))
+)
 
 
+          
 (provide 'init-vertico)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

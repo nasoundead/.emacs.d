@@ -43,15 +43,8 @@
 ;;               (lambda ()
 ;;                 (push '("<=" . ?≤) prettify-symbols-alist)))))
 
-
-
-(use-package nxml-mode
-  :ensure nil
-  :mode (("\\.xaml$" . xml-mode)))
-
 (use-package quickrun)
 (use-package powershell)
-(use-package csharp-mode)
 (use-package dockerfile-mode :mode "Dockerfile\\'")
 (use-package vimrc-mode)
 
@@ -78,18 +71,6 @@
   (use-package flymd
     :bind (:map markdown-mode-map ("C-c C-c f" . flymd-flyit))))
 
-(use-package fish-mode
-  :init
-  (add-hook 'fish-mode-hook
-            (lambda ()
-              (add-hook 'before-save-hook
-                        #'fish_indent-before-save))))
-
-(use-package swift-mode
-  :config
-  (with-eval-after-load 'flycheck
-    (use-package flycheck-swift
-      :init (flycheck-swift-setup))))
 
 (use-package robot-mode
   :ensure nil

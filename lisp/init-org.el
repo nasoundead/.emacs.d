@@ -47,6 +47,12 @@
                     (self-insert-command 1)))))
   :hook ((org-babel-after-execute org-mode) . org-redisplay-inline-images)
   :config
+  (defun org-export-docx ()
+    (interactive)
+    (let ((docx-file (concat (file-name-sans-extension (buffer-file-name)) ".docx"))
+          (template-file (concat sea-site-lisp-dir "/template/template.docx")))
+      (shell-command (format "pandoc %s -o %s --reference-doc=%s" (buffer-file-name) docx-file template-file))
+      (message "Convert finish: %s" docx-file)))
   ;; For hydra
   (defun hot-expand (str &optional mod)
     "Expand org template.

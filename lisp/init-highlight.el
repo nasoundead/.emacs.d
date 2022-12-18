@@ -24,17 +24,17 @@
 ;;
 
 
-(use-package highlight-global
-  :ensure nil
-  :commands (highlight-frame-toggle)
-  :bind (("M-h" . highlight-frame-toggle))
-  :config
-  (progn
-    (setq-default highlight-faces
-                  '(('hi-red-b . 0)
-                    ('hi-aquamarine . 0)
-                    ('hi-pink . 0)
-                    ('hi-blue-b . 0)))))
+;; (use-package highlight-global
+;;   :ensure nil
+;;   :commands (highlight-frame-toggle)
+;;   :bind (("M-h" . highlight-frame-toggle))
+;;   :config
+;;   (progn
+;;     (setq-default highlight-faces
+;;                   '(('hi-red-b . 0)
+;;                     ('hi-aquamarine . 0)
+;;                     ('hi-pink . 0)
+;;                     ('hi-blue-b . 0)))))
 
 ;; Highlight symbols
 (use-package symbol-overlay

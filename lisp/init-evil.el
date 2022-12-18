@@ -1,9 +1,19 @@
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1))
+;; (use-package evil
+;;   :straight (evil 
+;;             :type git 
+;;             :host github 
+;;             :repo "emacs-evil/evil"))
+;; (add-hook 'after-init-hook #'(lambda() (evil-mode 1)))
+;; Enable Evil
+(setq evil-want-keybinding nil)
+(require 'evil)
+(evil-mode 1)
+;; (use-package evil
+;;   :ensure t
+;;   :init
+;;   (setq evil-want-keybinding nil)
+;;   :config
+;;   (evil-mode 1))
 
 (use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
@@ -105,8 +115,7 @@
   (add-hook 'after-init-hook #'evil-escape-mode)
   :config
   ;; no `evil-escape' in minibuffer
-  (push #'minibufferp evil-escape-inhibit-functions)
-  (map! :irvo "C-g" #'evil-escape))
+  (push #'minibufferp evil-escape-inhibit-functions))
 
 (use-package evil-exchange
   :commands evil-exchange
@@ -203,7 +212,6 @@ the new algorithm is confusing, like in python or ruby."
     "o" 'link-hint-open-link)
   )
 
-;; (add-hook 'magit-mode-hook #'(lambda() (require 'evil-magit)))
 
 
 (provide 'init-evil)

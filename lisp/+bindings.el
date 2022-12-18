@@ -9,6 +9,30 @@
 ;;
 (map! [remap evil-jump-to-tag] #'projectile-find-tag
       [remap find-tag]         #'projectile-find-tag
+      [remap describe-bindings] #'embark-bindings
+      :irvo "C-g" #'evil-escape
+      "C-;"                  #'embark-act  ; to be moved to :config default if accepted
+      (:map minibuffer-local-map
+        "C-;"               #'embark-act
+        "C-c C-;"           #'embark-export
+        "C-c C-l"           #'embark-collect
+        :desc "Export to writable buffer" "C-c C-e" #'+vertico/embark-export-write)
+      (:leader
+        :desc "Actions" "a" #'embark-act)
+      (:map embark-file-map
+        :desc "Open target with sudo"        "s"   #'sea/sudo-find-file
+        :desc "Open magit-status of target"  "g"   #'+vertico/embark-magit-status
+        )
+      (:map dired-mode-map
+        :gni "=" #'sea/dired-diff)
+      (:after treemacs
+        (:map treemacs-mode-map
+          :n "R" #'treemacs-rename-file
+          :n "m" #'treemacs-mark-or-unmark-path-at-point
+          :n "dd" #'treemacs-delete-file
+          :n "D" #'treemacs-delete-marked-files
+          :n "cc" #'treemacs-move-file
+          :n "C" #'treemacs-move-marked-files))
 
       :gni "C-a" #'sea/backward-to-bol-or-indent
       :gni "C-e" #'sea/forward-to-last-non-comment-or-eol
