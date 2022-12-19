@@ -109,7 +109,7 @@
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
               ;; ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
-              ((eq system-type 'windows-nt) '("Fira Code"  "宋体"))
+              ((eq system-type 'windows-nt) '("Inconsolata NFM"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("SauceCodePro Nerd Font"  "宋体"))
               ))
@@ -176,7 +176,7 @@
                                       all-the-icons-wicon all-the-icons-alltheicon))
     (advice-add fn :around #'sea*disable-all-the-icons-in-tty)))
 
-
+ 
 (use-package highlight-indent-guides
   :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
   :init
@@ -188,11 +188,11 @@
     (defun +indent-guides-disable-maybe-h ()
       (when highlight-indent-guides-mode
         (highlight-indent-guides-mode -1)))))
-
+ 
 (use-package page-break-lines
   :hook ((prog-mode text-mode conf-mode) . page-break-lines-mode)
   )
-
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

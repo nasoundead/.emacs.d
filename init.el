@@ -259,8 +259,8 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-go)
 (require 'init-py)
 (require 'init-rust)
-;; (require 'init-js)
-;; (require 'init-web)
+(require 'init-js)
+(require 'init-web)
 
 ;; ;; Start server
 ;; (require 'server)

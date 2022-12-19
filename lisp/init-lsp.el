@@ -139,40 +139,35 @@
   (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
   )
 
+;; (use-package dap-mode
+;;     :diminish
+;;     :bind (:map lsp-mode-map
+;;             ("<f5>" . dap-debug)
+;;             ("M-<f5>" . dap-hydra))
+;;     :hook ((after-init . dap-mode)
+;;            (dap-mode . dap-ui-mode)
+;;            (dap-session-created . (lambda (_args) (dap-hydra)))
+;;            (dap-stopped . (lambda (_args) (dap-hydra)))
+;;            (dap-terminated . (lambda (_args) (dap-hydra/nil)))
 
-;; `treemacs' requires 25.2+, so `dap-mode' and `lsp-treemacs' also requires 25.2+
-(when EMACS26+
-  ;; Debug
-  (use-package dap-mode
-    :functions dap-hydra/nil
-    :diminish
-    :bind (:map lsp-mode-map
-            ("<f5>" . dap-debug)
-            ("M-<f5>" . dap-hydra))
-    :hook ((after-init . dap-mode)
-           (dap-mode . dap-ui-mode)
-           (dap-session-created . (lambda (_args) (dap-hydra)))
-           (dap-stopped . (lambda (_args) (dap-hydra)))
-           (dap-terminated . (lambda (_args) (dap-hydra/nil)))
+;;            (python-mode . (lambda () (require 'dap-python)))
+;;            (ruby-mode . (lambda () (require 'dap-ruby)))
+;;            (go-mode . (lambda () (require 'dap-go)))
+;;            (java-mode . (lambda () (require 'dap-java)))
+;;            ((c-mode c++-mode objc-mode swift-mode) . (lambda () (require 'dap-lldb)))
+;;            (php-mode . (lambda () (require 'dap-php)))
+;;            (elixir-mode . (lambda () (require 'dap-elixir)))
+;;            ((js-mode js2-mode) . (lambda () (require 'dap-chrome)))
+;;            (powershell-mode . (lambda () (require 'dap-pwsh)))))
 
-           (python-mode . (lambda () (require 'dap-python)))
-           (ruby-mode . (lambda () (require 'dap-ruby)))
-           (go-mode . (lambda () (require 'dap-go)))
-           (java-mode . (lambda () (require 'dap-java)))
-           ((c-mode c++-mode objc-mode swift-mode) . (lambda () (require 'dap-lldb)))
-           (php-mode . (lambda () (require 'dap-php)))
-           (elixir-mode . (lambda () (require 'dap-elixir)))
-           ((js-mode js2-mode) . (lambda () (require 'dap-chrome)))
-           (powershell-mode . (lambda () (require 'dap-pwsh)))))
-
-  ;; `lsp-mode' and `treemacs' integration
-  (use-package lsp-treemacs
-    :after lsp-mode
-    :bind (:map lsp-mode-map
-            ("C-<f8>" . lsp-treemacs-errors-list)
-            ("M-<f8>" . lsp-treemacs-symbols)
-            )
-    ))
+;; `lsp-mode' and `treemacs' integration
+(use-package lsp-treemacs
+  :after lsp-mode
+  :bind (:map lsp-mode-map
+          ("C-<f8>" . lsp-treemacs-errors-list)
+          ("M-<f8>" . lsp-treemacs-symbols)
+          )
+  )
 
 ;; Enable LSP in org babel
 ;; https://github.com/emacs-lsp/lsp-mode/issues/377
@@ -203,10 +198,11 @@
                         (upcase ,lang))))))))
 
 (defvar org-babel-lang-list
-  '("go" "python" "ipython" "ruby" "js" "css" "sass" "C" "rust" "java"))
+  '("go" "python" "ipython" "ruby" "js" "css" "sass" "c" "rust" "java" "cpp" "c++"))
 (add-to-list 'org-babel-lang-list (if EMACS26+ "shell" "sh"))
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
+
 
 
 ;; Python
@@ -270,11 +266,7 @@
                   (format "Prepare local buffer environment for org source block (%s)."
                           (upcase ,lang)))))))))
 
-(defconst org-babel-lang-list
-  '("go" "python" "ipython" "ruby" "js" "css" "sass" "c" "rust" "java" "cpp" "c++"))
-(add-to-list 'org-babel-lang-list "shell")
-(dolist (lang org-babel-lang-list)
-  (eval `(lsp-org-babel-enable ,lang)))
+
 
 
 (provide 'init-lsp)
