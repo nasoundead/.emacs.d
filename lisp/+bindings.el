@@ -39,7 +39,7 @@
       :gni [C-return]    #'+default/newline-below
       :gni [C-S-return]  #'+default/newline-above
 
-      :gni [F8] #'+treemacs/toggle
+      :gni [f8] #'+treemacs/toggle
 
       ;; Ensure there are no conflicts
       :nmvo sea-leader-key nil
@@ -84,7 +84,7 @@
       :n "M-s"   #'save-buffer
       :gnvimr "M-v" #'clipboard-yank
 
-      ;; --- Personal vim-esque bindings ------------------
+      ;; --- personal vim-esque bindings ------------------
       :n  "zx" #'kill-this-buffer
       :n  "ZX" #'bury-buffer
       :m  "]a" #'evil-forward-arg
@@ -111,8 +111,10 @@
       :i  [C-tab] #'aya-expand
       :nv [C-tab] #'aya-create
 
-      (:map org-mode-map
-        :n "H" #'org-up-element)
+      :n "H" #'previous-buffer
+      :n "L" #'next-buffer
+      ;; (:map org-mode-map
+      ;;   :n "H" #'org-up-element)
 
       (:map custom-theme-choose-mode-map
         :gvnime "j" #'widget-forward
