@@ -250,11 +250,10 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-vcs)
 (require 'init-dired)
 (require 'init-c)
-;; (require 'init-restore)
+(require 'init-restore)
 (require 'init-org)
-;; (require 'init-eshell)
+(require 'init-eshell)
 (require 'init-prog)
-;; (require 'init-emacs-lisp)
 (require 'init-lsp)
 (require 'init-go)
 (require 'init-py)
@@ -262,14 +261,14 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-js)
 (require 'init-web)
 
-;; ;; Start server
-;; (require 'server)
-;; (unless (server-running-p)
-;;   (server-start))
+;; Start server
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
-;; (dolist (dir (list sea-local-dir sea-cache-dir sea-etc-dir))
-;;   (unless (file-directory-p dir)
-;;     (make-directory dir t)))
+(dolist (dir (list sea-local-dir sea-cache-dir sea-etc-dir))
+  (unless (file-directory-p dir)
+    (make-directory dir t)))
 
 ;; (setq custom-file (concat sea-cache-dir "custom.el"))
 ;; (load custom-file t t)

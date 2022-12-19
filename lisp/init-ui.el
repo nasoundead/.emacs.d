@@ -114,7 +114,7 @@
               ;; ((eq system-type 'windows-nt) '("SauceCodePro Nerd Font"  "宋体"))
               ))
   (set-face-attribute 'default nil :font
-                      (format "%s:pixelsize=%d" (car fonts) 15))
+                      (format "%s:pixelsize=%d" (car fonts) 16))
   (dolist (charset '(kana han symbol cjk-misc bopomofo))
     (set-fontset-font (frame-parameter nil 'font) charset
                       (font-spec :family (car (cdr fonts)))))
@@ -176,7 +176,7 @@
                                       all-the-icons-wicon all-the-icons-alltheicon))
     (advice-add fn :around #'sea*disable-all-the-icons-in-tty)))
 
- 
+
 (use-package highlight-indent-guides
   :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
   :init
@@ -188,11 +188,11 @@
     (defun +indent-guides-disable-maybe-h ()
       (when highlight-indent-guides-mode
         (highlight-indent-guides-mode -1)))))
- 
+
 (use-package page-break-lines
   :hook ((prog-mode text-mode conf-mode) . page-break-lines-mode)
   )
- 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

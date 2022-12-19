@@ -2,12 +2,7 @@
 
 ;; Emacs lisp mode
 ;; Note: `elisp-mode' was called `emacs-lisp-mode' in <=24
-(use-package elisp-mode
-  :ensure nil
-  :bind (:map emacs-lisp-mode-map
-              ("C-c C-z" . ielm)
-              ("C-c C-c" . eval-defun)
-              ("C-c C-b" . eval-buffer)))
+
 
 ;; Show function arglist or variable docstring
 (use-package eldoc
