@@ -47,6 +47,7 @@
     (setq exec-path-from-shell-arguments '("-l"))
     (exec-path-from-shell-initialize)))
 
+
 ;; Show native line numbers if possible, otherwise use linum
 (if (fboundp 'display-line-numbers-mode)
     (progn 

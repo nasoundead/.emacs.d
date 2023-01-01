@@ -79,6 +79,19 @@
          ("<backtab>" . my-company-yasnippet))
   :hook (after-init . global-company-mode)
   :init
+  (use-package company-tabnine
+    :config
+    (setq company-show-numbers t)
+    ;; Use the tab-and-go frontend.
+    ;; Allows TAB to select and complete at the same time.
+    (company-tng-configure-default)
+    (setq company-frontends
+          '(company-tng-frontend
+            company-pseudo-tooltip-frontend
+            company-echo-metadata-frontend))
+    ;; (set-company-backend! 'prog-mode
+    ;;                       'company-tabnine 'company-capf 'company-yasnippet)
+    )
   (setq company-tooltip-align-annotations t
         company-tooltip-limit 12
         company-idle-delay 0
@@ -90,7 +103,8 @@
         company-dabbrev-downcase nil
         company-global-modes '(not erc-mode message-mode help-mode
                                    gud-mode eshell-mode shell-mode)
-        company-backends '((company-capf :with company-yasnippet)
+        company-backends '(company-tabnine
+                           (company-capf :with company-yasnippet)
                            (company-dabbrev-code company-keywords company-files)
                            company-dabbrev))
   :config
@@ -184,6 +198,7 @@
                 (put-text-property 0 len 'yas-annotation-patch t arg)))
             (funcall fn cmd arg))))
       (advice-add #'company-yasnippet :around #'my-company-yasnippet-disable-inline)))
+
 
   ;; Better sorting
   (use-package prescient

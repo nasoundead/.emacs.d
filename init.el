@@ -263,6 +263,7 @@ Meant to be used with `run-hook-wrapped'."
 
 ;; Start server
 (require 'server)
+(server-mode 1)
 (unless (server-running-p)
   (server-start))
 

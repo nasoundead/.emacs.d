@@ -81,7 +81,8 @@
 ;; (add-to-list 'company-backends #'company-tabnine)
 (use-package company-tabnine :ensure t
   :init
-  ;; Don't automatically use company-tabnine. Manually invoke it
+  (set-company-backend! 'prog-mode
+                        'company-tabnine 'company-capf 'company-yasnippet)
   ;; (add-to-list 'company-backends #'company-tabnine)
   ;; (set-company-backend! 'emacs-lisp-mode
   ;;   'company-tide 'company-yasnippet 'company-tabnine)

@@ -37,7 +37,7 @@
 
 (use-package dictionary)
 
-(require 'browse-url) ; part of gnu emacs
+;; (require 'browse-url) ; part of gnu emacs
 
 (defun my-lookup-wikipedia ()
   "Look up the word under cursor in Wikipedia.
@@ -62,6 +62,8 @@ This command switches to browser."
                                     (mapcar 'process-name (process-list)))))
 
     (delete-process (get-process pname))))
+
+(use-package copyit)
 
 (provide 'init-utils)
 
