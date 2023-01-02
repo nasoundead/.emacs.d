@@ -79,7 +79,7 @@
   :init
   (setq which-key-use-C-h-commands nil
         prefix-help-command #'embark-prefix-help-command)
-  
+
   :config
   (require 'consult)
 
@@ -95,10 +95,11 @@
         cons
         '+vertico-embark-target-package-fn
         (nthcdr pos embark-target-finders)))
-)
+  )
 
+(use-package consult-projectile
+  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
 
-          
 (provide 'init-vertico)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

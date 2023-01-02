@@ -472,19 +472,15 @@
       (:desc "file" :prefix "f"
         :desc "Find file"                 :n "f" #'find-file
         :desc "Sudo find file"            :n ">" #'sea/sudo-find-file
-        :desc "Find file in project"      :n "/" #'projectile-find-file
+        :desc "Find file in project"      :n "/" #'consult-projectile-find-file
         :desc "Find file from here"       :n "?" #'counsel-file-jump
-        :desc "Find other file"           :n "a" #'projectile-find-other-file
         :desc "Open project editorconfig" :n "c" #'editorconfig-find-current-editorconfig
         :desc "Find directory"            :n "d" #'dired
-        :desc "Find file in emacs.d"      :n "e" #'+default/find-in-emacsd
         :desc "Browse emacs.d"            :n "E" #'+default/browse-emacsd
         :desc "Recent files"              :n "r" #'recentf-open-files
-        :desc "Recent project files"      :n "R" #'projectile-recentf
+        :desc "Recent project files"      :n "R" #'consult-projectile-recentf
         :desc "Yank filename"             :n "y" #'+default/yank-buffer-filename
-        :desc "Find file in private config" :n "p" #'+default/find-in-config
-        :desc "Browse private config"       :n "P" #'+default/browse-config
-        :desc "Delete this file"            :n "X" #'sea/delete-this-file)
+        :desc "Delete this file"          :n "X" #'sea/delete-this-file)
 
       (:desc "git" :prefix "g"
         :desc "Magit blame"           :n  "b" #'magit-blame
@@ -555,13 +551,13 @@
 
       (:desc "project" :prefix "p"
         :desc "Browse project"          :n  "." #'+default/browse-project
-        :desc "Find file in project"    :n  "/" #'projectile-find-file
-        :desc "Run cmd in project root" :nv "!" #'projectile-run-shell-command-in-root
-        :desc "Compile project"         :n  "c" #'projectile-compile-project
-        :desc "Find other file"         :n  "o" #'projectile-find-other-file
-        :desc "Switch project"          :n  "p" #'projectile-switch-project
-        :desc "Recent project files"    :n  "r" #'projectile-recentf
-        :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache)
+        :desc "Consul project"          :n  "/" #'consult-projectile
+        :desc "Find buffer in project"  :n  "b" #'consult-project-buffer
+        :desc "Find file in project"    :n  "f" #'consult-projectile-find-file
+        :desc "Switch project"          :n  "p" #'consult-projectile-switch-project
+        :desc "Recent project files"    :n  "r" #'consult-projectile-recentf
+        :desc "Invalidate cache"        :n  "x" #'projectile-invalidate-cache
+        )
 
       (:desc "quit" :prefix "q"
         :desc "Quit Emacs"             :n "q" #'evil-quit-all
