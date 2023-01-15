@@ -84,11 +84,11 @@
     (setq company-show-numbers t)
     ;; Use the tab-and-go frontend.
     ;; Allows TAB to select and complete at the same time.
-    (company-tng-configure-default)
-    (setq company-frontends
-          '(company-tng-frontend
-            company-pseudo-tooltip-frontend
-            company-echo-metadata-frontend))
+    ;; (company-tng-configure-default)
+    ;; (setq company-frontends
+    ;;       '(company-tng-frontend
+    ;;         company-pseudo-tooltip-frontend
+    ;;         company-echo-metadata-frontend))
     ;; (set-company-backend! 'prog-mode
     ;;                       'company-tabnine 'company-capf 'company-yasnippet)
     )

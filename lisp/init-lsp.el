@@ -43,6 +43,7 @@
          (lsp-mode . (lambda ()
                        ;; Integrate `which-key'
                        (lsp-enable-which-key-integration)
+                       (lsp-rust-analyzer-inlay-hints-mode)
                        ;; Format and organize imports
                        (add-hook 'before-save-hook #'lsp-format-buffer t t)
                        (add-hook 'before-save-hook #'lsp-organize-imports t t)
@@ -56,7 +57,7 @@
   ;; @see https://github.com/emacs-lsp/lsp-mode#performance
   (setq read-process-output-max (* 3 1024 1024)
         lsp-semantic-tokens-enable t
-        )
+        lsp-rust-analyzer-server-display-inlay-hints t)
   )
 
 (use-package lsp-ui

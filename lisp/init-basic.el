@@ -47,10 +47,26 @@
     (setq exec-path-from-shell-arguments '("-l"))
     (exec-path-from-shell-initialize)))
 
+(defcustom aj8/buffer-skip-regexp
+  (rx bos (or (or "*Backtrace*" "*Compile-Log*" "*Completions*"
+                  "*Messages*" "*package*" "*Warnings*"
+                  "*Async-native-compile-log*")
+              (seq "magit-diff" (zero-or-more anything))
+              (seq "magit-process" (zero-or-more anything))
+              (seq "magit-revision" (zero-or-more anything))
+              (seq "magit-stash" (zero-or-more anything)))
+      eos)
+  "Regular expression matching buffers ignored by `next-buffer' and
+`previous-buffer'."
+  :type 'regexp)
+(defun aj8/buffer-skip-p (window buffer bury-or-kill)
+  "Return t if BUFFER name matches `aj8/buffer-skip-regexp'."
+  (string-match-p aj8/buffer-skip-regexp (buffer-name buffer)))
+(setq switch-to-prev-buffer-skip 'aj8/buffer-skip-p)
 
 ;; Show native line numbers if possible, otherwise use linum
 (if (fboundp 'display-line-numbers-mode)
-    (progn 
+    (progn
       (setq linum-format "%4d ")
       (add-hook 'prog-mode-hook #'display-line-numbers-mode))
   (use-package linum-off

@@ -274,13 +274,33 @@ extension, try to guess one."
 ;; 输入法切换
 (when IS-WIN
   (defun emacs-ime-disable ()
+    ;; (setq pgtk-use-im-context-on-new-connection nil)
     (w32-set-ime-open-status nil))
 
   (defun emacs-ime-enable ()
     (w32-set-ime-open-status t))
+  ;; (add-hook 'after-init-hook 'emacs-ime-disable)
+  (add-hook 'evil-insert-state-exit-hook 'emacs-ime-disable)
+  )
 
-  ;; (add-hook 'evil-insert-state-entry-hook 'emacs-ime-disable)
-  (add-hook 'evil-insert-state-exit-hook 'emacs-ime-disable))
+(use-package hungry-delete)
+(global-hungry-delete-mode)
+(use-package pyim)
+(defun eh-orderless-regexp (orig_func component)
+  (let ((result (funcall orig_func component)))
+    (pyim-cregexp-build result)))
+(defun toggle-chinese-search ()
+  (interactive)
+  (if (not (advice-member-p #'eh-orderless-regexp 'orderless-regexp))
+      (advice-add 'orderless-regexp :around #'eh-orderless-regexp)
+    (advice-remove 'orderless-regexp #'eh-orderless-regexp)))
+(defun disable-py-search (&optional args)
+  (if (advice-member-p #'eh-orderless-regexp 'orderless-regexp)
+      (advice-remove 'orderless-regexp #'eh-orderless-regexp)))
+;; (advice-add 'exit-minibuffer :after #'disable-py-search)
+(add-hook 'minibuffer-exit-hook 'disable-py-search)
+(global-set-key (kbd "M-p") 'toggle-chinese-search)
+
 
 (provide 'init-edit)
 
