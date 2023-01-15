@@ -49,11 +49,18 @@
 
 (defcustom sea/buffer-skip-regexp
   (rx bos
-      (or "*Backtrace*" "*Compile-Log*" "*Completions*"
-          "*Messages*" "*scratch*" "*Help*"
-          "*package*" "*Warnings*"
-          "*Async-native-compile-log*"
-          "*magit*")
+      (or (or "*Backtrace*" "*Compile-Log*" "*Completions*"
+              "*Messages*" "*scratch*" "*Help*"
+              "*package*" "*Warnings*"
+              "*Async-native-compile-log*")
+          (seq "magit-diff" (zero-or-more anything))
+          (seq "magit-process" (zero-or-more anything))
+          (seq "magit-revision" (zero-or-more anything))
+          (seq "magit-stash" (zero-or-more anything)))
+      ;; (or "*Backtrace*" "*Compile-Log*" "*Completions*"
+      ;;     "*Messages*" "*scratch*" "*Help*"
+      ;;     "*package*" "*Warnings*"
+      ;;     "*Async-native-compile-log*")
       eos)
   "Regular expression matching buffers ignored by `next-buffer' and
 `previous-buffer'."
