@@ -47,22 +47,21 @@
     (setq exec-path-from-shell-arguments '("-l"))
     (exec-path-from-shell-initialize)))
 
-(defcustom aj8/buffer-skip-regexp
-  (rx bos (or (or "*Backtrace*" "*Compile-Log*" "*Completions*"
-                  "*Messages*" "*package*" "*Warnings*"
-                  "*Async-native-compile-log*")
-              (seq "magit-diff" (zero-or-more anything))
-              (seq "magit-process" (zero-or-more anything))
-              (seq "magit-revision" (zero-or-more anything))
-              (seq "magit-stash" (zero-or-more anything)))
+(defcustom sea/buffer-skip-regexp
+  (rx bos
+      (or "*Backtrace*" "*Compile-Log*" "*Completions*"
+          "*Messages*" "*scratch*" "*Help*"
+          "*package*" "*Warnings*"
+          "*Async-native-compile-log*"
+          "*magit*")
       eos)
   "Regular expression matching buffers ignored by `next-buffer' and
 `previous-buffer'."
   :type 'regexp)
-(defun aj8/buffer-skip-p (window buffer bury-or-kill)
-  "Return t if BUFFER name matches `aj8/buffer-skip-regexp'."
-  (string-match-p aj8/buffer-skip-regexp (buffer-name buffer)))
-(setq switch-to-prev-buffer-skip 'aj8/buffer-skip-p)
+(defun sea/buffer-skip-p (window buffer bury-or-kill)
+  "Return t if BUFFER name matches `sea/buffer-skip-regexp'."
+  (string-match-p sea/buffer-skip-regexp (buffer-name buffer)))
+(setq switch-to-prev-buffer-skip 'sea/buffer-skip-p)
 
 ;; Show native line numbers if possible, otherwise use linum
 (if (fboundp 'display-line-numbers-mode)
