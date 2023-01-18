@@ -302,6 +302,16 @@ extension, try to guess one."
 (global-set-key (kbd "M-p") 'toggle-chinese-search)
 
 
+(use-package rime
+  :config
+  (setq rime-user-data-dir (expand-file-name "emacs-rime/Rime" user-emacs-directory))
+  (setq rime-share-data-dir (expand-file-name "emacs-rime/data" user-emacs-directory))
+  (setq rime-show-candidate 'posframe)
+  (setq default-input-method "rime"))
+
+(global-set-key (kbd "C-\\") 'toggle-input-method)
+(global-set-key (kbd "s-m") 'rime-force-enable)
+(global-set-key (kbd "s-`") 'rime-send-keybindin)
 (provide 'init-edit)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

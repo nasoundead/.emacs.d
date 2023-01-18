@@ -46,7 +46,7 @@
                        (load-library "hideshow")))
 
 (global-set-key (kbd "C-{") 'toggle-hiding)
-(global-set-key (kbd "C-\\") 'toggle-selective-display)
+;; (global-set-key (kbd "C-\\") 'toggle-selective-display)
 (add-hook 'c-mode-common-hook   'hs-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
 (add-hook 'java-mode-hook       'hs-minor-mode)

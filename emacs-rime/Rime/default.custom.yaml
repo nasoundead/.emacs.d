@@ -1,0 +1,4 @@
+patch:
+  "menu/page_size": 6
+  "translator/dictionary":
+    - luna_pinyin.extended
