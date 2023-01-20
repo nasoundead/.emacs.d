@@ -303,6 +303,9 @@ extension, try to guess one."
 
 
 (use-package rime
+  :custom
+  (rime-librime-root (expand-file-name "bin" user-emacs-directory))
+  (rime-emacs-module-header-root (expand-file-name "extends" user-emacs-directory))
   :config
   (setq rime-user-data-dir (expand-file-name "emacs-rime/Rime" user-emacs-directory))
   (setq rime-share-data-dir (expand-file-name "emacs-rime/data" user-emacs-directory))

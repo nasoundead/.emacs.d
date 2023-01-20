@@ -25,8 +25,8 @@
   :init
   (beacon-mode 1))
 
-;; (setq-default custom-enabled-themes '(color-theme-sanityinc-tomorrow-night))
-(setq-default custom-enabled-themes '(doom-tokyo-night))
+(setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+;; (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
   "Forcibly load the themes listed in `custom-enabled-themes'."
