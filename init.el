@@ -59,6 +59,12 @@
 
 (defconst EMACS26+ (> emacs-major-version 25))
 (defconst EMACS27+ (> emacs-major-version 26))
+(defconst EMACS28+ (> emacs-major-version 27))
+
+(defconst sea-logo (expand-file-name
+                    (if (display-graphic-p) "logo.png" "banner.txt")
+                    user-emacs-directory)
+  "Set logo. nil means official logo.")
 
 (defconst IS-MAC
   (eq system-type 'darwin)

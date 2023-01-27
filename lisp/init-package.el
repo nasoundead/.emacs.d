@@ -23,13 +23,7 @@
 (use-package straight
   :custom (straight-use-package-by-default t))
 
-(use-package anzu
-  :straight (anzu
-             :type git
-             :host github
-             :repo "syohex/emacs-anzu")
-  :init (global-anzu-mode +1)
-  :bind ("C-q" . anzu-query-replace-regexp))
+
 
 
 ;; (require 'package)

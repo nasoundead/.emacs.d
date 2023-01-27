@@ -144,24 +144,37 @@ fundamental-mode) for performance sake."
 (add-hook 'after-init-hook #'save-place-mode)
 
 ;; Show number of matches in mode-line while searching
-(use-package visual-regexp-steroids
-  :init
-  (use-package visual-regexp)
-  :bind (([remap query-replace-regexp] . vr/query-replace)))
+;; (use-package visual-regexp-steroids
+;;   :init
+;;   (use-package visual-regexp)
+;;   :bind (([remap query-replace-regexp] . vr/query-replace)))
+;; (use-package anzu
+;;   :diminish anzu-mode
+;;   :bind (([remap query-replace] . anzu-query-replace)
+;;          ;; ([remap query-replace-regexp] . anzu-query-replace-regexp)
+;;          :map isearch-mode-map
+;;          ([remap isearch-query-replace] . anzu-isearch-query-replace)
+;;          ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp))
+;; :init (add-hook 'after-init-hook #'global-anzu-mode)
+;;   :config (setq anzu-replace-to-string-separator
+;; (if (char-displayable-p ?→) " → " " -> ")))
+
 (use-package anzu
-  :diminish anzu-mode
+  :straight (anzu
+             :type git
+             :host github
+             :repo "syohex/emacs-anzu")
+  :init (global-anzu-mode +1)
   :bind (([remap query-replace] . anzu-query-replace)
-         ;; ([remap query-replace-regexp] . anzu-query-replace-regexp)
+         ([remap query-replace-regexp] . anzu-query-replace-regexp)
          :map isearch-mode-map
          ([remap isearch-query-replace] . anzu-isearch-query-replace)
          ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp))
-  :init (add-hook 'after-init-hook #'global-anzu-mode)
-  :config (setq anzu-replace-to-string-separator
-                (if (char-displayable-p ?→) " → " " -> ")))
-
+  ;; :bind ("C-q" . anzu-query-replace-regexp)
+  )
 ;; An all-in-one comment command to rule them all
-;; (use-package comment-dwim-2
-;;   :bind ("M-;" . comment-dwim-2))
+(use-package comment-dwim-2
+  :bind ("M-;" . comment-dwim-2))
 
 ;; A comprehensive visual interface to diff & patch
 (use-package ediff

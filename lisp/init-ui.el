@@ -25,7 +25,9 @@
   :init
   (beacon-mode 1))
 
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+(setq-default custom-enabled-themes '(modus-vivendi))
+;; (setq-default custom-enabled-themes '(doom-one))
+;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
@@ -55,10 +57,11 @@
   (dashboard-setup-startup-hook)
   :config
   ;; Set the title
-  (setq dashboard-banner-logo-title "Welcome to Emacs Dashboard")
+  (setq dashboard-banner-logo-title "Welcome to Sea Emacs. Enjoy Programming & Writing!")
 
   ;; Set the banner
-  (setq dashboard-startup-banner 'logo)
+  ;; (setq dashboard-startup-banner 'logo)
+  (setq dashboard-startup-banner (or sea-logo 'official))
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-set-navigator t)
@@ -69,7 +72,16 @@
                           (projects . 9)
                           (agenda . 5)
                           (registers . 5)))
-  (setq show-week-agenda-p t))
+  (setq show-week-agenda-p t)
+  (setq dashboard-set-footer t
+          dashboard-footer-icon (cond ((icon-displayable-p)
+                                       (all-the-icons-faicon "heart"
+                                                             :height 1.1
+                                                             :v-adjust -0.05
+                                                             :face 'error))
+                                      ((char-displayable-p ?🧡) "🧡 ")
+                                      (t (propertize ">" 'face 'dashboard-footer))))
+  )
 
 ;; highlight matching delimiters
 (setq show-paren-delay 0.1
