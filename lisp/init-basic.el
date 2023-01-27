@@ -74,6 +74,7 @@
 (if (fboundp 'display-line-numbers-mode)
     (progn
       (setq linum-format "%4d ")
+      (setq display-line-numbers-type 'relative)
       (add-hook 'prog-mode-hook #'display-line-numbers-mode))
   (use-package linum-off
     :demand
