@@ -74,7 +74,7 @@
 (if (fboundp 'display-line-numbers-mode)
     (progn
       (setq linum-format "%4d ")
-      (setq display-line-numbers-type 'relative)
+      ;; (setq display-line-numbers-type 'relative)
       (add-hook 'prog-mode-hook #'display-line-numbers-mode))
   (use-package linum-off
     :demand
@@ -153,7 +153,6 @@
 (use-package eldoc-eval)
 (use-package shrink-path
   :commands (shrink-path-prompt shrink-path-file-mixed))
-
 
 (provide 'init-basic)
 ;;; base ends here
