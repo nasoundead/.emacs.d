@@ -292,8 +292,9 @@ extension, try to guess one."
 
   (defun emacs-ime-enable ()
     (w32-set-ime-open-status t))
-  ;; (add-hook 'after-init-hook 'emacs-ime-disable)
+  (add-hook 'after-init-hook 'emacs-ime-disable)
   (add-hook 'evil-insert-state-exit-hook 'emacs-ime-disable)
+  ;; (add-hook 'evil-insert-state-entry-hook 'emacs-ime-enable)
   )
 
 (use-package hungry-delete)

@@ -15,6 +15,7 @@
 (use-package color-theme-sanityinc-tomorrow)
 (use-package doom-themes)
 (use-package gruber-darker-theme)
+(use-package nord-theme)
 
 (use-package solaire-mode
   :ensure t
@@ -26,6 +27,7 @@
   (beacon-mode 1))
 
 ;; (setq-default custom-enabled-themes '(modus-vivendi))
+(setq-default custom-enabled-themes '(doom-nord))
 ;; (setq-default custom-enabled-themes '(doom-one))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))
