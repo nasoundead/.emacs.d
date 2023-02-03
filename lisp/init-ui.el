@@ -13,6 +13,7 @@
 
 (setq custom-safe-themes t)
 (use-package color-theme-sanityinc-tomorrow)
+(use-package spacemacs-theme)
 (use-package doom-themes)
 (use-package gruber-darker-theme)
 (use-package nord-theme)
@@ -27,8 +28,8 @@
   (beacon-mode 1))
 
 ;; (setq-default custom-enabled-themes '(modus-vivendi))
-(setq-default custom-enabled-themes '(doom-nord))
-;; (setq-default custom-enabled-themes '(doom-one))
+;; (setq-default custom-enabled-themes '(doom-nord))
+(setq-default custom-enabled-themes '(doom-one))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
@@ -124,8 +125,8 @@
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
               ;; ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
-              ((eq system-type 'windows-nt) '("Inconsolata NFM"  "宋体"))
-              ;; ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
+              ;; ((eq system-type 'windows-nt) '("Inconsolata NFM"  "宋体"))
+              ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("SauceCodePro Nerd Font"  "宋体"))
               ))
   (set-face-attribute 'default nil :font
