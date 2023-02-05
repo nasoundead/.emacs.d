@@ -126,7 +126,8 @@
               ;; ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("Inconsolata NFM"  "宋体"))
-              ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
+              ;; ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
+              ((eq system-type 'windows-nt) '("Cascadia Code"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("SauceCodePro Nerd Font"  "宋体"))
               ))
   (set-face-attribute 'default nil :font
