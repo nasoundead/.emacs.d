@@ -38,7 +38,7 @@
 
 (use-package vertico-posframe
   :init
-  (vertico-posframe-mode)
+  ;; (vertico-posframe-mode)
   (setq vertico-posframe-parameters
         '((left-fringe . 8)
           (right-fringe . 8)))

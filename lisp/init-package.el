@@ -43,7 +43,9 @@
 ;;       ;; '(("melpa" . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/melpa/")
 ;;       ;;   ("org"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/org/")
 ;;       ;;   ("gnu"   . "https://raw.githubusercontent.com/d12frosted/elpa-mirror/master/gnu/"))
-;;       ;; package-archives
+;;       ;; package-
+
+
 ;;       ;; '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
 ;;       ;;   ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
 ;;       ;;   ;; ("org" . "http://orgmode.org/elpa/")
@@ -69,10 +71,12 @@
 (defun sea-load-autoload ()
   "Load `sea-autoload-file'."
   (if (file-exists-p sea-autoload-file)
-        (load sea-autoload-file)
+      (load sea-autoload-file)
     (progn
-        (sea/generate-autoload-file)
-        (load sea-autoload-file))))
+      (sea/generate-autoload-file)
+      (load sea-autoload-file)))
+  (require 'autoloads sea-autoload-file t)
+  )
 
 
 

@@ -2,6 +2,63 @@
 ;;; Code:
 (require 'init-funcs)
 
+(defconst sea-org-directory
+  (expand-file-name "~/org/")
+  "org dir")
+
+(defconst sea-prettify-symbols-alist
+  '(("lambda" . ?λ)
+    ("<-"     . ?←)
+    ("->"     . ?→)
+    ("->>"    . ?↠)
+    ("=>"     . ?⇒)
+    ("map"    . ?↦)
+    ("/="     . ?≠)
+    ("!="     . ?≠)
+    ("=="     . ?≡)
+    ("<="     . ?≤)
+    (">="     . ?≥)
+    ("=<<"    . (?= (Br . Bl) ?≪))
+    (">>="    . (?≫ (Br . Bl) ?=))
+    ("<=<"    . ?↢)
+    (">=>"    . ?↣)
+    ("&&"     . ?∧)
+    ("||"     . ?∨)
+    ("not"    . ?¬))
+    "sea-prettify-symbols-alist")
+
+(defconst sea-prettify-org-symbols-alist
+  '(("[ ]"            . ?)
+    ("[-]"            . ?)
+    ("[X]"            . ?)
+
+    (":PROPERTIES:"   . ?)
+    (":END:"          . ?🔚)
+
+    ("#+ARCHIVE:"     . ?📦)
+    ("#+AUTHOR:"      . ?👤)
+    ("#+CREATOR:"     . ?💁)
+    ("#+DATE:"        . ?📆)
+    ("#+DESCRIPTION:" . ?⸙)
+    ("#+EMAIL:"       . ?📧)
+    ("#+HEADERS"      . ?☰)
+    ("#+OPTIONS:"     . ?⚙)
+    ("#+SETUPFILE:"   . ?⚒)
+    ("#+TAGS:"        . ?🏷)
+    ("#+TITLE:"       . ?📓)
+
+    ("#+BEGIN_SRC"    . ?⌜)
+    ("#+END_SRC"      . ?⌞)
+    ("#+begin_src"    . ?⌜)
+    ("#+end_src"      . ?⌞)
+
+    ("#+BEGIN_QUOTE"  . ?«)
+    ("#+END_QUOTE"    . ?»)
+    ("#+begin_quote"  . ?«)
+    ("#+end_quote"    . ?»)
+    ("#+RESULTS:"     . ?💻))
+  "sea-prettify-org-symbols-alist")
+
 (use-package org
   ;; :mode (("\\.org$" . org-mode))
   ;; :ensure org-plus-contrib
@@ -200,10 +257,10 @@
   ;; ui enhance
   (defun enhance-ui-for-orgmode ()
     "enhance ui for orgmode."
-    (when centaur-prettify-org-symbols-alist
+    (when sea-prettify-org-symbols-alist
       (if prettify-symbols-alist
-          (push centaur-prettify-org-symbols-alist prettify-symbols-alist)
-        (setq prettify-symbols-alist centaur-prettify-org-symbols-alist)))
+          (push sea-prettify-org-symbols-alist prettify-symbols-alist)
+        (setq prettify-symbols-alist sea-prettify-org-symbols-alist)))
     (prettify-symbols-mode)
     (toggle-truncate-lines))
   (add-hook 'org-mode-hook #'enhance-ui-for-orgmode)
@@ -211,7 +268,7 @@
   ;; To speed up startup, don't put to init section
   (setq
    org-modules nil                 ; Faster loading
-   org-directory centaur-org-directory
+   org-directory sea-org-directory
    org-capture-templates
    `(("i" "Idea" entry (file ,(concat org-directory "/idea.org"))
       "*  %^{Title} %?\n%U\n%a\n")
@@ -284,7 +341,7 @@
 
   )
 
-
+ 
 ;; snipshort
 (defvar clipjar-location (concat sea-bin-dir "Clip.jar"))
 (defun org-paste-image ()

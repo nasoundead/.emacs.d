@@ -106,7 +106,6 @@
     (embrace-add-pair-regexp ?l "\\[a-z]+{" "}" #'+evil--embrace-latex)))
 
 (use-package evil-escape
-  :commands evil-escape-mode
   :init
   (setq evil-escape-excluded-states '(normal visual multiedit emacs motion)
         evil-escape-excluded-major-modes '(neotree-mode)

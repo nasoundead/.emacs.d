@@ -32,8 +32,16 @@
 ;; A tree layout file explorer
 (use-package treemacs
   :defines winum-keymap
+  :custom-face
+  (cfrs-border-color ((t (:inherit posframe-border))))
   :bind (
-         ;; ([f8]        . treemacs)
+         ([f8]        . treemacs)
+         ("M-0"       . treemacs-select-window)
+         ("C-x t 1"   . treemacs-delete-other-windows)
+         ("C-x t t"   . treemacs)
+         ("C-x t b"   . treemacs-bookmark)
+         ("C-x t C-t" . treemacs-find-file)
+         ("C-x t M-t" . treemacs-find-tag)
          :map treemacs-mode-map
          ([mouse-1]   . treemacs-single-click-expand-action))
 
@@ -42,6 +50,7 @@
    treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
    treemacs-width                   30
    treemacs-missing-project-action  'remove
+   treemacs-follow-after-init       t
    treemacs-sorting                 'alphabetic-asc
    )
 
@@ -77,8 +86,10 @@
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
   :ensure t
   :config (treemacs-set-scope-type 'Perspectives))
+
 (use-package treemacs-evil
   :after (treemacs evil))
+
 (use-package treemacs-magit
   :after treemacs magit
   :commands treemacs-magit--schedule-update
@@ -88,13 +99,13 @@
           magit-post-unstage)
          . treemacs-magit--schedule-update))
 
-(use-package treemacs-all-the-icons
-  :after treemacs)
+(use-package treemacs-nerd-icons
+    :demand t
+    :custom-face
+    (treemacs-nerd-icons-root-face ((t (:inherit nerd-icons-green :height 1.3))))
+    (treemacs-nerd-icons-file-face ((t (:inherit nerd-icons-dsilver))))
+    :config (treemacs-load-theme "nerd-icons"))
 
-(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
-  :after (treemacs)
-  :ensure t
-  :config (treemacs-set-scope-type 'Tabs))
 
 (provide 'init-treemacs)
 

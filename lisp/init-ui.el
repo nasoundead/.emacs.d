@@ -10,6 +10,12 @@
                  "%b"))))
 (setq icon-title-format frame-title-format)
 
+(when emacs/>=29p
+  (pixel-scroll-precision-mode t)
+  (setq default-frame-alist '((width . 90)
+                              (height . 40)
+                              (alpha-background . 60)))
+  )
 
 (setq custom-safe-themes t)
 (use-package color-theme-sanityinc-tomorrow)
@@ -28,9 +34,10 @@
   (beacon-mode 1))
 
 ;; (setq-default custom-enabled-themes '(modus-vivendi))
-(setq-default custom-enabled-themes '(doom-nord))
+;; (setq-default custom-enabled-themes '(doom-nord))
 ;; (setq-default custom-enabled-themes '(doom-one))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+(setq-default custom-enabled-themes '(gruber-darker))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
 (defun reapply-themes ()
@@ -117,17 +124,15 @@
                                 "*Ibuffer*"
                                 "*esh command on file*")))
 
-
-(defun sea/init-ui (&optional frame)
-  "Set the theme and load the font, in that order."
-  (setq fonts
+(use-package unicode-fonts)
+(setq fonts
         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
-              ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
+              ;; ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("Inconsolata NFM"  "宋体"))
               ;; ;; ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
-              ;; ((eq system-type 'windows-nt) '("Cascadia Code"  "宋体"))
+              ((eq system-type 'windows-nt) '("Cascadia Code"  "宋体"))
               ;; ((eq system-type 'windows-nt) '("SauceCodePro Nerd Font"  "宋体"))
               ))
   (set-face-attribute 'default nil :font
@@ -139,33 +144,41 @@
   (setq face-font-rescale-alist '(("宋体". 1.0) ("Microsoft Yahei" . 1.2) ("WenQuanYi Micro Hei Mono" . 1.2) ("STHeiti". 1.2)))
 
   (custom-set-faces
-   '(org-table ((t (:family "Ubuntu Mono"))))
-   )
+   '(org-table ((t (:family "Ubuntu Mono")))))
 
-  ;; set font for emoji
-  (set-fontset-font
-   t
-   '(#x1f300 . #x1fad0)
-   (cond
-    ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
-    ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
-    ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
-    ((member "Symbola" (font-family-list)) "Symbola")
-    ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))
-   ;; Apple Color Emoji should be before Symbola, but Richard Stallman disabled it.
-   ;; GNU Emacs Removes Color Emoji Support on the Mac
-   ;; http://ergoemacs.org/misc/emacs_macos_emoji.html
-   ;;
-   )
+(reapply-themes)
+(run-hooks 'sea-init-ui-hook)
 
-  ;; (require 'font-lock+)
-  (use-package unicode-fonts)
-  (reapply-themes)
-  (run-hooks 'sea-init-ui-hook))
+;; (defun sea/init-ui (&optional frame)
+;;   "Set the theme and load the font, in that order."
+;;   (setq fonts
+;;         (cond ((eq system-type 'darwin)     '("Monaco"    "STHeiti"))
+;;               ((eq system-type 'gnu/linux)  '("Ubuntu Mono"     "WenQuanYi Micro Hei Mono"))
+;;               ;; ((eq system-type 'windows-nt) '("JetBrains Mono"  "宋体"))
+;;               ;; ((eq system-type 'windows-nt) '("JetBrainsMono Nerd Font"  "宋体"))
+;;               ;; ((eq system-type 'windows-nt) '("Inconsolata NFM"  "宋体"))
+;;               ;; ;; ((eq system-type 'windows-nt) '("Source Code Pro"  "宋体"))
+;;               ((eq system-type 'windows-nt) '("Cascadia Code"  "宋体"))
+;;               ;; ((eq system-type 'windows-nt) '("SauceCodePro Nerd Font"  "宋体"))
+;;               ))
+;;   (set-face-attribute 'default nil :font
+;;                       (format "%s:pixelsize=%d" (car fonts) 16))
+;;   (dolist (charset '(kana han symbol cjk-misc bopomofo))
+;;     (set-fontset-font (frame-parameter nil 'font) charset
+;;                       (font-spec :family (car (cdr fonts)))))
+;;   ;; Fix chinese font width and rescale
+;;   (setq face-font-rescale-alist '(("宋体". 1.0) ("Microsoft Yahei" . 1.2) ("WenQuanYi Micro Hei Mono" . 1.2) ("STHeiti". 1.2)))
 
-(add-hook 'after-init-hook #'sea/init-ui)
+;;   (custom-set-faces
+;;    '(org-table ((t (:family "Ubuntu Mono")))))
 
-(require 'autoloads sea-autoload-file t)
+;;   (reapply-themes)
+;;   (run-hooks 'sea-init-ui-hook)
+;;   )
+
+;; (add-hook 'after-init-hook #'sea/init-ui)
+
+;; (require 'autoloads sea-autoload-file t)
 
 (use-package switch-window
   :config

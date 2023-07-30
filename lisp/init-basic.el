@@ -37,7 +37,6 @@
   (set-language-environment "UTF-8")
   (prefer-coding-system 'utf-8)))
 
-
 ;; Environment
 (when (or IS-MAC IS-LINUX)
   (use-package exec-path-from-shell
@@ -71,26 +70,30 @@
 (setq switch-to-prev-buffer-skip 'sea/buffer-skip-p)
 
 ;; Show native line numbers if possible, otherwise use linum
-(if (fboundp 'display-line-numbers-mode)
-    (progn
-      (setq linum-format "%4d ")
-      ;; (setq display-line-numbers-type 'relative)
-      (add-hook 'prog-mode-hook #'display-line-numbers-mode))
-  (use-package linum-off
-    :demand
-    :defines linum-format
-    :hook (after-init . global-linum-mode)
-    :config
-    (setq linum-format "%4d ")
-    ;; Highlight current line number
-    (use-package hlinum
-      :defines linum-highlight-in-all-buffersp
-      :hook (global-linum-mode . hlinum-activate)
-      :init
-      (setq linum-highlight-in-all-buffersp t)
-      (custom-set-faces
-       `(linum-highlight-face
-         ((t (:inherit 'default :background ,(face-background 'default) :foreground ,(face-foreground 'default)))))))))
+(use-package display-line-numbers
+  :ensure nil
+  :hook ((prog-mode yaml-mode conf-mode) . display-line-numbers-mode)
+  :init (setq display-line-numbers-width-start t))
+;; (if (fboundp 'display-line-numbers-mode)
+;;     (progn
+;;       (setq linum-format "%4d ")
+;;       ;; (setq display-line-numbers-type 'relative)
+;;       (add-hook 'prog-mode-hook #'display-line-numbers-mode))
+;;   (use-package linum-off
+;;     :demand
+;;     :defines linum-format
+;;     :hook (after-init . global-linum-mode)
+;;     :config
+;;     (setq linum-format "%4d ")
+;;     ;; Highlight current line number
+;;     (use-package hlinum
+;;       :defines linum-highlight-in-all-buffersp
+;;       :hook (global-linum-mode . hlinum-activate)
+;;       :init
+;;       (setq linum-highlight-in-all-buffersp t)
+;;       (custom-set-faces
+;;        `(linum-highlight-face
+;;          ((t (:inherit 'default :background ,(face-background 'default) :foreground ,(face-foreground 'default)))))))))
 
 
 

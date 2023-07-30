@@ -130,62 +130,6 @@
   (>= emacs-major-version 29)
   "Emacs is 29 or above.")
 
-(defconst centaur-org-directory
-  (expand-file-name "~/org/")
-  "org dir")
-
-(defconst centaur-prettify-symbols-alist
-  '(("lambda" . ?λ)
-    ("<-"     . ?←)
-    ("->"     . ?→)
-    ("->>"    . ?↠)
-    ("=>"     . ?⇒)
-    ("map"    . ?↦)
-    ("/="     . ?≠)
-    ("!="     . ?≠)
-    ("=="     . ?≡)
-    ("<="     . ?≤)
-    (">="     . ?≥)
-    ("=<<"    . (?= (Br . Bl) ?≪))
-    (">>="    . (?≫ (Br . Bl) ?=))
-    ("<=<"    . ?↢)
-    (">=>"    . ?↣)
-    ("&&"     . ?∧)
-    ("||"     . ?∨)
-    ("not"    . ?¬))
-    "centaur-prettify-symbols-alist")
-
-(defconst centaur-prettify-org-symbols-alist
-  '(("[ ]"            . ?)
-    ("[-]"            . ?)
-    ("[X]"            . ?)
-
-    (":PROPERTIES:"   . ?)
-    (":END:"          . ?🔚)
-
-    ("#+ARCHIVE:"     . ?📦)
-    ("#+AUTHOR:"      . ?👤)
-    ("#+CREATOR:"     . ?💁)
-    ("#+DATE:"        . ?📆)
-    ("#+DESCRIPTION:" . ?⸙)
-    ("#+EMAIL:"       . ?📧)
-    ("#+HEADERS"      . ?☰)
-    ("#+OPTIONS:"     . ?⚙)
-    ("#+SETUPFILE:"   . ?⚒)
-    ("#+TAGS:"        . ?🏷)
-    ("#+TITLE:"       . ?📓)
-
-    ("#+BEGIN_SRC"    . ?⌜)
-    ("#+END_SRC"      . ?⌞)
-    ("#+begin_src"    . ?⌜)
-    ("#+end_src"      . ?⌞)
-
-    ("#+BEGIN_QUOTE"  . ?«)
-    ("#+END_QUOTE"    . ?»)
-    ("#+begin_quote"  . ?«)
-    ("#+end_quote"    . ?»)
-    ("#+RESULTS:"     . ?💻))
-  "centaur-prettify-org-symbols-alist")
 
 (defvar sea-debug-mode (or (getenv "DEBUG") init-file-debug)
   "If non-nil, all sea functions will be verbose. Set DEBUG=1 in the command
@@ -236,7 +180,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-ui)
 (require 'init-modeline)
 (require 'init-edit)
-(require 'init-smartparens)
+;; (require 'init-smartparens)
 (require 'init-folding)
 (require 'init-hydra)
 (require 'init-highlight)
@@ -279,3 +223,4 @@ Meant to be used with `run-hook-wrapped'."
 
 ;; (setq custom-file (concat sea-cache-dir "custom.el"))
 ;; (load custom-file t t)
+(put 'dired-find-alternate-file 'disabled nil)

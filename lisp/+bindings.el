@@ -10,7 +10,7 @@
 (map! [remap evil-jump-to-tag] #'projectile-find-tag
       [remap find-tag]         #'projectile-find-tag
       [remap describe-bindings] #'embark-bindings
-      :irvo "C-g" #'evil-escape
+      ;; :irvo "C-g" #'evil-escape
       "C-;"                  #'embark-act  ; to be moved to :config default if accepted
       (:map minibuffer-local-map
         "C-;"               #'embark-act
@@ -111,10 +111,10 @@
       :i  [C-tab] #'aya-expand
       :nv [C-tab] #'aya-create
 
-      :n "H" #'previous-buffer
-      :n "L" #'next-buffer
-      ;; (:map org-mode-map
-      ;;   :n "H" #'org-up-element)
+      ;; :n "H" #'previous-buffer
+      ;; :n "L" #'next-buffer
+      (:map org-mode-map
+        :n "H" #'org-up-element)
 
       (:map custom-theme-choose-mode-map
         :gvnime "j" #'widget-forward
@@ -150,14 +150,6 @@
           "C-k"     #'company-select-previous-or-abort
           "C-s"     (λ! (company-search-abort) (company-filter-candidates))
           [escape]  #'company-search-abort))
-
-      ;; counsel
-      ;; (:after counsel
-      ;;   (:map counsel-ag-map
-      ;;     [backtab]  #'+ivy/wgrep-occur      ; search/replace on results
-      ;;     "C-SPC"    #'ivy-call-and-recenter ; preview
-      ;;     "M-RET"    (+ivy-do-action! #'+ivy-git-grep-other-window-action)))
-
 
       (:map xref--xref-buffer-mode-map
         :n "RET" #'xref-goto-xref
@@ -310,23 +302,6 @@
       ;; hl-todo
       :m  "]t" #'hl-todo-next
       :m  "[t" #'hl-todo-previous
-
-      ;; ivy
-      (:after ivy
-        :map ivy-minibuffer-map
-        "C-SPC" #'ivy-call-and-recenter ; preview file
-        "C-l"   #'ivy-alt-done
-        "C-k"   #'ivy-previous-line
-        "C-j"   #'ivy-next-line
-        "M-z"   #'undo
-        "M-v"   #'yank
-        "C-v"   #'yank
-        :map ivy-switch-buffer-map
-        "C-k"   #'ivy-previous-line
-        "C-j"   #'ivy-next-line
-        "C-M-k" #'ivy-switch-buffer-kill
-        )
-
 
       ;; realgud
       (:after realgud
