@@ -143,6 +143,7 @@
     '((emacs-lisp . t)
       (perl       . t)
       (python     . t)
+      (ein        . t)
       (ruby       . t)
       (js         . t)
       (css        . t)
@@ -157,14 +158,6 @@
 
   (use-package ob-go
     :init (cl-pushnew '(go . t) load-language-alist))
-
-  (use-package ob-ipython
-    :init
-    (cl-pushnew '(ipython . t) load-language-alist)
-    ;; (with-eval-after-load 'company
-    ;;   (make-local-variable 'company-backend)
-    ;;   (cl-pushnew 'company-ob-ipython company-backends))
-    )
 
   (use-package ob-rust
     :init (cl-pushnew '(rust . t) load-language-alist))

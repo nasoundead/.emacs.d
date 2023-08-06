@@ -148,16 +148,6 @@ fundamental-mode) for performance sake."
 ;;   :init
 ;;   (use-package visual-regexp)
 ;;   :bind (([remap query-replace-regexp] . vr/query-replace)))
-;; (use-package anzu
-;;   :diminish anzu-mode
-;;   :bind (([remap query-replace] . anzu-query-replace)
-;;          ;; ([remap query-replace-regexp] . anzu-query-replace-regexp)
-;;          :map isearch-mode-map
-;;          ([remap isearch-query-replace] . anzu-isearch-query-replace)
-;;          ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp))
-;; :init (add-hook 'after-init-hook #'global-anzu-mode)
-;;   :config (setq anzu-replace-to-string-separator
-;; (if (char-displayable-p ?→) " → " " -> ")))
 
 (use-package anzu
   :straight (anzu
@@ -170,7 +160,8 @@ fundamental-mode) for performance sake."
          :map isearch-mode-map
          ([remap isearch-query-replace] . anzu-isearch-query-replace)
          ([remap isearch-query-replace-regexp] . anzu-isearch-query-replace-regexp))
-  ;; :bind ("C-q" . anzu-query-replace-regexp)
+  :config (setq anzu-replace-to-string-separator
+                (if (char-displayable-p ?→) " → " " -> "))
   )
 ;; An all-in-one comment command to rule them all
 (use-package comment-dwim-2
@@ -274,8 +265,6 @@ extension, try to guess one."
         (whitespace-mode +1))))
   (add-hook 'editorconfig-custom-hooks #'sea|editorconfig-whitespace-mode-maybe))
 
-
-
 (use-package tiny)
 
 ;; markdown
@@ -326,7 +315,7 @@ extension, try to guess one."
 ;;   (setq rime-show-candidate 'posframe)
 ;;   (setq default-input-method "rime"))
 
-(global-set-key (kbd "C-\\") 'toggle-input-method)
+;; (global-set-key (kbd "C-\\") 'toggle-input-method)
 ;; (global-set-key (kbd "s-m") 'rime-force-enable)
 ;; (global-set-key (kbd "s-`") 'rime-send-keybindin)
 (provide 'init-edit)
