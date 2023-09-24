@@ -215,7 +215,7 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-org)
 (require 'init-eshell)
 (require 'init-prog)
-;; (require 'init-lsp)
+(require 'init-lsp)
 (require 'init-go)
 (require 'init-py)
 (require 'init-rust)

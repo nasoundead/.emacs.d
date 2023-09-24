@@ -47,7 +47,6 @@
   (add-hook 'sea-reload-hook #'posframe-delete-all))
 
 (use-package consult
-  :defer t
   :init
   (if IS-WIN
       (progn
@@ -74,18 +73,29 @@
    consult-theme
    :preview-key (list (kbd "C-o") :debounce 0.5 'any)))
 
+
+(use-package consult-dir
+  :ensure t
+  :straight (consult-dir
+              :type git 
+              :host github 
+              :repo "karthink/consult-dir")
+  :bind (("C-x C-d" . consult-dir)
+          :map minibuffer-local-completion-map
+          ("C-x C-d" . consult-dir)
+          ("C-x C-j" . consult-dir-jump-file)))
+
 (use-package embark
   :defer t
   :init
   (setq which-key-use-C-h-commands nil
         prefix-help-command #'embark-prefix-help-command)
-  ;; :bind
-  ;; (("C-." . embark-act)         ;; pick some comfortable binding
-   ;; ("C-;" . embark-dwim)        ;; good alternative: M-.
-  ;;  ("C-h B" . embark-bindings)  ;; alternative for `describe-bindings'
-   ;; )
   :config
   (require 'consult)
+  (require 'consult)
+  (require 'consult-xref)
+  (require 'consult-org)
+  (require 'consult-imenu)
 
   ;; (set-popup-rule! "^\\*Embark Export:" :size 0.35 :ttl 0 :quit nil)
   (cl-nsubstitute #'+vertico-embark-which-key-indicator #'embark-mixed-indicator embark-indicators)
