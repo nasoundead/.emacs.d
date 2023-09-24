@@ -126,35 +126,14 @@
                 (when all-the-icons-dired-monochrome
                   `(:face ,(face-at-point)))))))
     (advice-add #'all-the-icons-dired--icon :override #'my-all-the-icons-dired--icon)))
-;; Extra Dired functionality
-;; (use-package dired-aux :ensure nil)
-;; (use-package dired-x
 
-;;   :config
-;;   (let ((cmd (cond (sys/mac-x-p "open")
-;;                    (sys/linux-x-p "xdg-open")
-;;                    (sys/win32p "start")
-;;                    (t ""))))
-;;     (setq dired-guess-shell-alist-user
-;;           `(("\\.pdf\\'" ,cmd)
-;;             ("\\.docx\\'" ,cmd)
-;;             ("\\.\\(?:djvu\\|eps\\)\\'" ,cmd)
-;;             ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" ,cmd)
-;;             ("\\.\\(?:xcf\\)\\'" ,cmd)
-;;             ("\\.csv\\'" ,cmd)
-;;             ("\\.tex\\'" ,cmd)
-;;             ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|rm\\|rmvb\\|ogv\\)\\(?:\\.part\\)?\\'" ,cmd)
-;;             ("\\.\\(?:mp3\\|flac\\)\\'" ,cmd)
-;;             ("\\.html?\\'" ,cmd)
-;;             ("\\.md\\'" ,cmd))))
-
-;;   (setq dired-omit-files
-;;         (concat dired-omit-files
-;;                 "\\|^.DS_Store$\\|^.projectile$\\|^.git*\\|^.svn$\\|^.vscode$\\|\\.js\\.meta$\\|\\.meta$\\|\\.elc$\\|^.emacs.*"))
-;;   )
 ;; `find-dired' alternative using `fd'
 (when (executable-find "fd")
-  (use-package fd-dired))
+  (use-package fd-dired
+    :straight (fd-dired
+                :type git
+                :host github
+                :repo "yqrashawn/fd-dired")))
 
 
 

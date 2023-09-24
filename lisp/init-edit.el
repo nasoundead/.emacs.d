@@ -97,7 +97,8 @@ fundamental-mode) for performance sake."
 (setq auto-revert-verbose nil)
 
 ;; enabled by default in Emacs 25+. No thanks.
-(electric-indent-mode -1)
+;; (electric-indent-mode -1)
+(electric-pair-mode)
 
 ;; savehist / saveplace
 (setq savehist-file (concat sea-cache-dir "savehist")

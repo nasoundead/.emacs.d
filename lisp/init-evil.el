@@ -6,18 +6,24 @@
 ;; (add-hook 'after-init-hook #'(lambda() (evil-mode 1)))
 ;; Enable Evil
 ;; Set before requiring evil module
-(setq evil-magic 'very-magic)
-(setq evil-search-module 'evil-search)
-(setq evil-ex-search-vim-style-regexp t)
-(setq evil-want-keybinding nil)
-(require 'evil)
-(evil-mode 1)
-;; (use-package evil
-;;   :ensure t
-;;   :init
-;;   (setq evil-want-keybinding nil)
-;;   :config
-;;   (evil-mode 1))
+;; (setq evil-magic 'very-magic)
+;; (setq evil-search-module 'evil-search)
+;; (setq evil-ex-search-vim-style-regexp t)
+;; (setq evil-want-keybinding nil)
+;; (require 'evil)
+;; (evil-mode 1)
+(use-package evil
+  :straight (evil
+             :type git
+             :host github
+             :repo "emacs-evil/evil")
+  :init
+  (setq evil-magic 'very-magic)
+  (setq evil-search-module 'evil-search)
+  (setq evil-ex-search-vim-style-regexp t)
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode 1))
 
 (use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)

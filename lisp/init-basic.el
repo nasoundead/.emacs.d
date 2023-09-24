@@ -1,7 +1,6 @@
 ;;; init-basic.elAuthor: Haibo Wang <nasoundead@163.com>
 ;;; Code:
 ;; Key Modifiers
-
 (when IS-WIN
   ;; make PC keyboard's Win key or other to type Super or Hyper, for emacs running on Windows.
   (setq w32-pass-lwindow-to-system nil)
@@ -56,10 +55,6 @@
           (seq "magit-process" (zero-or-more anything))
           (seq "magit-revision" (zero-or-more anything))
           (seq "magit-stash" (zero-or-more anything)))
-      ;; (or "*Backtrace*" "*Compile-Log*" "*Completions*"
-      ;;     "*Messages*" "*scratch*" "*Help*"
-      ;;     "*package*" "*Warnings*"
-      ;;     "*Async-native-compile-log*")
       eos)
   "Regular expression matching buffers ignored by `next-buffer' and
 `previous-buffer'."
@@ -74,28 +69,6 @@
   :ensure nil
   :hook ((prog-mode yaml-mode conf-mode) . display-line-numbers-mode)
   :init (setq display-line-numbers-width-start t))
-;; (if (fboundp 'display-line-numbers-mode)
-;;     (progn
-;;       (setq linum-format "%4d ")
-;;       ;; (setq display-line-numbers-type 'relative)
-;;       (add-hook 'prog-mode-hook #'display-line-numbers-mode))
-;;   (use-package linum-off
-;;     :demand
-;;     :defines linum-format
-;;     :hook (after-init . global-linum-mode)
-;;     :config
-;;     (setq linum-format "%4d ")
-;;     ;; Highlight current line number
-;;     (use-package hlinum
-;;       :defines linum-highlight-in-all-buffersp
-;;       :hook (global-linum-mode . hlinum-activate)
-;;       :init
-;;       (setq linum-highlight-in-all-buffersp t)
-;;       (custom-set-faces
-;;        `(linum-highlight-face
-;;          ((t (:inherit 'default :background ,(face-background 'default) :foreground ,(face-foreground 'default)))))))))
-
-
 
 (defadvice term (before force-bash)
   (interactive (list "/usr/local/bin/fish")))

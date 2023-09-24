@@ -83,6 +83,10 @@
 
 ;; Highlight uncommitted changes
 (use-package diff-hl
+  :straight (diff-hl
+              :type git
+              :host github
+              :repo "dgutov/diff-hl")
   :defines desktop-minor-mode-table
   :commands diff-hl-magit-post-refresh
   :custom-face

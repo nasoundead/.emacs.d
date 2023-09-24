@@ -13,4 +13,6 @@
 (add-to-list 'default-frame-alist '(menu-bar-lines 0))
 (add-to-list 'default-frame-alist '(vertical-scroll-bars))
 
-(setq gc-cons-threshold 100000000)
+;; 增加IO性能
+(setq read-process-output-max (* 1024 1024 10))
+(setq gc-cons-threshold most-positive-fixnum)

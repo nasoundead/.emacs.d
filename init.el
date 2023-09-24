@@ -12,19 +12,14 @@
   "The main starup function."
   (dolist (hook '(sea-init-hook))
     (run-hook-with-args hook)
-  (run-hook-wrapped 'sea-post-init-hook #'sea-try-run-hook))
+    (run-hook-wrapped 'sea-post-init-hook #'sea-try-run-hook))
 
   (sea-load-autoload)
   (setq gc-cons-threshold 16777216
-        gc-cons-percentage 0.15))
+        gc-cons-percentage 0.15)
+  )
 
 (add-hook 'emacs-startup-hook #'sea-finalize t)
-
-;;; Directories/files
-(defvar sea-emacs-dir
-  (eval-when-compile (file-truename user-emacs-directory))
-  "The path to the currently loaded .emacs.d directory. Must end with a slash.")
-
 (defconst sea-autoload-dir
   (expand-file-name "autoload/" user-emacs-directory)
   "autoload directory.")
@@ -131,6 +126,12 @@
   "Emacs is 29 or above.")
 
 
+;;; Directories/files
+(defvar sea-emacs-dir
+  (eval-when-compile (file-truename user-emacs-directory))
+  "The path to the currently loaded .emacs.d directory. Must end with a slash.")
+
+
 (defvar sea-debug-mode (or (getenv "DEBUG") init-file-debug)
   "If non-nil, all sea functions will be verbose. Set DEBUG=1 in the command
 line or use --debug-init to enable this.")
@@ -164,7 +165,6 @@ Meant to be used with `run-hook-wrapped'."
     nil))
 
 (add-to-list 'load-path sea-core-dir)
-;; (add-to-list 'load-path sea-site-lisp-dir)
 (defun add-subdirs-to-load-path (dir)
   "Recursive add directories to `load-path'."
   (let ((default-directory (file-name-as-directory dir)))
@@ -177,18 +177,30 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-lib)
 (require 'init-funcs)
 (require 'init-evil)
-(require 'init-ui)
+
+(when (display-graphic-p)
+  (require 'init-font)
+  (require 'init-ui)
+  ;; (+evan/set-fonts)
+  ;; (setq +evan-theme (if (and (>= (string-to-number (format-time-string "%H")) 6)
+  ;;             (>= (string-to-number (format-time-string "%H")) 18))
+  ;;          'doom-one
+  ;;        'doom-one-light))
+  ;; (load-theme +evan-theme t nil)
+  ;; (enable-theme +evan-theme)
+  )
+
 (require 'init-modeline)
 (require 'init-edit)
-;; (require 'init-smartparens)
+(require 'init-smartparens)
 (require 'init-folding)
 (require 'init-hydra)
 (require 'init-highlight)
 (require 'init-lookup)
 (require 'init-keybinds)
 (require 'init-vertico)
-(require 'init-company2)
-;; ;; (require 'init-corfu)
+;; (require 'init-company2)
+(require 'init-corfu)
 ;; (require 'init-treesitter)
 
 (require 'init-yasnippet)
@@ -204,12 +216,12 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-org)
 (require 'init-eshell)
 (require 'init-prog)
-(require 'init-lsp)
+;; (require 'init-lsp)
 (require 'init-go)
 (require 'init-py)
 (require 'init-rust)
-(require 'init-js)
-(require 'init-web)
+;; (require 'init-js)
+;; (require 'init-web)
 
 ;; Start server
 (require 'server)

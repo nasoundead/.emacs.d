@@ -1,7 +1,6 @@
 ;;; init-smartparens.el --- Configure of smartparens -*- lexical-binding: t -*-
 ;;; Commentary:
 ;;; Code:
-;; (require 'cl)
 (use-package smartparens
   :init
   (add-hook 'js-mode-hook #'smartparens-mode)
