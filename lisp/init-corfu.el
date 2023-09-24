@@ -171,11 +171,11 @@
   (tabnine-minimum-prefix-length 0)
   (tabnine-executable-args (list "--log-level" "Error" "--no-lsp" "false"))
   :hook
-  (on-first-input-hook . tabnine-start-process)
-  (prog-mode-hook . tabnine-mode)
-  (text-mode-hook . tabnine-mode)
-  (kill-emacs-hook . tabnine-kill-process)
-  :init
+  (on-first-input . tabnine-start-process)
+  (prog-mode . tabnine-mode)
+  (text-mode . tabnine-mode)
+  (kill-emacs . tabnine-kill-process)
+  :config
   (define-key tabnine-completion-map [tab] nil)
   (define-key tabnine-completion-map (kbd "M-f") #'tabnine-accept-completion-by-word)
   (define-key tabnine-completion-map (kbd "M-<return>") #'tabnine-accept-completion-by-line)
