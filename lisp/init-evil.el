@@ -25,6 +25,17 @@
   :config
   (evil-mode 1))
 
+(use-package evil-escape
+  :straight (evil-escape
+             :type git
+             :host github
+             :repo "syl20bnr/evil-escape")
+  :custom
+  (evil-escape-key-sequence "jk")
+  (evil-escape-delay 0.2)
+  :config
+  (evil-escape-mode))
+
 (use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :config (evil-commentary-mode 1))

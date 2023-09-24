@@ -199,9 +199,8 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-lookup)
 (require 'init-keybinds)
 (require 'init-vertico)
-;; (require 'init-company2)
 (require 'init-corfu)
-;; (require 'init-treesitter)
+(require 'init-treesitter)
 
 (require 'init-yasnippet)
 (require 'init-projectile)

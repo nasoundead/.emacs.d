@@ -34,6 +34,11 @@
           :n "cc" #'treemacs-move-file
           :n "C" #'treemacs-move-marked-files))
 
+      (:after corfu
+        (:map corfu-map
+          :gnvime "C-j" #'corfu-next
+          :gnvime "C-k" #'corfu-previous))
+
       :gni "C-a" #'sea/backward-to-bol-or-indent
       :gni "C-e" #'sea/forward-to-last-non-comment-or-eol
       :gni [C-return]    #'+default/newline-below

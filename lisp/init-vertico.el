@@ -114,7 +114,11 @@
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package consult-projectile
-  :straight (consult-projectile :type git :host gitlab :repo "OlMon/consult-projectile" :branch "master"))
+  :straight (consult-projectile 
+              :type git 
+              :host gitlab 
+              :repo "OlMon/consult-projectile" 
+              :branch "master"))
 
 (provide 'init-vertico)
 

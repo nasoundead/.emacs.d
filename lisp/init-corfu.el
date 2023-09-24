@@ -29,7 +29,6 @@
 ;;
 ;;; Code:
 (use-package corfu
-  :demand t
   :custom
   (corfu-auto t)
   (corfu-cycle t)
@@ -147,19 +146,32 @@
                                         ))))
 )
 
-(use-package kind-icon
-  :straight (kind-icon
+(use-package kind-all-the-icons
+  :straight (kind-all-the-icons
              :type git
              :host github
-             :repo "jdtsmith/kind-icon")
+             :repo "Eason0210/kind-all-the-icons")
   :ensure t
   :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
-  (kind-icon-use-icons t)
   :config
-  (add-to-list 'kind-icon-mapping '(EnumMember "em" :icon "format-list-checks" :face font-lock-builtin-face))
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  ;; (add-to-list 'kind-icon-mapping '(EnumMember "em" :icon "format-list-checks" :face font-lock-builtin-face))
+  (add-to-list 'corfu-margin-formatters 
+               #'kind-all-the-icons-margin-formatter)
+  )
+
+;; (use-package kind-icon
+;;   :straight (kind-icon
+;;              :type git
+;;              :host github
+;;              :repo "jdtsmith/kind-icon")
+;;   :ensure t
+;;   :after corfu
+;;   :custom
+;;   (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+;;   ;; (kind-icon-use-icons t)
+;;   :config
+;;   ;; (add-to-list 'kind-icon-mapping '(EnumMember "em" :icon "format-list-checks" :face font-lock-builtin-face))
+;;   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package tabnine
   :straight (tabnine

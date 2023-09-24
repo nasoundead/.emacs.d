@@ -16,14 +16,6 @@
 
 (setq custom-safe-themes t)
 (use-package color-theme-sanityinc-tomorrow)
-(use-package doom-themes
-  :ensure t
-  :straight (doom-themes
-             :type git
-             :host github
-             :repo "doomemacs/themes"))
-(use-package gruber-darker-theme)
-(use-package nord-theme)
 
 (use-package solaire-mode
   :ensure t
@@ -36,7 +28,8 @@
 
 ;; (setq-default custom-enabled-themes '(doom-one))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
+;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
+(setq-default custom-enabled-themes '(modus-vivendi))
 ;; (setq-default custom-enabled-themes '(gruber-darker))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized
@@ -131,14 +124,11 @@
   :ensure nil
   :init (add-hook 'sea-init-ui-hook #'windmove-default-keybindings))
 
-
-
-
 (use-package highlight-indent-guides
   :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
   :init
-  (setq highlight-indent-guides-method 'column)
-  ;; (setq highlight-indent-guides-method 'character)
+  ;; (setq highlight-indent-guides-method 'column)
+  (setq highlight-indent-guides-method 'character)
   :config
   (add-hook 'focus-in-hook #'highlight-indent-guides-auto-set-faces)
   ;; `highlight-indent-guides' breaks in these modes
@@ -151,11 +141,6 @@
   :hook ((prog-mode text-mode conf-mode) . page-break-lines-mode)
   )
 
-(use-package zoom
-  :config
-  (custom-set-variables
-    '(zoom-size '(0.618 . 0.618)))
-  )
 
 
 (provide 'init-ui)

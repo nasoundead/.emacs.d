@@ -29,20 +29,31 @@
 ;;
 
 ;;; Code:
-(use-package tree-sitter
-  :hook (python-mode . (lambda()
-                         (tree-sitter-hl-mode)))
+(use-package treesit-auto
+  :straight (treesit-auto
+              :type git 
+              :host github 
+              :repo "renzmann/treesit-auto")
+  
+  :custom
+  (treesit-auto-install 'prompt)
+  (treesit-font-lock-level 4)
+  :config
+  (global-treesit-auto-mode)
   )
-(use-package tree-sitter-langs)
-(global-tree-sitter-mode)
 
-;; (add-hook 'python-mode-hook 'tree-sitter-hl-mode)
-;; (add-hook 'rustic-mode-hook 'tree-sitter-hl-mode)
+(use-package combobulate
+  :straight (combobulate
+              :type git 
+              :host github
+              :repo "mickeynp/combobulate")
+  
+  :custom
+  (combobulate-key-prefix "C-c o")
+  :hook
+  ((python-ts-mode js-ts-mode css-ts-mode yaml-ts-mode typescript-ts-mode tsx-ts-mode) . combobulate-mode)
+  )
 
-;; (defvar tree-sitter-hl-mode-list
-;;   '("go" "python" "ipython" "ruby" "js" "css" "sass" "C" "rust" "java"))
-;; (dolist (lang org-babel-lang-list)
-;;   (eval `(lsp-org-babel-enable ,lang)))
 
 (provide 'init-treesitter)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
