@@ -187,6 +187,9 @@
     :bind (:map org-mode-map
             ("C-M-y" . org-rich-yank)))
 
+  (use-package valign
+    :hook (org-mode . valign-mode))
+
   ;; Table of contents
   (use-package toc-org
     :hook (org-mode . toc-org-mode))

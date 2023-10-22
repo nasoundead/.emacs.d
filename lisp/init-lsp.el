@@ -40,14 +40,14 @@
   :hook ((prog-mode . (lambda ()
                         (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
                           (lsp-deferred))))
-         (lsp-mode . (lambda ()
-                       ;; Integrate `which-key'
-                       (lsp-enable-which-key-integration)
-                       (lsp-rust-analyzer-inlay-hints-mode)
-                       ;; Format and organize imports
-                       (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                       (add-hook 'before-save-hook #'lsp-organize-imports t t)
-                       )))
+          (lsp-mode . (lambda ()
+                        ;; Integrate `which-key'
+                        (lsp-enable-which-key-integration)
+                        (lsp-rust-analyzer-inlay-hints-mode)
+                        ;; Format and organize imports
+                        (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                        (add-hook 'before-save-hook #'lsp-organize-imports t t)
+                        )))
   :bind (:map lsp-mode-map
           ("C-c C-d" . lsp-describe-thing-at-point)
           ([remap xref-find-definitions] . lsp-find-definition)
@@ -215,8 +215,8 @@
     (when (and (executable-find "yapf") buffer-file-name)
       (call-process "yapf" nil nil nil "-i" buffer-file-name)))
   :hook (python-mode . (lambda ()
-                         (require 'lsp-pyright)
-                         (add-hook 'after-save-hook #'lsp-pyright-format-buffer t t)))
+                          (require 'lsp-pyright)
+                          (add-hook 'after-save-hook #'lsp-pyright-format-buffer t t)))
   :init (when (executable-find "python3")
           (setq lsp-pyright-python-executable-cmd "python3")))
 
@@ -235,39 +235,9 @@
     (cl-defmethod my-lsp-execute-command
       ((_server (eql ccls)) (command (eql ccls.xref)) arguments)
       (when-let ((xrefs (lsp--locations-to-xref-items
-                         (lsp--send-execute-command (symbol-name command) arguments))))
+                          (lsp--send-execute-command (symbol-name command) arguments))))
         (xref--show-xrefs xrefs nil)))
     (advice-add #'lsp-execute-command :override #'my-lsp-execute-command)))
-
-;; Enable LSP in org babel
-;; https://github.com/emacs-lsp/lsp-mode/issues/377
-(cl-defmacro lsp-org-babel-enable (lang)
-  "Support LANG in org source code block."
-  (cl-check-type lang string)
-  (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-         (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-    `(progn
-       (defun ,intern-pre (info)
-         (setq buffer-file-name (or (->> info caddr (alist-get :file))
-                                    "org-src-babel.tmp"))
-         (when (fboundp 'lsp-deferred)
-           ;; Avoid headerline conflicts
-           (setq-local lsp-headerline-breadcrumb-enable nil)
-           (lsp-deferred))
-         (put ',intern-pre 'function-documentation
-              (format "Enable lsp-mode in the buffer of org source block (%s)."
-                      (upcase ,lang)))
-
-         (if (fboundp ',edit-pre)
-             (advice-add ',edit-pre :after ',intern-pre)
-           (progn
-             (defun ,edit-pre (info)
-               (,intern-pre info))
-             (put ',edit-pre 'function-documentation
-                  (format "Prepare local buffer environment for org source block (%s)."
-                          (upcase ,lang)))))))))
-
-
 
 
 (provide 'init-lsp)

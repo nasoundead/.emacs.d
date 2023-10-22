@@ -12,7 +12,7 @@
   (setq projectile-known-projects-file
         (expand-file-name "projectile-bookmarks.eld" sea-cache-dir))
 
-  (setq projectile-completion-system 'ivy)
+  ;; (setq projectile-completion-system 'ivy)
 
   (setq projectile-sort-order 'recentf)
   (setq projectile-use-git-grep t)

@@ -6,20 +6,20 @@
 
 (defvar sea-leader-key "SPC"
   "The leader prefix key, for global commands.")
-  
+
 (defvar sea-leader-alt-key "M-SPC"
   "An alternative leader prefix key, used for Insert and Emacs states, and for
 non-evil users.")
 
 (defvar sea-localleader-key "SPC m"
   "The localleader prefix key, for major-mode specific commands.")
-  
+
 (defvar sea-localleader-alt-key "M-SPC m"
   "The localleader prefix key, for major-mode specific commands.")
 
 (defvar sea-leader-map (make-sparse-keymap)
   "An overriding keymap for <leader> keys.")
-  
+
 ;;
 (defvar sea-escape-hook nil
   "A hook run after C-g is pressed (or ESC in normal mode, for evil users). Both
@@ -69,7 +69,7 @@ If any hook returns non-nil, all hooks after it are ignored.")
   :major-modes t
   :wk-full-keys nil
   :prefix sea-localleader-alt-key)
-  
+
 ;; Because :non-normal-prefix doesn't work for non-evil sessions (only evil's
 ;; emacs state), we must redefine `define-localleader-key!' once evil is loaded
 (after! evil

@@ -35,7 +35,6 @@
 ;;                     ('hi-aquamarine . 0)
 ;;                     ('hi-pink . 0)
 ;;                     ('hi-blue-b . 0)))))
-
 ;; Highlight symbols
 (use-package symbol-overlay
   :custom-face
@@ -52,10 +51,10 @@
          ([S-f3] . symbol-overlay-jump-prev)
          ([M-f3] . symbol-overlay-remove-all))
   :hook (
-    ;; (prog-mode . symbol-overlay-mode)
-    (iedit-mode . (lambda () (symbol-overlay-mode -1)))
-    (iedit-mode-end . symbol-overlay-mode)
-    )
+         ;; (prog-mode . symbol-overlay-mode)
+         (iedit-mode . (lambda () (symbol-overlay-mode -1)))
+         (iedit-mode-end . symbol-overlay-mode)
+         )
   :init (setq symbol-overlay-idle-time 0.01))
 
 ;; Colorize color names in buffers
