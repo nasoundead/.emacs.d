@@ -177,17 +177,11 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-lib)
 (require 'init-funcs)
 (require 'init-evil)
+(require 'init-keybinds)
 
 (when (display-graphic-p)
   (require 'init-font)
   (require 'init-ui)
-  ;; (+evan/set-fonts)
-  ;; (setq +evan-theme (if (and (>= (string-to-number (format-time-string "%H")) 6)
-  ;;             (>= (string-to-number (format-time-string "%H")) 18))
-  ;;          'doom-one
-  ;;        'doom-one-light))
-  ;; (load-theme +evan-theme t nil)
-  ;; (enable-theme +evan-theme)
   )
 
 (require 'init-modeline)
@@ -197,7 +191,6 @@ Meant to be used with `run-hook-wrapped'."
 (require 'init-hydra)
 (require 'init-highlight)
 (require 'init-lookup)
-(require 'init-keybinds)
 (require 'init-vertico)
 (require 'init-corfu)
 (require 'init-treesitter)
