@@ -27,9 +27,9 @@
   (beacon-mode 1))
 
 ;; (setq-default custom-enabled-themes '(doom-one))
-;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+(setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
-(setq-default custom-enabled-themes '(modus-vivendi))
+;; (setq-default custom-enabled-themes '(modus-vivendi))
 ;; (setq-default custom-enabled-themes '(gruber-darker))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))
 ;; Ensure that themes will be applied even if they have not been customized

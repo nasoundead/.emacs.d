@@ -33,14 +33,11 @@
 ;;
 (use-package toml-mode)
 (use-package rustic
-  :hook (rustic-mode . lsp)
-  :hook (lsp-mode . (lambda()
-                      (tree-sitter-hl-mode)
-                      (setq lsp-rust-analyzer-server-display-inlay-hints t)
-                      (lsp-rust-analyzer-inlay-hints-mode)
-                      ))
-
-  )
+  ;; :hook (lsp-mode . (lambda()
+  ;;                     (setq lsp-rust-analyzer-server-display-inlay-hints t)
+  ;;                     (lsp-rust-analyzer-inlay-hints-mode)
+  ;;                     ))
+)
 (provide 'init-rust)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -32,6 +32,15 @@
 ;;
 ;;
 
+;; (use-package lsp-mode
+;;   :commands lsp
+;;   :init
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+;;          (python-mode . lsp)
+;;          ;; if you want which-key integration
+;;          (lsp-mode . lsp-enable-which-key-integration))
+;;   )
 
 
 (use-package lsp-mode
@@ -39,15 +48,16 @@
   :diminish
   :hook ((prog-mode . (lambda ()
                         (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode)
-                          (lsp-deferred))))
-          (lsp-mode . (lambda ()
-                        ;; Integrate `which-key'
-                        (lsp-enable-which-key-integration)
-                        (lsp-rust-analyzer-inlay-hints-mode)
-                        ;; Format and organize imports
-                        (add-hook 'before-save-hook #'lsp-format-buffer t t)
-                        (add-hook 'before-save-hook #'lsp-organize-imports t t)
-                        )))
+                          (require 'lsp-mode)
+                          (lsp))))
+         (lsp-mode . (lambda ()
+                       ;; Integrate `which-key'
+                       (lsp-enable-which-key-integration)
+                       (lsp-rust-analyzer-inlay-hints-mode)
+                       ;; Format and organize imports
+                       (add-hook 'before-save-hook #'lsp-format-buffer t t)
+                       (add-hook 'before-save-hook #'lsp-organize-imports t t)
+                       )))
   :bind (:map lsp-mode-map
           ("C-c C-d" . lsp-describe-thing-at-point)
           ([remap xref-find-definitions] . lsp-find-definition)
@@ -63,59 +73,8 @@
 (use-package lsp-ui
   :custom-face
   (lsp-ui-sideline-code-action ((t (:inherit warning))))
-  :pretty-hydra
-  ((:title (pretty-hydra-title "LSP UI" 'faicon "rocket" :face 'all-the-icons-green)
-           :color amaranth :quit-key "q")
-   ("Doc"
-    (("d e" (progn
-              (lsp-ui-doc-enable (not lsp-ui-doc-mode))
-              (setq lsp-ui-doc-enable (not lsp-ui-doc-enable)))
-      "enable" :toggle lsp-ui-doc-mode)
-     ("d s" (setq lsp-ui-doc-include-signature (not lsp-ui-doc-include-signature))
-      "signature" :toggle lsp-ui-doc-include-signature)
-     ("d t" (setq lsp-ui-doc-position 'top)
-      "top" :toggle (eq lsp-ui-doc-position 'top))
-     ("d b" (setq lsp-ui-doc-position 'bottom)
-      "bottom" :toggle (eq lsp-ui-doc-position 'bottom))
-     ("d p" (setq lsp-ui-doc-position 'at-point)
-      "at point" :toggle (eq lsp-ui-doc-position 'at-point))
-     ("d h" (setq lsp-ui-doc-header (not lsp-ui-doc-header))
-      "header" :toggle lsp-ui-doc-header)
-     ("d f" (setq lsp-ui-doc-alignment 'frame)
-      "align frame" :toggle (eq lsp-ui-doc-alignment 'frame))
-     ("d w" (setq lsp-ui-doc-alignment 'window)
-      "align window" :toggle (eq lsp-ui-doc-alignment 'window)))
-    "Sideline"
-    (("s e" (progn
-              (lsp-ui-sideline-enable (not lsp-ui-sideline-mode))
-              (setq lsp-ui-sideline-enable (not lsp-ui-sideline-enable)))
-      "enable" :toggle lsp-ui-sideline-mode)
-     ("s h" (setq lsp-ui-sideline-show-hover (not lsp-ui-sideline-show-hover))
-      "hover" :toggle lsp-ui-sideline-show-hover)
-     ("s d" (setq lsp-ui-sideline-show-diagnostics (not lsp-ui-sideline-show-diagnostics))
-      "diagnostics" :toggle lsp-ui-sideline-show-diagnostics)
-     ("s s" (setq lsp-ui-sideline-show-symbol (not lsp-ui-sideline-show-symbol))
-      "symbol" :toggle lsp-ui-sideline-show-symbol)
-     ("s c" (setq lsp-ui-sideline-show-code-actions (not lsp-ui-sideline-show-code-actions))
-      "code actions" :toggle lsp-ui-sideline-show-code-actions)
-     ("s i" (setq lsp-ui-sideline-ignore-duplicate (not lsp-ui-sideline-ignore-duplicate))
-      "ignore duplicate" :toggle lsp-ui-sideline-ignore-duplicate))
-    "Action"
-    (("h" backward-char "←")
-     ("j" next-line "↓")
-     ("k" previous-line "↑")
-     ("l" forward-char "→")
-     ("C-a" mwim-beginning-of-code-or-line nil)
-     ("C-e" mwim-end-of-code-or-line nil)
-     ("C-b" backward-char nil)
-     ("C-n" next-line nil)
-     ("C-p" previous-line nil)
-     ("C-f" forward-char nil)
-     ("M-b" backward-word nil)
-     ("M-f" forward-word nil)
-     ("c" lsp-ui-sideline-apply-code-actions "apply code actions"))))
+  
   :bind (("C-c u" . lsp-ui-imenu)
-         ("M-<f6>" . lsp-ui-hydra/body)
          ("s-<return>" . lsp-ui-sideline-apply-code-actions))
   :hook (lsp-mode . lsp-ui-mode)
   :init

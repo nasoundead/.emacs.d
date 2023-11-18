@@ -98,7 +98,7 @@
       :n  "[b" #'previous-buffer
       :nv  "K" #'+lookup/documentation
       ;; :nv  "gd" #'+lookup/definition
-      :nv  "gd" #'xref-find-definitions
+      :nv  "gd" #'+lookup/definition
       :nv  "gr" #'+lookup/references
       ;; :nv  "gD" #'xref-find-references
       :nv  "gf" #'+lookup/file
