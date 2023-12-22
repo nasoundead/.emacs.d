@@ -46,9 +46,11 @@
   :init
   (evil-snipe-mode +1)
   (evil-snipe-override-mode +1)
-  (evil-define-key '(normal motion) evil-snipe-local-mode-map
-    "s" nil
-    "S" nil)
+  ;; (evil-define-key '(normal motion) evil-snipe-local-mode-map
+  ;;   "s" nil
+  ;;   "S" nil)
+  (setq evil-snipe-scope 'whole-visible)
+  (setq evil-snipe-repeat-scope 'whole-visible)
 
   (evil-define-key 'operator evil-snipe-local-mode-map
     "z" 'evil-snipe-s
