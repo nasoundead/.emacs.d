@@ -54,7 +54,7 @@
       :i [remap newline]   #'newline-and-indent
       :i "C-S-j"           #'+default/newline
 
-      :n "s"    #'evil-window-map
+      ;; :n "s"    #'evil-window-map
       ;; --- Global keybindings ---------------------------
       ;; Make M-x available everywhere
       :gnvime "M-x" #'execute-extended-command

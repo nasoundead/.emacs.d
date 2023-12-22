@@ -27,7 +27,7 @@
   (beacon-mode 1))
 
 ;; (setq-default custom-enabled-themes '(doom-one))
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
 ;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
 ;; (setq-default custom-enabled-themes '(modus-vivendi))
 ;; (setq-default custom-enabled-themes '(gruber-darker))
