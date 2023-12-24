@@ -17,14 +17,14 @@
 (setq custom-safe-themes t)
 (use-package color-theme-sanityinc-tomorrow)
 
-(use-package solaire-mode
-  :ensure t
-  :config
-  (solaire-global-mode +1))
+;; (use-package solaire-mode
+;;   :ensure t
+;;   :config
+;;   (solaire-global-mode +1))
 
-(use-package beacon
-  :init
-  (beacon-mode 1))
+;; (use-package beacon
+;;   :init
+;;   (beacon-mode 1))
 ;; (use-package doom-themes
 ;;   :ensure t
 ;;   :straight (doom-themes
@@ -47,8 +47,8 @@
 ;;   ;; Corrects (and improves) org-mode's native fontification.
 ;;   (doom-themes-org-config))
 ;; (setq-default custom-enabled-themes '(doom-one))
-(setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
-;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
+;; (setq-default custom-enabled-themes '(sanityinc-tomorrow-night))
+(setq-default custom-enabled-themes '(sanityinc-tomorrow-bright))
 ;; (setq-default custom-enabled-themes '(modus-vivendi))
 ;; (setq-default custom-enabled-themes '(gruber-darker))
 ;; (setq-default custom-enabled-themes '(doom-tokyo-night))

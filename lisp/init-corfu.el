@@ -155,7 +155,7 @@
   :after corfu
   :config
   ;; (add-to-list 'kind-icon-mapping '(EnumMember "em" :icon "format-list-checks" :face font-lock-builtin-face))
-  (add-to-list 'corfu-margin-formatters 
+  (add-to-list 'corfu-margin-formatters
                #'kind-all-the-icons-margin-formatter)
   )
 
@@ -195,9 +195,6 @@
   (define-key tabnine-completion-map (kbd "M-[") #'tabnine-next-completion)
   (define-key tabnine-completion-map (kbd "M-]") #'tabnine-previous-completion)
   )
-
-
-
 
 
 

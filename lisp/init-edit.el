@@ -176,7 +176,7 @@ fundamental-mode) for performance sake."
 ;; 当然，完全可以开启正则匹配等功能，下面就说说这几个toggle函数。
 ;; isearch-toggle-regexp 在使用isearch搜索时（即按下C-s isearch-forward后）绑定到M-s r。 按下后，您的输入全部都会被以正则来匹配了。
 ;; isearch-toggle-case-fold 默认绑到M-s c。
-;; 默认isearch对大小写是类似于rg一样“smart”的。具体地说，如果用户全部输入小写，则不匹分大小写进行匹配，如果用户输入中包括大写，则精确匹配大小写。 
+;; 默认isearch对大小写是类似于rg一样“smart”的。具体地说，如果用户全部输入小写，则不匹分大小写进行匹配，如果用户输入中包括大写，则精确匹配大小写。
 ;; 再举个例子，默认情况下，默认foo可以匹配foo,Foo,FOO。输入Foo，只能匹配到Foo。打开这个选项后，就是case sensitive了，也就只能精确匹配了。
 ;; 个人认为，该选项用处不太大。
 ;; isearch-toggle-word 默认绑定到M-s w。打开word匹配。直接举例：未打开以前，foo可以匹配foobar，foo。打开该选项后，foo只能匹配foo了，foobar就匹配不到了。 可以看出来，开启该选项后，isearch必须完全匹配一个完整地word。这个功能可以帮忙过滤很多杂项。
@@ -242,10 +242,10 @@ fundamental-mode) for performance sake."
 (use-package expand-region
   :commands (er/expand-region er/contract-region er/mark-symbol er/mark-word))
 
-(use-package pcre2el
-  :commands rxt-quote-pcre
-  :init (add-hook 'after-init-hook #'rxt-global-mode)
-  )
+;; (use-package pcre2el
+;;   :commands rxt-quote-pcre
+;;   :init (add-hook 'after-init-hook #'rxt-global-mode)
+;;   )
 
 ;; Treat undo history as a tree
 (use-package undo-tree
