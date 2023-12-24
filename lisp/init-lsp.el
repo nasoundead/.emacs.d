@@ -118,6 +118,7 @@
               lsp-modeline-workspace-status-enable nil
 
               lsp-semantic-tokens-enable t
+              lsp-inlay-hint-enable t
               lsp-progress-spinner-type 'progress-bar-filled
 
               lsp-enable-file-watchers nil
@@ -164,7 +165,7 @@
 
     (defun my-lsp-icons-get-by-file-ext (file-ext &optional feature)
       (when (and file-ext
-                  (lsp-icons--enabled-for-feature feature))
+                 (lsp-icons--enabled-for-feature feature))
         (nerd-icons-icon-for-extension file-ext)))
     (advice-add #'lsp-icons-get-by-file-ext :override #'my-lsp-icons-get-by-file-ext)
 
@@ -192,14 +193,14 @@
 
     (defun my-lsp-icons-get-by-symbol-kind (kind &optional feature)
       (when (and kind
-                  (lsp-icons--enabled-for-feature feature))
+                 (lsp-icons--enabled-for-feature feature))
         (let* ((icon (cdr (assoc (lsp-treemacs-symbol-kind->icon kind) lsp-symbol-alist)))
-                (args (cdr icon)))
+               (args (cdr icon)))
           (apply (car icon) args))))
     (advice-add #'lsp-icons-get-by-symbol-kind :override #'my-lsp-icons-get-by-symbol-kind)
 
     (setq lsp-headerline-arrow (nerd-icons-octicon "nf-oct-chevron_right"
-                                                    :face 'lsp-headerline-breadcrumb-separator-face))))
+                                                   :face 'lsp-headerline-breadcrumb-separator-face))))
 
 
 
@@ -354,7 +355,7 @@
       (push 'lsp-treemacs-java-deps-mode aw-ignored-buffers)))
 
   (with-no-warnings
-    
+
       (treemacs-create-theme "lsp-nerd-icons"
         :config
         (progn
