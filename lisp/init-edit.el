@@ -242,10 +242,10 @@ fundamental-mode) for performance sake."
 (use-package expand-region
   :commands (er/expand-region er/contract-region er/mark-symbol er/mark-word))
 
-;; (use-package pcre2el
-;;   :commands rxt-quote-pcre
-;;   :init (add-hook 'after-init-hook #'rxt-global-mode)
-;;   )
+(use-package pcre2el
+  :commands rxt-quote-pcre
+  :init (add-hook 'after-init-hook #'rxt-global-mode)
+  )
 
 ;; Treat undo history as a tree
 (use-package undo-tree

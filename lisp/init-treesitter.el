@@ -31,10 +31,10 @@
 ;;; Code:
 (use-package treesit-auto
   :straight (treesit-auto
-              :type git 
-              :host github 
+              :type git
+              :host github
               :repo "renzmann/treesit-auto")
-  
+
   :custom
   (treesit-auto-install 'prompt)
   (treesit-font-lock-level 4)
@@ -44,14 +44,21 @@
 
 (use-package combobulate
   :straight (combobulate
-              :type git 
-              :host github
-              :repo "mickeynp/combobulate")
-  
+             :type git
+             :host github
+             :repo "mickeynp/combobulate")
+
   :custom
   (combobulate-key-prefix "C-c o")
   :hook
-  ((python-ts-mode js-ts-mode css-ts-mode yaml-ts-mode typescript-ts-mode tsx-ts-mode) . combobulate-mode)
+  ((python-ts-mode
+    js-ts-mode
+    css-ts-mode
+    yaml-ts-mode
+    typescript-ts-mode
+    tsx-ts-mode
+    rust-ts-mode
+    go-ts-mode) . combobulate-mode)
   )
 
 

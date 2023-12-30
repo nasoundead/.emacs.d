@@ -61,7 +61,7 @@
   (custom-set-variables `(custom-enabled-themes (quote ,custom-enabled-themes))))
 
 (add-hook 'after-init-hook 'reapply-themes)
-
+(add-hook 'after-make-frame-functions 'reapply-themes)
 (defun light ()
   "Activate a light color theme."
   (interactive)

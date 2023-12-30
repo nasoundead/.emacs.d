@@ -6,8 +6,6 @@
   :bind (("s-t" . projectile-find-file))
   :init (add-hook 'after-init-hook #'projectile-mode)
   :config
-  (setq projectile-mode-line
-        '(:eval (format "[%s]" (projectile-project-name))))
 
   (setq projectile-known-projects-file
         (expand-file-name "projectile-bookmarks.eld" sea-cache-dir))
@@ -16,10 +14,10 @@
 
   (setq projectile-sort-order 'recentf)
   (setq projectile-use-git-grep t)
-
+  (setq projectile-enable-caching t)
   (setq projectile-switch-project-action
         '(lambda ()
-          ;;  (venv-projectile-auto-workon)
+           ;;  (venv-projectile-auto-workon)
            (projectile-find-file)))
 
   ;; Faster indexing on Windows
@@ -48,7 +46,7 @@
               (ibuffer-projectile-set-filter-groups)
               (unless (eq ibuffer-sorting-mode 'alphabetic)
                 (ibuffer-do-sort-by-alphabetic)))))
-				
+
 (provide 'init-projectile)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

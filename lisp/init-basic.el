@@ -15,10 +15,20 @@
   (setq w32-rwindow-modifier 'hyper)
   )
 
+(setq byte-compile-warnings '(not nresolved
+                                  free-vars
+                                  callargs
+                                  redefine
+                                  obsolete
+                                  noruntime
+                                  cl-functions
+                                  interactive-only
+                                  ))
+
 ;; coding
 (defun windows-shell-mode-coding ()
-    (set-buffer-file-coding-system 'gbk)
-    (set-buffer-process-coding-system 'gbk 'gbk))
+  (set-buffer-file-coding-system 'gbk)
+  (set-buffer-process-coding-system 'gbk 'gbk))
 (defun python-encode-in-org-babel-execute (func body params)
     (let ((coding-system-for-write 'utf-8))
       (funcall func body params)))
