@@ -10,7 +10,7 @@
         transient-history-file (concat sea-etc-dir "transient/values")
         transient-history-file (concat sea-etc-dir "transient/history"))
   :config
-  (setq magit-completing-read-function 'ivy-completing-read)
+  ;; (setq magit-completing-read-function 'ivy-completing-read)
   )
 
 (use-package magit-popup)
