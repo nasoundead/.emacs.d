@@ -435,19 +435,6 @@
         :desc "Previous buffer"         :n "[" #'previous-buffer
         )
 
-      (:desc "code" :prefix "c"
-        :desc "List errors"               :n  "x" #'flycheck-list-errors
-        :desc "Evaluate buffer/region"    :n  "e" #'+eval/buffer
-        :v  "e" #'+eval/region
-        :desc "Evaluate & replace region" :nv "E" #'+eval:replace-region
-        :desc "Format buffer/region"      :n  "f" #'+format/buffer
-        :v  "f" #'+format/region
-        :desc "Build tasks"               :nv "b" #'+eval/build
-        :desc "Jump to definition"        :n  "d" #'+lookup/definition
-        :desc "Jump to references"        :n  "D" #'+lookup/references
-        :desc "Open REPL"                 :n  "r" #'+eval/open-repl
-        :v  "r" #'+eval:repl)
-
       (:desc "file" :prefix "f"
         :desc "Find file"                 :n "f" #'find-file
         :desc "Sudo find file"            :n ">" #'sea/sudo-find-file
@@ -456,7 +443,7 @@
         :desc "Open project editorconfig" :n "c" #'editorconfig-find-current-editorconfig
         :desc "Find directory"            :n "d" #'dired
         :desc "Browse emacs.d"            :n "E" #'+default/browse-emacsd
-        :desc "Recent files"              :n "r" #'recentf-open-files
+        :desc "Rename buffer and file"    :n "r" #'sea/rename-this-file-and-buffer
         :desc "Recent project files"      :n "R" #'consult-projectile-recentf
         :desc "Yank filename"             :n "y" #'+default/yank-buffer-filename
         :desc "Delete this file"          :n "X" #'sea/delete-this-file)

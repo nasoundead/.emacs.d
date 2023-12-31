@@ -39,6 +39,21 @@ it if it doesn't exist).")
 ;; Functions
 
 ;;;###autoload
+(defun sea/rename-this-file-and-buffer (new-name)
+  "Renames both current buffer and file it's visiting to NEW-NAME."
+  (interactive "sNew name: ")
+  (let ((name (buffer-name))
+        (filename (buffer-file-name)))
+    (unless filename
+      (error "Buffer '%s' is not visiting a file!" name))
+    (progn
+      (when (file-exists-p filename)
+        (rename-file filename new-name 1))
+      (set-visited-file-name new-name)
+      (rename-buffer new-name))))
+
+
+;;;###autoload
 (defun sea-buffer-frame-predicate (buf)
   "To be used as the default frame buffer-predicate parameter. Returns nil if
 BUF should be skipped over by functions like `next-buffer' and `other-buffer'."
@@ -381,4 +396,3 @@ current project."
   "Kill all other buffers."
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-
