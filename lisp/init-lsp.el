@@ -266,7 +266,7 @@
          ([remap xref-find-references] . lsp-ui-peek-find-references))
   :hook (lsp-mode . lsp-ui-mode)
   :init
-  (setq lsp-ui-sideline-show-diagnostics nil
+  (setq lsp-ui-sideline-show-diagnostics t
         lsp-ui-sideline-ignore-duplicate t
         lsp-ui-doc-delay 0.1
         lsp-ui-doc-show-with-cursor (not (display-graphic-p))
