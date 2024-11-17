@@ -221,6 +221,7 @@ fundamental-mode) for performance sake."
 (use-package rg)
 
 (use-package aggressive-indent
+  :ensure t
   :init
   (dolist (hook '(emacs-lisp-mode-hook css-mode-hook))
     (add-hook hook #'aggressive-indent-mode)))
@@ -246,7 +247,13 @@ fundamental-mode) for performance sake."
   :commands rxt-quote-pcre
   :init (add-hook 'after-init-hook #'rxt-global-mode)
   )
-
+(use-package ialign
+  :ensure t
+  :init
+  (setq ialign-pcre-mode t)
+  (setq ialign-initial-group -1)
+  (setq ialign-initial-repeat t)
+  (setq ialign-initial-regexp "([ ,=])"))
 ;; Treat undo history as a tree
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -332,8 +339,9 @@ extension, try to guess one."
   (add-hook 'evil-insert-state-entry-hook 'emacs-ime-enable)
   )
 
-(use-package hungry-delete)
-(global-hungry-delete-mode)
+(use-package hungry-delete
+  :ensure t
+  :hook (after-init . global-hungry-delete-mode))
 
 
 (provide 'init-edit)

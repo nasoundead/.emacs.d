@@ -75,10 +75,23 @@
 (setq switch-to-prev-buffer-skip 'sea/buffer-skip-p)
 
 ;; Show native line numbers if possible, otherwise use linum
-(use-package display-line-numbers
-  :ensure nil
-  :hook ((prog-mode yaml-mode conf-mode) . display-line-numbers-mode)
-  :init (setq display-line-numbers-width-start t))
+(if (fboundp 'display-line-numbers-mode)
+    (add-hook 'prog-mode-hook #'display-line-numbers-mode)
+  (use-package linum-off
+    :demand
+    :defines linum-format
+    :hook (after-init . global-linum-mode)
+    :config
+    (setq linum-format "%4d ")
+    ;; Highlight current line number
+    (use-package hlinum
+      :defines linum-highlight-in-all-buffersp
+      :hook (global-linum-mode . hlinum-activate)
+      :init
+      (setq linum-highlight-in-all-buffersp t)
+      (custom-set-faces
+       `(linum-highlight-face
+         ((t (:inherit 'default :background ,(face-background 'default) :foreground ,(face-foreground 'default)))))))))
 
 (defadvice term (before force-bash)
   (interactive (list "/usr/local/bin/fish")))
